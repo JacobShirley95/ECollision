@@ -1,0 +1,25 @@
+<div id="control-panel">
+    <button id="btn-run" class="icon-play control-button">RUN</button>
+    <button id="btn-stop" class="icon-stop control-button">STOP</button>
+    <button id="btn-back" class="icon-previous control-button">BACK</button>
+    <button id="btn-next" class="icon-next control-button">NEXT</button>
+    <button class="icon-file control-button max">SAVE STATE</button>
+</div>
+
+<script>
+    $(function() {
+        $("#btn-run").click(function() {
+            sim.paused = false;
+        });
+        $("#btn-stop").click(function() {
+            sim.paused = true;
+        });
+        $("#btn-back").click(function() {
+            sim.updateSimulationRev();
+        });
+        $("#btn-next").click(function() {
+            if (sim.paused)
+                sim.updateSimulation();
+        });
+    });
+</script>

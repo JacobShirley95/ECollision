@@ -1,0 +1,28 @@
+<div id="config-balls" style="height:100%;">
+    <div id="add-del-panel" style="width: 40%; float:left;">
+        <button id="add-ball" class="icon-plus add-del-button control-button">ADD BALL</button>
+        <button id="remove-ball" class="icon-dash add-del-button control-button">DELETE BALL</button>
+    </div>
+    <div id="sliders" style="width: 60%; float:right;">
+        <div id="slider" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
+        <div id="slider2" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
+        <div id="slider3" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        
+        $("#add-ball").click(function() {
+            sim.addBall(100, 400, 155, 10, getRandomColor());
+        });
+        
+        $("#remove-ball").click(function() {
+            sim.removeSelected();
+        });
+        
+        $("#slider").slider();
+        $("#slider2").slider();
+        $("#slider3").slider();
+    });
+</script>

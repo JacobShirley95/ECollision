@@ -1,0 +1,150 @@
+body {
+    background-color: #206396;
+    font-size: 16px;
+    font-family:Open sans, sans-serif;
+    color: #444;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+li {
+    #border-radius: 2px;
+    background-color: #B99DD1;
+}
+
+*  {
+  margin: 0;
+  padding: 0;
+}
+
+#widget {
+    #background-color:#9DCFD1;
+    border-radius: 0px;
+}
+
+#canvas-wrapper {
+    width:100%;
+    height:100%;
+    position:relative;
+    background-color: #B2D4EF;
+    #background-color:#212121;
+}
+
+#widget-canvas {
+    width:100%;
+    height:100%;
+    
+    position:relative;
+    z-index:0;
+}
+
+#simulation-area {
+    #background-color:#091D3D;
+    display: block;
+    padding: 7.5em 0 5.5em;
+}
+
+/*/
+/* gridster
+/*/
+
+.gridster {
+    #width: 100px;
+    #margin: 0 auto;
+    background-color:#206396;
+    display: block;
+    padding: 7.5em 0 5.5em;
+}
+
+.gridster .gs-w {
+    background:#80B3DA;
+    #background:#646464;
+    cursor: pointer;
+    -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.gridster .player {
+    -webkit-box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
+}
+
+
+.gridster .preview-holder {
+    border: none!important;
+    border-radius: 0!important;
+    background: rgba(255,255,255,.2)!important;
+}
+
+/*buttons*/
+/*http://paletton.com/#uid=13x0u0kiCFn8GVde7NVmtwSqXtg*/
+
+#control-panel {
+    width:100%;
+    #height:60px;
+    position:relative;
+    display:inline-table;
+}
+
+#add-del-panel {
+    width:40%;
+    height:100%;
+    position:relative;
+}
+
+button{
+    position:relative;
+    border:0;
+    background-color:#B2D4EF;
+    border: solid #80B3DA 1px;
+}
+
+button:active {
+    background-color:#3977A7;
+}
+
+.control-button:before{
+    position:absolute;
+    left:0;
+    top:0;
+    width:50px;
+    height:100%;
+    #line-height:2;
+    padding:10px 0px 10px 5px;
+    font-size:130%;
+    text-align:center;
+}
+
+.control-button {
+    width:50%;
+    margin-right:0px;
+    #margin-bottom:2px;
+    text-align:left;
+    padding:10px 20px 10px 50px;
+    width:50%;
+    
+    font-family:Open sans, sans-serif;
+}
+
+.control-button.max{
+    width:100%;
+    padding:10px 20px 10px 70px;
+}
+
+.control-button.no-icon {
+    width:100%;
+    padding:10px 20px 10px 20px;
+    text-align:center;
+}
+
+.add-del-button:before {
+    font-size:190%;
+}
+
+.add-del-button{
+    width:100%;
+    height:50%;
+    margin-bottom:0;
+}

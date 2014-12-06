@@ -1,0 +1,19 @@
+<div id="info" style="height:20%;">
+    
+</div>
+<div id="buttons">
+    <button class="control-button no-icon">SHOW COLLISION DATA</button>
+    <button id="trace" class="control-button no-icon">TRACE</button>
+    <button id="gravity" class="control-button no-icon">GRAVITY</button>
+</div>
+
+<script>
+    $(function() {
+       $("#trace").click(function() {
+            enableTrace = !enableTrace;   
+       });
+       $("#gravity").click(function() {
+            enableGravity = !enableGravity;   
+       });
+    });
+</script>

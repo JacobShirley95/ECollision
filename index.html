@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title>Design tests</title>
+        
+        <link rel="stylesheet" type="text/css" href="lib/jquery.gridster.min.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="fonts/icomoon/style.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+        
+        <script src="lib/jquery-1.11.1.js"></script>
+        <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+        <script src="lib/easeljs-0.7.1.min.js"></script>
+        <script src="lib/jquery.gridster.min.js"></script>
+    </head> 
+    
+    <body>
+        <div class="gridster">
+            <ul></ul>
+        </div>
+
+        <script>
+            var gridster;
+            
+            function resizeWidgets(e, ui, $widget) {
+                
+            }
+            
+            $(function(){
+                gridster = $(".gridster > ul").gridster({
+                    widget_margins: [5, 5],
+                    widget_base_dimensions: [100, 100],
+                    max_cols: 6,
+                    max_rows: 6,
+                    resize: {
+                        enabled:true,
+                        resize: resizeWidgets,
+                        stop: resizeWidgets
+                    }
+                }).data('gridster');
+
+                var widgets = [
+                                ['widget-simulation', 4, 6],
+                                ['', 2, 2],
+                                ['widget-sim-controls', 2, 2],
+                                ['widget-debug-controls', 2, 2],
+                                ['widget-ball-controls', 4, 1]
+                              ];
+            
+                $.each(widgets, function(i, widget){
+                    var w = widget[0];
+                    widget[0] = '<li id="'+widget[0]+'"></li>';
+                    gridster.add_widget.apply(gridster, widget);
+            
+                    $("#"+w).load("widgets/"+w+".html");
+                });
+            });
+        </script>
+    </body>
+</html>

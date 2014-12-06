@@ -1,0 +1,52 @@
+<div id="canvas-wrapper">
+    <canvas id="widget-canvas"></canvas>
+</div>
+
+<script src="simulationjs/debug.js"></script>
+<script src="simulationjs/settings.js"></script>
+        
+<script src="simulationjs/math/vector-math.js"></script>
+<script src="simulationjs/math/ball-physics.js"></script>
+
+<script src="simulationjs/ui/widget.js"></script>
+<script src="simulationjs/ui/simulation.js"></script>
+<script src="simulationjs/ui/graph.js"></script>
+        
+<script src="simulationjs/ecollisions.js"></script>
+
+<script>
+    var refreshRate = 80;
+    var defaultGameRate = 50;
+
+    var enableDebug = false;
+    var enableTrace = false;
+
+    var enableGravity = false;
+    var enableFriction = false;
+    var enableDragAndDrop = false;
+
+    var yRows = 5; // min 1, max 10
+
+    var width = 500;
+    var height = 500;
+
+    var speedState = -1;
+    var slowMotionConst = 1.0;
+
+    function RenderData() {
+        this.zoom = 1.0;
+
+        this.offsetX = 0.0;
+        this.offsetY = 0.0;
+    }
+
+    var renderData = new RenderData();
+    
+    $('#widget-canvas').attr("width",$('#widget-simulation').width());
+    $('#widget-canvas').attr("height",$('#widget-simulation').height());
+          
+    width = $('#widget-simulation').width();
+    height = $('#widget-simulation').height();
+          
+    start();
+</script>
