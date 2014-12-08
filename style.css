@@ -19,6 +19,10 @@ li {
   padding: 0;
 }
 
+/*/
+/* canvas
+/*/
+
 #widget {
     #background-color:#9DCFD1;
     border-radius: 0px;
@@ -147,4 +151,37 @@ button:active {
     width:100%;
     height:50%;
     margin-bottom:0;
+}
+
+/* slider */
+
+.slider {
+    
+}
+
+#amount {
+    position:relative;
+    height:20px;
+    width:30px;
+    background:red;
+    visibility:hidden;
+    margin-left:-15px;
+    top:-20px;
+}
+
+.ui-slider-horizontal {
+    position:relative!important;
+    background:#B2D4EF!important;
+    border:0!important;
+    border-radius:0!important;
+    height: 10px!important;
+    padding:0!important;
+}
+
+.ui-slider-handle {
+    width:10px!important;
+    height:10px!important;
+    top:-1px!important;
+    border-radius:4px!important;
+    margin-left:-5px!important;
 }
