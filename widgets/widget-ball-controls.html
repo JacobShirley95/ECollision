@@ -17,11 +17,9 @@
             $("#amount").css("visibility", "visible");
             
             var left = ui.value;
-            console.log("="+left+"px");
+            console.log(left+"%");
 
-            $("#amount").animate({
-                'marginLeft':"+="+left+"px"
-            });
+            $("#amount").css("left", left+"%");
         }
         
         function stopSlide(event, ui) {
@@ -39,6 +37,7 @@
         
         $(".slider").slider({
             max:100,
+	    start: startSlide,
             slide:slideF,
             stop:stopSlide
         }).append('<div id="amount"></div>');

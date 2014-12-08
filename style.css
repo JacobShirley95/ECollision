@@ -165,6 +165,8 @@ button:active {
     width:30px;
     background:red;
     visibility:hidden;
+    margin-left:-15px;
+    top:-20px;
 }
 
 .ui-slider-horizontal {
