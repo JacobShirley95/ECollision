@@ -3,26 +3,44 @@
         <button id="add-ball" class="icon-plus add-del-button control-button">ADD BALL</button>
         <button id="remove-ball" class="icon-dash add-del-button control-button">DELETE BALL</button>
     </div>
-    <div id="sliders" style="width: 60%; float:right;">
-        <div id="slider" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
-        <div id="slider2" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
-        <div id="slider3" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
+    <div id="sliders" style="margin-top:3px; width: 60%; float:right;">
+        <div class="slider" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
+        <div class="slider" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
+        <div class="slider" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
+        <div class="slider" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
     </div>
 </div>
 
 <script>
     $(function() {
+        function slideF(event, ui) {
+            $("#amount").css("visibility", "visible");
+            
+            var left = ui.value;
+            console.log("="+left+"px");
+
+            $("#amount").animate({
+                'marginLeft':"+="+left+"px"
+            });
+        }
+        
+        function stopSlide(event, ui) {
+            $("#amount").css("visibility", "hidden");
+        }
         
         $("#add-ball").click(function() {
-            sim.addBall(100, 400, 155, 10, getRandomColor());
+            console.log(width);
+            sim.addBall(11+(Math.random()*(width-11)), 11+(Math.random()*(height-11)), 155, 10, getRandomColor());
         });
         
         $("#remove-ball").click(function() {
             sim.removeSelected();
         });
         
-        $("#slider").slider();
-        $("#slider2").slider();
-        $("#slider3").slider();
+        $(".slider").slider({
+            max:100,
+            slide:slideF,
+            stop:stopSlide
+        }).append('<div id="amount"></div>');
     });
 </script>

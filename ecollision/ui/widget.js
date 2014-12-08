@@ -1,11 +1,8 @@
-function Widget(canvasName, width, height) {
+function Widget(canvasName) {
     this.active = false;
     this.owner = null;
     
     this.stage = new createjs.Stage(canvasName);
-    
-    this.width = width;
-    this.height = height;
     
     this.zoom = 1.0;
     
