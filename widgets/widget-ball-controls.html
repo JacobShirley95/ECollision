@@ -13,21 +13,10 @@
 
 <script>
     $(function() {
-        function slideF(event, ui) {
-            $("#amount").css("visibility", "visible");
-            
-            var left = ui.value;
-            console.log(left+"%");
-
-            $("#amount").css("left", left+"%");
-        }
-        
-        function stopSlide(event, ui) {
-            $("#amount").css("visibility", "hidden");
-        }
-        
         $("#add-ball").click(function() {
-            console.log(width);
+            var velocity = $(".slider").get(0).
+            
+            
             sim.addBall(11+(Math.random()*(width-11)), 11+(Math.random()*(height-11)), 155, 10, getRandomColor());
         });
         
@@ -35,11 +24,28 @@
             sim.removeSelected();
         });
         
+        
+        function slideF(event, ui) {
+            $(this).find("#amount").css("visibility", "visible");
+            
+            var left = ui.value;
+
+            $(this).find("#amount").text(ui.value);
+            $(this).find("#amount").css("left", left+"%");
+            
+            event.stopPropagation();
+        }
+        
+        function stopSlide(event, ui) {
+            $(this).find("#amount").css("visibility", "hidden");
+        }
+        
         $(".slider").slider({
             max:100,
-	    start: startSlide,
             slide:slideF,
             stop:stopSlide
-        }).append('<div id="amount"></div>');
+        }).append('<div id="amount"></div>').mousedown(function(event) {
+            event.stopPropagation();
+        });
     });
 </script>

@@ -160,13 +160,20 @@ button:active {
 }
 
 #amount {
-    position:relative;
-    height:20px;
-    width:30px;
-    background:red;
+    position:absolute;
+    background:#3977A7;
     visibility:hidden;
-    margin-left:-15px;
-    top:-20px;
+    border-radius:5px;
+    z-index:5;
+    
+    margin-left:-20px;
+    padding: 5px 10px 5px 10px;
+    top:-32px;
+    font-size:80%;
+    font-weight:150%;
+    
+    width:auto;
+    height:auto;
 }
 
 .ui-slider-horizontal {
