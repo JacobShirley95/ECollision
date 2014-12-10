@@ -14,9 +14,9 @@
 <script>
     $(function() {
         $("#add-ball").click(function() {
-            var velocity = $(".slider").get(0).
-            
-            
+            var velocity = $(".slider")[0].slider("value");
+            console.log(velocity);
+
             sim.addBall(11+(Math.random()*(width-11)), 11+(Math.random()*(height-11)), 155, 10, getRandomColor());
         });
         
@@ -26,8 +26,6 @@
         
         
         function slideF(event, ui) {
-            $(this).find("#amount").css("visibility", "visible");
-            
             var left = ui.value;
 
             $(this).find("#amount").text(ui.value);
@@ -36,15 +34,20 @@
             event.stopPropagation();
         }
         
+        function startSlide(event, ui) {
+            $(this).find("#amount").css('visibility','visible').hide().fadeIn("fast");
+        }
+        
         function stopSlide(event, ui) {
-            $(this).find("#amount").css("visibility", "hidden");
+            $(this).find("#amount").fadeOut("fast");
         }
         
         $(".slider").slider({
             max:100,
+            start:startSlide,
             slide:slideF,
             stop:stopSlide
-        }).append('<div id="amount"></div>').mousedown(function(event) {
+        }).append('<div id="amount">-</div>').mousedown(function(event) {
             event.stopPropagation();
         });
     });
