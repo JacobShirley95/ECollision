@@ -1,7 +1,7 @@
 body {
     background-color: #206396;
     font-size: 16px;
-    font-family:Open sans, sans-serif;
+    #font-family:Open sans, sans-serif;
     color: #444;
 }
 
@@ -129,7 +129,7 @@ button:active {
     padding:10px 20px 10px 50px;
     width:50%;
     
-    font-family:Open sans, sans-serif;
+    #font-family:Open sans, sans-serif;
 }
 
 .control-button.max{
@@ -155,11 +155,25 @@ button:active {
 
 /* slider */
 
-.slider {
-    
+.slider-wrapper {
+    margin-top:3px;
+    margin-right:10px;
+    padding:8px 0 8px 0;
 }
 
-#amount {
+.slider {
+    float:right;
+    width:60%;
+}
+
+.slider-label {
+    float:left;
+    padding:0 10px 0 10px;
+    word-wrap: break-word;
+    margin-top:-3px;
+}
+
+.slider-amount {
     position:absolute;
     background:#3977A7;
     visibility:hidden;

@@ -4,51 +4,51 @@
         <button id="remove-ball" class="icon-dash add-del-button control-button">DELETE BALL</button>
     </div>
     <div id="sliders" style="margin-top:3px; width: 60%; float:right;">
-        <div class="slider" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
-        <div class="slider" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
-        <div class="slider" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
-        <div class="slider" style="width: 60%; float:right; margin-top:10px; margin-right:10px;"></div>
+        <div class="slider-wrapper">
+            <div class="slider-label">Velocity</div>
+            <div id="slider-velocity" class="slider" min=1 max=1000></div>
+        </div>
+        <div class="slider-wrapper">
+            <div class="slider-label">Mass</div>
+            <div id="slider-mass" class="slider" min=1 max=1000000></div>
+        </div>
+        <div class="slider-wrapper">
+            <div class="slider-label">Friction</div>
+            <div id="slider-friction" class="slider" min=0 max=1 step=0.01></div>
+        </div>
+        <div class="slider-wrapper">
+            <div class="slider-label">Radius</div>
+            <div id="slider-radius" class="slider" min=1 max=200></div>
+        </div>
     </div>
 </div>
 
 <script>
     $(function() {
         $("#add-ball").click(function() {
-            var velocity = $(".slider")[0].slider("value");
-            console.log(velocity);
+            var velocity = $("#slider-velocity").sliderEx("value");
+            var mass = $("#slider-mass").sliderEx("value");
+            
+            if (mass <= 0)
+                mass = 1;
+                
+            var friction = $("#slider-friction").sliderEx("value");
+            var radius = $("#slider-radius").sliderEx("value");
 
-            sim.addBall(11+(Math.random()*(width-11)), 11+(Math.random()*(height-11)), 155, 10, getRandomColor());
+            var x = radius+(Math.random()*(width-radius));
+            var y = radius+(Math.random()*(height-radius));
+            
+            var ball = sim.addBall(x, y, mass, radius, getRandomColor());
+            var ang = Math.random()*2*Math.PI;
+            
+            ball.xVel = velocity*Math.cos(ang);
+            ball.yVel = velocity*Math.sin(ang);
         });
         
         $("#remove-ball").click(function() {
             sim.removeSelected();
         });
         
-        
-        function slideF(event, ui) {
-            var left = ui.value;
-
-            $(this).find("#amount").text(ui.value);
-            $(this).find("#amount").css("left", left+"%");
-            
-            event.stopPropagation();
-        }
-        
-        function startSlide(event, ui) {
-            $(this).find("#amount").css('visibility','visible').hide().fadeIn("fast");
-        }
-        
-        function stopSlide(event, ui) {
-            $(this).find("#amount").fadeOut("fast");
-        }
-        
-        $(".slider").slider({
-            max:100,
-            start:startSlide,
-            slide:slideF,
-            stop:stopSlide
-        }).append('<div id="amount">-</div>').mousedown(function(event) {
-            event.stopPropagation();
-        });
+        $(".slider").sliderEx();
     });
 </script>

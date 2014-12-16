@@ -21,12 +21,56 @@
 
         <script>
             var gridster;
-            
-            function resizeWidgets(e, ui, $widget) {
-                
-            }
-            
+
             $(function(){
+
+                $.widget("custom.sliderEx", $.ui.slider, {
+                    _amount: null,
+                    _slide: function () {
+                        this._superApply(arguments);
+
+                        this._amount.text(this.options.value);
+    
+                        var left = this.handle.css("left");
+                        this._amount.css("left", left);
+                    },
+                    
+                    _start: function(event, ui) {
+                        this._amount.css('visibility','visible').hide().fadeIn("fast");
+                    },
+                    
+                    _stop: function(event, ui) {
+                        this._amount.fadeOut("fast");
+                    },
+                    
+                    _create: function() {
+                        this._amount = $('<div class="slider-amount">'+this.options.value+'</div>');
+                        
+                        this.element.append(this._amount).mousedown(function(event) {
+                            event.stopPropagation();
+                        });
+                        
+                        var min = parseInt(this.element.attr("min"));
+                        var max = parseInt(this.element.attr("max"));
+                        
+                        this.options.min = min;
+                        this.options.max = max;
+                        
+                        if (this.element.attr("step") != undefined) {
+                            console.log("SDFSDFS");
+                            var step = parseFloat(this.element.attr("step"));
+                            
+                            this.options.step = step;
+                        }
+                        
+                        this._super();
+                    }
+                });
+                
+                function resizeWidgets(e, ui, $widget) {
+                
+                }
+                
                 gridster = $(".gridster > ul").gridster({
                     widget_margins: [5, 5],
                     widget_base_dimensions: [100, 100],
@@ -41,7 +85,7 @@
 
                 var widgets = [
                                 ['widget-simulation', 4, 6],
-                                ['', 2, 2],
+                                ['widget-graph', 2, 2],
                                 ['widget-sim-controls', 2, 2],
                                 ['widget-debug-controls', 2, 2],
                                 ['widget-ball-controls', 4, 1]
@@ -49,7 +93,7 @@
             
                 $.each(widgets, function(i, widget){
                     var w = widget[0];
-                    widget[0] = '<li id="'+widget[0]+'"></li>';
+                    widget[0] = '<li id="'+w+'"></li>';
                     gridster.add_widget.apply(gridster, widget);
             
                     $("#"+w).load("widgets/"+w+".html");

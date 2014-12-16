@@ -4,6 +4,8 @@
     <button id="btn-back" class="icon-previous control-button">BACK</button>
     <button id="btn-next" class="icon-next control-button">NEXT</button>
     <button class="icon-file control-button max">SAVE STATE</button>
+    <p style="text-align:center;">ZOOM</p>
+    <div class="slider"></div>
 </div>
 
 <script>
@@ -21,5 +23,7 @@
             if (sim.paused)
                 sim.updateSimulation();
         });
+        
+        //$(".slider").slider();
     });
 </script>

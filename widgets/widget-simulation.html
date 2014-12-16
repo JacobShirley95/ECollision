@@ -20,15 +20,13 @@
 
     var enableDebug = false;
     var enableTrace = false;
+    var enableColData = false;
 
     var enableGravity = false;
     var enableFriction = false;
     var enableDragAndDrop = false;
 
     var yRows = 5; // min 1, max 10
-
-    var width = 500;
-    var height = 500;
 
     var speedState = -1;
     var slowMotionConst = 1.0;
@@ -45,8 +43,8 @@
     $('#widget-canvas').attr("width",$('#widget-simulation').width());
     $('#widget-canvas').attr("height",$('#widget-simulation').height());
           
-    width = $('#widget-simulation').width();
-    height = $('#widget-simulation').height();
+    var width = $('#widget-simulation').width();
+    var height = $('#widget-simulation').height();
           
     start();
 </script>

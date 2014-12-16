@@ -69,6 +69,8 @@ function Ball(x, y, radius, style, allowedCue) {
     this.pastPositions = [];
     this.curID = 0;
     
+    this.cOR = 0.98;
+    
     this.selected = false;
     
     this.draw = function (x, y) {
@@ -80,7 +82,7 @@ function Ball(x, y, radius, style, allowedCue) {
         var len = this.pastPositions.length;
         
         if (this.selected) {
-            this.displayObj.graphics.beginStroke("red").drawCircle(0, 0, 10).endStroke();
+            this.displayObj.graphics.beginStroke("red").drawCircle(0, 0, this.radius).endStroke();
         }
         
         if (!sim.paused && enableTrace) {
@@ -104,15 +106,16 @@ function Ball(x, y, radius, style, allowedCue) {
                 var r_a = i / len;
 
                 var col = "rgba("+rr+", "+rg+", "+rb+", "+r_a+")";
-                this.displayObj.graphics.beginStroke(col).drawCircle(px, py, 10);
+                this.displayObj.graphics.beginStroke(col).drawCircle(px, py, this.radius);
             }
         }
         
-        this.displayObj.graphics.beginFill(this.style).drawCircle(0, 0, 10).endFill();
+        this.displayObj.graphics.beginFill(this.style).drawCircle(0, 0, this.radius).endFill();
         
-        
-        var scaleFactor = 3;
-        this.displayObj.graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(this.xVel*scaleFactor, this.yVel*scaleFactor).endStroke();
+        if (enableColData) {
+            var scaleFactor = 10;
+            this.displayObj.graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(this.xVel*scaleFactor, this.yVel*scaleFactor).endStroke();
+        }
     };
     
     this.update = function () {
@@ -151,8 +154,6 @@ function Ball(x, y, radius, style, allowedCue) {
 
 //Splits the velocities of 
 function splitVelocity(object1, object2) {
-    var cOR = 0.98;
-        
     var velocity = new PVector(object1.xVel, object1.yVel);
     var a = Math.PI / 2;
 
@@ -161,12 +162,13 @@ function splitVelocity(object1, object2) {
     }
     velocity.rotate(-a);
 
-    var v = velocity.x * cOR;
-
+    var magnitude = velocity.x * object1.cOR;
+    
     var dx = object1.x - object2.x;
     var dy = object1.y - object2.y;
 
     var vec = new PVector(dx, dy);
+    
     var ang = 0;
     if (dx !== 0) {
         ang = Math.atan(vec.y / vec.x);
@@ -174,8 +176,9 @@ function splitVelocity(object1, object2) {
         ang = Math.atan(vec.y / (vec.x - 0.00001));
     }
 
-    velocity.x = v * Math.cos(ang);
-    velocity.y = v * Math.sin(ang);
+    velocity.x = magnitude * Math.cos(ang);
+    velocity.y = magnitude * Math.sin(ang);
+    
     velocity.rotate(-a);
 
     return velocity;
@@ -271,7 +274,7 @@ function BallEnvironment(width, height) {
     this.handleCollision = function (collision) {
         var object = collision.object;
         var object2 = collision.object2;
-    
+        
         var thisVel = splitVelocity(object, object2);
         var objVel = splitVelocity(object2, object);
     
