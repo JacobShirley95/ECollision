@@ -4,7 +4,14 @@ function Widget(canvasName) {
     
     this.stage = new createjs.Stage(canvasName);
     
-    this.zoom = 1.0;
+    function RenderData() {
+        this.zoom = 1.0;
+
+        this.offsetX = 0.0;
+        this.offsetY = 0.0;
+    }
+
+    this.renderData = new RenderData();
     
     this.init = function() {}
 

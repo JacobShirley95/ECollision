@@ -4,21 +4,21 @@
         <button id="remove-ball" class="icon-dash add-del-button control-button">DELETE BALL</button>
     </div>
     <div id="sliders" style="margin-top:3px; width: 60%; float:right;">
-        <div class="slider-wrapper">
+        <div class="ball-slider-wrapper">
             <div class="slider-label">Velocity</div>
-            <div id="slider-velocity" class="slider" min=1 max=1000></div>
+            <div id="slider-velocity" class="ball-slider" min=1 max=1000></div>
         </div>
-        <div class="slider-wrapper">
+        <div class="ball-slider-wrapper">
             <div class="slider-label">Mass</div>
-            <div id="slider-mass" class="slider" min=1 max=1000000></div>
+            <div id="slider-mass" class="ball-slider" min=1 max=1000000></div>
         </div>
-        <div class="slider-wrapper">
+        <div class="ball-slider-wrapper">
             <div class="slider-label">Friction</div>
-            <div id="slider-friction" class="slider" min=0 max=1 step=0.01></div>
+            <div id="slider-friction" class="ball-slider" min=0 max=1 step=0.01></div>
         </div>
-        <div class="slider-wrapper">
+        <div class="ball-slider-wrapper">
             <div class="slider-label">Radius</div>
-            <div id="slider-radius" class="slider" min=1 max=200></div>
+            <div id="slider-radius" class="ball-slider" min=1 max=200></div>
         </div>
     </div>
 </div>
@@ -28,9 +28,6 @@
         $("#add-ball").click(function() {
             var velocity = $("#slider-velocity").sliderEx("value");
             var mass = $("#slider-mass").sliderEx("value");
-            
-            if (mass <= 0)
-                mass = 1;
                 
             var friction = $("#slider-friction").sliderEx("value");
             var radius = $("#slider-radius").sliderEx("value");
@@ -49,6 +46,6 @@
             sim.removeSelected();
         });
         
-        $(".slider").sliderEx();
+        $(".ball-slider").sliderEx();
     });
 </script>

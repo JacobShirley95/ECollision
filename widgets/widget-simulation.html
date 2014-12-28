@@ -21,6 +21,7 @@
     var enableDebug = false;
     var enableTrace = false;
     var enableColData = false;
+    var enableInterpolation = true;
 
     var enableGravity = false;
     var enableFriction = false;
@@ -30,21 +31,15 @@
 
     var speedState = -1;
     var slowMotionConst = 1.0;
-
-    function RenderData() {
-        this.zoom = 1.0;
-
-        this.offsetX = 0.0;
-        this.offsetY = 0.0;
-    }
-
-    var renderData = new RenderData();
     
-    $('#widget-canvas').attr("width",$('#widget-simulation').width());
-    $('#widget-canvas').attr("height",$('#widget-simulation').height());
-          
     var width = $('#widget-simulation').width();
     var height = $('#widget-simulation').height();
+    
+    $('#widget-canvas').attr("width",width).attr("height",height);
+ 
+    $('').scroll(function(event) {
+       console.log("DSFSD");
+    });
           
     start();
 </script>

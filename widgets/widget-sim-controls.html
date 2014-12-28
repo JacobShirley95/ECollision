@@ -4,8 +4,11 @@
     <button id="btn-back" class="icon-previous control-button">BACK</button>
     <button id="btn-next" class="icon-next control-button">NEXT</button>
     <button class="icon-file control-button max">SAVE STATE</button>
+
     <p style="text-align:center;">ZOOM</p>
-    <div class="slider"></div>
+    <div id="zoom-slider" min=1 max=200></div>
+    <p style="text-align:center;">SIMULATION SPEED</p>
+    <div id="sim-speed-slider" min=1 max=500></div>
 </div>
 
 <script>
@@ -24,6 +27,18 @@
                 sim.updateSimulation();
         });
         
-        //$(".slider").slider();
+        $("#zoom-slider").sliderEx({
+            value:100,
+            slide: function(event, ui) {
+                sim.renderData.zoom = ui.value/100;
+            }
+        });
+        
+        $("#sim-speed-slider").sliderEx({
+            value:250,
+            slide: function(event, ui) {
+                sim.setSpeed(ui.value);
+            }
+        });
     });
 </script>

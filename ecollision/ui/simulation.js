@@ -144,6 +144,8 @@ function Simulation(canvasName) {
             obj.draw(newX, newY);
         }
         
+        this.stage.scaleX = this.renderData.zoom;
+        this.stage.scaleY = this.renderData.zoom;
         this.stage.update();
     }
     

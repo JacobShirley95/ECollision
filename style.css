@@ -155,13 +155,13 @@ button:active {
 
 /* slider */
 
-.slider-wrapper {
+.ball-slider-wrapper {
     margin-top:3px;
     margin-right:10px;
     padding:8px 0 8px 0;
 }
 
-.slider {
+.ball-slider {
     float:right;
     width:60%;
 }
