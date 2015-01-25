@@ -6,11 +6,11 @@
     <div id="sliders" style="margin-top:3px; width: 60%; float:right;">
         <div class="ball-slider-wrapper">
             <div class="slider-label">Velocity</div>
-            <div id="slider-velocity" class="ball-slider" min=1 max=1000></div>
+            <div id="slider-velocity" class="ball-slider" min=1 max=100></div>
         </div>
         <div class="ball-slider-wrapper">
             <div class="slider-label">Mass</div>
-            <div id="slider-mass" class="ball-slider" min=1 max=1000000></div>
+            <div id="slider-mass" class="ball-slider" min=1 max=1000></div>
         </div>
         <div class="ball-slider-wrapper">
             <div class="slider-label">Friction</div>
@@ -25,27 +25,6 @@
 
 <script>
     $(function() {
-        $("#add-ball").click(function() {
-            var velocity = $("#slider-velocity").sliderEx("value");
-            var mass = $("#slider-mass").sliderEx("value");
-                
-            var friction = $("#slider-friction").sliderEx("value");
-            var radius = $("#slider-radius").sliderEx("value");
-
-            var x = radius+(Math.random()*(width-radius));
-            var y = radius+(Math.random()*(height-radius));
-            
-            var ball = sim.addBall(x, y, mass, radius, getRandomColor());
-            var ang = Math.random()*2*Math.PI;
-            
-            ball.xVel = velocity*Math.cos(ang);
-            ball.yVel = velocity*Math.sin(ang);
-        });
         
-        $("#remove-ball").click(function() {
-            sim.removeSelected();
-        });
-        
-        $(".ball-slider").sliderEx();
     });
 </script>

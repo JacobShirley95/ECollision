@@ -13,6 +13,8 @@ function Simulation(canvasName) {
     this.gameRate = defaultGameRate;
     this.updateTime = 1000.0 / this.gameRate;
     
+    this.views = [];
+    
     var selected = -1;
     
     this.setSpeed = function(rate) {
@@ -86,7 +88,8 @@ function Simulation(canvasName) {
         }*/
         
         var b1 = this.addBall(100, 100, 155, 10, "blue");
-        var b2 = this.addBall(300, 300, 155, 10, "green");
+        b1.xVel = 1000;
+        /*var b2 = this.addBall(300, 300, 155, 10, "green");
         
         var v1 = 2;
         var v2 = -2;
@@ -95,8 +98,17 @@ function Simulation(canvasName) {
         b1.yVel = v1;
         
         b2.xVel = v2;
-        b2.yVel = v2;
+        b2.yVel = v2;*/
         
+    }
+    
+    this.addView = function (view) {
+        this.views.push(view);
+        view.init();
+    }
+    
+    this.removeView = function(view) {
+        view.destroy();
     }
     
     this.restart = function () {
@@ -192,6 +204,10 @@ function Simulation(canvasName) {
     
             ballEnvironment.edgeCollision(obj, false);
         }
+        
+        $.each(this.views, function(i, view) {
+           view.update(); 
+        });
     }
     
     this.updateSimulationRev = function () {

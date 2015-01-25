@@ -20,6 +20,9 @@ var timeStamp = new Date().getTime();
 var newTime = timeStamp;
 var fpsTime = timeStamp;
 var sim;
+var graph;
+
+refreshRate = 1;
 
 function start() {
     var mousePos = new Point2D();
@@ -30,8 +33,12 @@ function start() {
     var fpsCount = 0;
 
     sim = new Simulation("widget-canvas");
+    graph = new Graph("graph-canvas");
     
     widgets.push(sim);
+    widgets.push(graph);
+    
+    graph.attachSimulation(sim);
     
     for (var i = 0; i < widgets.length; i++) {
         widgets[i].init();

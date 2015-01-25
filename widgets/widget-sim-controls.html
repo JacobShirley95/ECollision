@@ -12,33 +12,5 @@
 </div>
 
 <script>
-    $(function() {
-        $("#btn-run").click(function() {
-            sim.paused = false;
-        });
-        $("#btn-stop").click(function() {
-            sim.paused = true;
-        });
-        $("#btn-back").click(function() {
-            sim.updateSimulationRev();
-        });
-        $("#btn-next").click(function() {
-            if (sim.paused)
-                sim.updateSimulation();
-        });
-        
-        $("#zoom-slider").sliderEx({
-            value:100,
-            slide: function(event, ui) {
-                sim.renderData.zoom = ui.value/100;
-            }
-        });
-        
-        $("#sim-speed-slider").sliderEx({
-            value:250,
-            slide: function(event, ui) {
-                sim.setSpeed(ui.value);
-            }
-        });
-    });
+    
 </script>

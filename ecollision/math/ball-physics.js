@@ -69,7 +69,7 @@ function Ball(x, y, radius, style, allowedCue) {
     this.pastPositions = [];
     this.curID = 0;
     
-    this.cOR = 0.98;
+    this.cOR = 0.5;
     
     this.selected = false;
     
@@ -191,7 +191,7 @@ function BallEnvironment(width, height) {
     this.balls = [];
     
     this.edgeCollision = function (ball, rebound) {
-        var cOR = 0.8;
+        var cOR = ball.cOR;
         
         ball.edgeOverlapX = 0.0;
         ball.edgeOverlapY = 0.0;
@@ -268,7 +268,8 @@ function BallEnvironment(width, height) {
             collision.time = t2;
     
             return true;
-        } else return false;
+        }
+        return false;
     }
     
     this.handleCollision = function (collision) {

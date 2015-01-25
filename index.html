@@ -12,6 +12,35 @@
         <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
         <script src="lib/easeljs-0.7.1.min.js"></script>
         <script src="lib/jquery.gridster.min.js"></script>
+        
+        <script src="ecollision/debug.js"></script>
+        <script src="ecollision/settings.js"></script>
+                
+        <script src="ecollision/math/vector-math.js"></script>
+        <script src="ecollision/math/ball-physics.js"></script>
+        
+        <script src="ecollision/views/view.js"></script>
+        <script src="ecollision/views/debug.js"></script>
+        
+        <script src="ecollision/ui/widget.js"></script>
+        <script src="ecollision/ui/simulation.js"></script>
+        <script src="ecollision/ui/graph.js"></script>
+                
+        <script src="ecollision/ecollision.js"></script>
+        
+        <script type="text/javascript">
+            function downloadJSAtOnload() {
+                var element = document.createElement("script");
+                element.src = "widgets/script.js";
+                document.body.appendChild(element);
+            }
+            if (window.addEventListener)
+                window.addEventListener("load", downloadJSAtOnload, false);
+            else if (window.attachEvent)
+                window.attachEvent("onload", downloadJSAtOnload);
+            else window.onload = downloadJSAtOnload;
+        </script>
+        
     </head> 
     
     <body>
@@ -38,8 +67,6 @@
     
                         var pos = this.handle.position();
                         var width = this._amount.width()/2;
-                        
-                        console.log(width);
                         
                         var newLeft = pos.left;
                         
@@ -103,11 +130,11 @@
                 }).data('gridster');
 
                 var widgets = [
-                                ['widget-simulation', 4, 6],
                                 ['widget-graph', 2, 2], 
                                 ['widget-sim-controls', 2, 2],
                                 ['widget-debug-controls', 2, 2],
-                                ['widget-ball-controls', 4, 1]
+                                ['widget-ball-controls', 4, 1],
+                                ['widget-simulation', 4, 6]
                               ];
             
                 $.each(widgets, function(i, widget){
