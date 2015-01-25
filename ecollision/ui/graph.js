@@ -4,51 +4,19 @@ function Graph(canvasName) {
     this.scaleX = 1/15;
     this.scaleY = 1/15000;
     
-    this.lineHeight = 10;
-    
     this.data = [];
-    this.count = 0;
     
     this.simulation = null;
-
-    this.xAxis = new createjs.Shape();
-    this.yAxis = new createjs.Shape();
     
-    this.width = 200;
-    this.height = 200;
+    var graph = new createjs.Shape();
     
-    this.x = 10;
-    this.y = 110;
-    
-    this.xAxis.graphics.beginStroke("red").moveTo(10, this.height).lineTo(this.width, this.height);
-    this.yAxis.graphics.beginStroke("red").moveTo(10, 10).lineTo(10, this.height);
-    
-    this.graph = new createjs.Shape();
-    
-    this.xText = new createjs.Text();
-    this.xText.x = this.width-10;
-    this.xText.y = this.height;
-    this.xText.color = "red";
-    
-    this.yText = new createjs.Text();
-    this.yText.x = 0;
-    this.yText.y = 0;
-    this.yText.color = "red";
-    
-    this.stage.addChild(this.xAxis);
-    this.stage.addChild(this.yAxis);
-    this.stage.addChild(this.graph);
-    
-    this.stage.addChild(this.xText);
-    this.stage.addChild(this.yText);
+    var xText = new createjs.Text();
+    var yText = new createjs.Text();
     
     this.offsetX = 0.0;
     this.offsetY = 0.0;
     
     this.zoom = 1.0;
-    
-    var x = 10;
-    var y = 10;
     
     var maxX = 0;
     var maxY = 0;
@@ -58,11 +26,44 @@ function Graph(canvasName) {
     
     this.updated = false;
     
+    this.x = 0;
+    this.y = 0;
+    
+    //this.width = 200;
+    this.height -= 20;
+    
+    this.init = function() {
+        var xAxis = new createjs.Shape();
+        var yAxis = new createjs.Shape();
+    
+        xAxis.graphics.beginStroke("red").moveTo(this.x, this.height).lineTo(this.width, this.height);
+        yAxis.graphics.beginStroke("red").moveTo(this.x, this.y).lineTo(this.x, this.height);
+        
+        xText.x = this.width-10;
+        xText.y = this.height;
+        xText.color = "red";
+
+        yText.x = 0;
+        yText.y = 0;
+        yText.color = "red";
+        
+        this.stage.addChild(xAxis);
+        this.stage.addChild(yAxis);
+        
+        this.stage.addChild(graph);
+    
+        this.stage.addChild(xText);
+        this.stage.addChild(yText);
+    }
+        
+    var x = 10;
+    var y = 10;
+    
     this.draw = function () {
         var width = this.width;
         var height = this.height;
         
-        var g = this.graph.graphics;
+        var g = graph.graphics;
         
         g.clear();
         
@@ -104,8 +105,8 @@ function Graph(canvasName) {
             g.beginStroke("red").moveTo(this.x+x1, this.height-y1).lineTo(this.x+x3, this.height-y3);
         }
         
-        this.xText.text = maxX;
-        this.yText.text = maxY;
+        xText.text = maxX;
+        yText.text = maxY;
         
         x += this.simulation.updateTime;
         y = this.getEnergy();
@@ -162,7 +163,6 @@ function Graph(canvasName) {
             diff = aLen-this.maxLen;
         }
         
-        
         for (var j = diff; j < aLen; j++) {
             var i = (start+j)%aLen;
             data.push(this.data[i]);
@@ -190,7 +190,7 @@ function Graph(canvasName) {
     
     this.attachSimulation = function(simulation) {
         this.simulation = simulation;
-        this.maxLen = this.width/(this.simulation.updateTime*this.scaleX);
+        this.updateData();
     }
     
     this.detachSimulation = function() {

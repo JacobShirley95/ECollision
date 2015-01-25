@@ -2,6 +2,11 @@ function Widget(canvasName) {
     this.active = false;
     this.owner = null;
     
+    var can = $("#"+canvasName);
+    
+    this.width = can.attr("width");
+    this.height = can.attr("height");
+    
     this.stage = new createjs.Stage(canvasName);
     
     function RenderData() {
