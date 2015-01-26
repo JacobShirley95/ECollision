@@ -22,8 +22,6 @@ var fpsTime = timeStamp;
 var sim;
 var graph;
 
-refreshRate = 1;
-
 function start() {
     var mousePos = new Point2D();
 

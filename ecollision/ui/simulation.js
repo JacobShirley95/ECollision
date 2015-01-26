@@ -3,7 +3,7 @@ function Simulation(canvasName) {
 
     this.paused = false;
 
-    this.ballEnvironment = new BallEnvironment(width, height);
+    this.ballEnvironment = new BallEnvironment(this.width, this.height);
     this.objects = [];
     
     this.timeStamp = new Date().getTime();

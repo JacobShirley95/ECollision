@@ -5,8 +5,8 @@ $("#add-ball").click(function() {
     var friction = $("#slider-friction").sliderEx("value");
     var radius = $("#slider-radius").sliderEx("value");
 
-    var x = radius+(Math.random()*(width-radius));
-    var y = radius+(Math.random()*(height-radius));
+    var x = radius+(Math.random()*(sim.width-radius));
+    var y = radius+(Math.random()*(sim.height-radius));
     
     var ball = sim.addBall(x, y, mass, radius, getRandomColor());
     var ang = Math.random()*2*Math.PI;
@@ -26,6 +26,15 @@ $("#zoom-in").click(function() {
 $("#zoom-out").click(function() {
     graph.zoomOut();
 });
+
+$("#move-up").click(function() {
+    graph.moveUp();
+});
+
+$("#move-down").click(function() {
+    graph.moveDown();
+});
+
 
 $(".ball-slider").sliderEx();
 
@@ -67,44 +76,10 @@ $("#sim-speed-slider").sliderEx({
     }
 });
 
-        
-var refreshRate = 80;
-var defaultGameRate = 50;
-
-var enableDebug = false;
-var enableTrace = false;
-
-var enableGravity = false;
-var enableFriction = false;
-var enableDragAndDrop = false;
-
-var enableColData = false;
-
-var yRows = 5; // min 1, max 10
-
-var width = 500;
-var height = 500;
-
-var speedState = -1;
-var slowMotionConst = 1.0;
-
-function RenderData() {
-    this.zoom = 1.0;
-
-    this.offsetX = 0.0;
-    this.offsetY = 0.0;
-}
-
-var renderData = new RenderData();
-
-$('#graph-canvas').attr("width",$('#widget-graph').width());
-$('#graph-canvas').attr("height",$('#widget-graph').height());
+$('#graph-canvas').attr("width",$('#graph-canvas').width());
+$('#graph-canvas').attr("height",$('#graph-canvas').height());
 
 $('#widget-canvas').attr("width",$('#widget-simulation').width());
 $('#widget-canvas').attr("height",$('#widget-simulation').height());
   
-width = $('#widget-simulation').width();
-height = $('#widget-simulation').height();
-  
-console.log("ASFSDF");
 start();

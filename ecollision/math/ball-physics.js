@@ -69,7 +69,7 @@ function Ball(x, y, radius, style, allowedCue) {
     this.pastPositions = [];
     this.curID = 0;
     
-    this.cOR = 0.5;
+    this.cOR = 0.99;
     
     this.selected = false;
     

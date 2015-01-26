@@ -2,7 +2,7 @@ function Graph(canvasName) {
     Widget.call(this, canvasName);
     
     this.scaleX = 1/15;
-    this.scaleY = 1/15000;
+    this.scaleY = 1/15;
     
     this.data = [];
     
@@ -24,13 +24,12 @@ function Graph(canvasName) {
     this.start = 0;
     this.maxLen = 100;
     
-    this.updated = false;
+    updated = false;
     
     this.x = 0;
     this.y = 0;
     
-    //this.width = 200;
-    this.height -= 20;
+    var renderY = 0;
     
     this.init = function() {
         var xAxis = new createjs.Shape();
@@ -76,8 +75,8 @@ function Graph(canvasName) {
         var aLen = this.data.length;
         
         for (var j = 0; j < aLen-2; j++) {
-            if (this.updated) {
-                this.updated = false;
+            if (updated) {
+                updated = false;
                 return;
             }
             var i = (start+j)%len;
@@ -97,16 +96,16 @@ function Graph(canvasName) {
                 maxY = this.data[i].y;
     
             var x1 = (this.data[i].x*this.scaleX)-this.offsetX;
-            var y1 = this.data[i].y*this.scaleY;
+            var y1 = (this.data[i].y*this.scaleY)+renderY;
             
             var x3 = (this.data[i2].x*this.scaleX)-this.offsetX;
-            var y3 = this.data[i2].y*this.scaleY;
-                
-            g.beginStroke("red").moveTo(this.x+x1, this.height-y1).lineTo(this.x+x3, this.height-y3);
+            var y3 = (this.data[i2].y*this.scaleY)+renderY;
+            
+            g.beginStroke("red").moveTo(this.x+x1, this.y+this.height-y1).lineTo(this.x+x3, this.y+this.height-y3);
         }
         
-        xText.text = maxX;
-        yText.text = maxY;
+        //xText.text = maxX;
+        //yText.text = maxY;
         
         x += this.simulation.updateTime;
         y = this.getEnergy();
@@ -132,6 +131,14 @@ function Graph(canvasName) {
         this.offsetX *= this.scaleX;
 
         this.updateData();
+    }
+    
+    this.moveUp = function() {
+        renderY -= 5;
+    }
+    
+    this.moveDown = function() {
+        renderY += 5;
     }
     
     this.addData = function(x, y) {
@@ -168,7 +175,7 @@ function Graph(canvasName) {
             data.push(this.data[i]);
         }
         
-        this.updated = true;
+        updated = true;
         this.start = 0;
         
         this.data = data;
@@ -181,7 +188,7 @@ function Graph(canvasName) {
             energy += 0.5*object.mass*((object.xVel*object.xVel)+(object.yVel*object.yVel));
         });
         
-        return energy;
+        return Math.round(energy/1000);
     }
     
     this.removeData = function(x, y) {
