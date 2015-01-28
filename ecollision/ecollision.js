@@ -7,7 +7,7 @@ function Point2D(x, y) {
 
 var gameRate = 0;
 
-var gravity = 9.81 / 100;
+var gravity = 9.81 / 10;
 var enableInterpolation = true;
 var maxTracePositions = 30;
 

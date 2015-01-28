@@ -1,4 +1,4 @@
-var refreshRate = 20;
+var refreshRate = 60;
 var defaultGameRate = 50;
 
 var enableDebug = false;

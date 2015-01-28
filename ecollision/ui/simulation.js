@@ -3,7 +3,7 @@ function Simulation(canvasName) {
 
     this.paused = false;
 
-    this.ballEnvironment = new BallEnvironment(this.width, this.height);
+    this.ballEnvironment = null;
     this.objects = [];
     
     this.timeStamp = new Date().getTime();
@@ -74,6 +74,7 @@ function Simulation(canvasName) {
         this.stage.removeAllChildren();
         
         this.objects = [];
+        this.ballEnvironment = new BallEnvironment(this.width, this.height);
     
         var xShift = 20;
         var yShift = 20;

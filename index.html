@@ -55,7 +55,7 @@
                 $.widget("custom.sliderEx", $.ui.slider, {
                     _amount: null,
                     _formatVal: function(val) {
-                        if (val > -1 && val < 1) {
+                        if (val > 0.09 && val < 1) {
                             val = val.toPrecision(2);
                         }
                         return val;
@@ -129,12 +129,11 @@
                     }
                 }).data('gridster');
 
-                var widgets = [
+                var widgets = [ ['widget-simulation', 4, 6],
                                 ['widget-graph', 2, 2], 
                                 ['widget-sim-controls', 2, 2],
                                 ['widget-debug-controls', 2, 2],
-                                ['widget-ball-controls', 4, 1],
-                                ['widget-simulation', 4, 6]
+                                ['widget-ball-controls', 4, 1]
                               ];
             
                 $.each(widgets, function(i, widget){

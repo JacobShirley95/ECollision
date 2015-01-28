@@ -19,6 +19,10 @@ $("#remove-ball").click(function() {
     sim.removeSelected();
 });
 
+$("#calibrate").click(function() {
+    graph.calibrate();
+});
+
 $("#zoom-in").click(function() {
     graph.zoomIn();
 });
