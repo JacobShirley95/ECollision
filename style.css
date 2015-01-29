@@ -1,8 +1,8 @@
 body {
     background-color: #206396;
-    font-size: 16px;
-    #font-family:Open sans, sans-serif;
-    color: #444;
+    font-size: 14px;
+    font-family:Open sans, sans-serif;
+    color: black;
 }
 
 ul, ol {
@@ -133,8 +133,6 @@ button:active {
     text-align:left;
     padding:10px 20px 10px 50px;
     width:50%;
-    
-    #font-family:Open sans, sans-serif;
 }
 
 .control-button.max{
@@ -168,7 +166,7 @@ button:active {
 
 .ball-slider {
     float:right;
-    width:60%;
+    width:45%;
 }
 
 .slider-label {

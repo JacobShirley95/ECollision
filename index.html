@@ -51,68 +51,74 @@
         <script>
             var gridster;
             
-            $(function(){
-                $.widget("custom.sliderEx", $.ui.slider, {
-                    _amount: null,
-                    _formatVal: function(val) {
-                        if (val > 0.09 && val < 1) {
-                            val = val.toPrecision(2);
-                        }
-                        return val;
-                    },
-                    _slide: function () {
-                        this._superApply(arguments);
-  
-                        this._amount.text(this._formatVal(this.options.value));
-    
-                        var pos = this.handle.position();
-                        var width = this._amount.width()/2;
-                        
-                        var newLeft = pos.left;
-                        
-                        this._amount.css("left", newLeft+"px");
-                    },
-                    
-                    _start: function() {
-                        var left = this.handle.css("left");
-                        
-                        this._amount.css('visibility','visible').hide().fadeIn("fast").css("left", left);
-                    },
-                    
-                    _stop: function() {
-                        this._amount.fadeOut("fast");
-                    },
-                    
-                    _create: function() {
-                        var min = parseInt(this.element.attr("min"));
-                        var max = parseInt(this.element.attr("max"));
-                        
-                        this.options.min = min;
-                        this.options.max = max;
-                        
-                        if (this.element.attr("step") != undefined) {
-                            var step = parseFloat(this.element.attr("step"));
-                            
-                            this.options.step = step;
-                        }
-                        
-                        var value = this.element.attr("value");
-                        if (value == undefined) {
-                            this.options.value = min+max/2;
-                        } else {
-                            this.options.value = parseFloat(value);
-                        }
-                        
-                        this._amount = $('<div class="slider-amount">'+this._formatVal(this.options.value)+'</div>');
-                        
-                        this.element.append(this._amount).mousedown(function(event) {
-                            event.stopPropagation();
-                        });
-                        
-                        this._super();
+            $.widget("custom.sliderEx", $.ui.slider, {
+                _unit:"",
+                _amount: null,
+                _formatVal: function(val) {
+                    if (val > 0.09 && val < 1) {
+                        val = val.toPrecision(2);
                     }
-                });
+                    return val+" "+this._unit;
+                },
+                _slide: function () {
+                    this._superApply(arguments);
+
+                    this._amount.text(this._formatVal(this.options.value));
+
+                    var pos = this.handle.position();
+                    var width = this._amount.width()/2;
+                    
+                    var newLeft = pos.left;
+                    
+                    this._amount.css("left", newLeft+"px");
+                },
                 
+                _start: function() {
+                    var left = this.handle.css("left");
+                    
+                    this._amount.css('visibility','visible').hide().fadeIn("fast").css("left", left);
+                },
+                
+                _stop: function() {
+                    this._amount.fadeOut("fast");
+                },
+                
+                _create: function() {
+                    var min = parseInt(this.element.attr("min"));
+                    var max = parseInt(this.element.attr("max"));
+                    
+                    this.options.min = min;
+                    this.options.max = max;
+                    
+                    if (this.element.attr("step") != undefined) {
+                        var step = parseFloat(this.element.attr("step"));
+                        
+                        this.options.step = step;
+                    }
+                    
+                    var value = this.element.attr("value");
+                    if (value == undefined) {
+                        this.options.value = min+max/2;
+                    } else {
+                        this.options.value = parseFloat(value);
+                    }
+                    
+                    var unit = this.element.attr("unit");
+                    if (unit != undefined) {
+                        this._unit = unit;
+                    }
+                    
+                    this._amount = $('<div class="slider-amount">'+this._formatVal(this.options.value)+'</div>');
+                    
+                    this.element.append(this._amount).mousedown(function(event) {
+                        event.stopPropagation();
+                    });
+                    
+                    this._super();
+                }
+            });
+            
+            $(function(){
                 function resizeWidgets(e, ui, $widget) {
                 
                 }

@@ -1,8 +1,8 @@
 function Graph(canvasName) {
     Widget.call(this, canvasName);
     
-    this.scaleX = 1/15;
-    this.scaleY = 1/15;
+    this.scaleX = 1/50;
+    this.scaleY = 1/50;
 
     this.simulation = null;
     
