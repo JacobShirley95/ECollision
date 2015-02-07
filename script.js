@@ -13,6 +13,7 @@ $("#add-ball").click(function() {
     
     ball.xVel = velocity*Math.cos(ang);
     ball.yVel = velocity*Math.sin(ang);
+    ball.cOR = friction;
 });
 
 $("#remove-ball").click(function() {
@@ -48,7 +49,7 @@ $("#trace").click(function() {
 $("#gravity").click(function() {
     enableGravity = !enableGravity;   
 });
-$("#col-data").click(function() {
+$("#sim-data").click(function() {
     enableColData = !enableColData;  
 });
 
@@ -83,7 +84,7 @@ $("#sim-speed-slider").sliderEx({
 $('#graph-canvas').attr("width",$('#graph-canvas').width());
 $('#graph-canvas').attr("height",$('#graph-canvas').height());
 
-$('#widget-canvas').attr("width",$('#widget-simulation').width());
-$('#widget-canvas').attr("height",$('#widget-simulation').height());
+$('#widget-canvas').attr("width",$('#widget-canvas').width());
+$('#widget-canvas').attr("height",$('#widget-canvas').height());
   
 start();

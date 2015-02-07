@@ -15,7 +15,13 @@ function Simulation(canvasName) {
     
     this.views = [];
     
+    var debugText = "";
+    
     var selected = -1;
+    
+    this.addDebugText = function(text) {
+        
+    }
     
     this.setSpeed = function(rate) {
         this.gameRate = rate;
@@ -205,10 +211,6 @@ function Simulation(canvasName) {
     
             ballEnvironment.edgeCollision(obj, false);
         }
-        
-        $.each(this.views, function(i, view) {
-           view.update(); 
-        });
     }
     
     this.updateSimulationRev = function () {

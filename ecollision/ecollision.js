@@ -45,8 +45,17 @@ function start() {
     setInterval(tick, 1000.0 / refreshRate);
 }
 
+var fpsDiv = null;
+enableDebug = true;
+
+var fpsCount = 0;
+var fpsTime = 0;
+
 function tick() {
     var curTime = new Date().getTime();
+    
+    if (fpsDiv == null)
+        fpsDiv = $("#fps-div");
 
     var energy = 0.0;
     
@@ -62,12 +71,15 @@ function tick() {
             fpsCount = 0;
             fpsTime = curTime;
         }
-        debugStr = "Fps: " + fps;/* +
-                   "<br /> Running atdd: " + setColGreen(gameRate) + " Hz" +
-                   "<br /> Energy in system: " + setColGreen(Math.round(energy / 1000)) + " kJ" +
-                   "<br /> Zoom: " + setColGreen(renderData.zoom) + "x" +
-                   "<br /> Number of objects: " + setColGreen(objects.length) +
-                   "<br /> Gravity enabled: "+dbgBool(enableGravity);//*/
+        if (enableColData) {
+            debugStr = "Fps: " + fps +
+                   "<br /> Game rate: " + setColGreen(sim.gameRate) + " Hz" +
+                   "<br /> Energy in system: " + setColGreen(graph.getEnergy()) + " kJ" +
+                   "<br /> Number of objects: " + setColGreen(sim.objects.length) +
+                   "<br /> Gravity enabled: "+dbgBool(enableGravity);
+                   
+            fpsDiv.html(debugStr);
+        } else fpsDiv.html("");
     }
     
     for (var i = 0; i < widgets.length; i++) {
