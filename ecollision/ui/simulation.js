@@ -6,12 +6,11 @@ function Simulation(canvasName) {
     this.ballEnvironment = null;
     this.objects = [];
     
-    this.timeStamp = new Date().getTime();
-    this.newTime = timeStamp;
-    this.fpsTime = timeStamp;
+    var timeStamp = new Date().getTime();
+    var newTime = timeStamp;
     
-    this.gameRate = defaultGameRate;
-    this.updateTime = 1000.0 / this.gameRate;
+    var gameRate = defaultGameRate;
+    var updateTime = 1000.0 / gameRate;
     
     this.views = [];
     
@@ -24,13 +23,21 @@ function Simulation(canvasName) {
     }
     
     this.setSpeed = function(rate) {
-        this.gameRate = rate;
+        gameRate = rate;
 
-        this.updateTime = 1000.0 / this.gameRate;
+        updateTime = 1000.0 / gameRate;
     }
     
     this.resize = function(newWidth, newHeight) {
         this.ballEnvironment.setBounds(newWidth, newHeight);
+    }
+    
+    this.getGameRate = function() {
+        return gameRate;
+    }
+    
+    this.getUpdateTime = function() {
+        return updateTime;
     }
     
     this.addBall = function(x, y, mass, radius, style) {
@@ -127,24 +134,24 @@ function Simulation(canvasName) {
         var objects = this.objects;
     
         if (!this.paused) {
-            if (this.newTime + this.updateTime < curTime) {
-                this.timeStamp = curTime;
+            if (newTime + updateTime < curTime) {
+                timeStamp = curTime;
                 if (enableInterpolation) {
                     for (var i = 0; i < objects.length; i++) {
                         objects[i].capture();
                     }
                 }
-                while (this.newTime + this.updateTime < curTime) {
+                while (newTime + updateTime < curTime) {
                     this.updateSimulation();
                     
-                    this.newTime += this.updateTime;
+                    newTime += updateTime;
                 }
             }
         } else {
-            this.newTime = curTime;
+            newTime = curTime;
         }
         
-        var interpolation = Math.min(1.0, (curTime - this.timeStamp) / this.updateTime);
+        var interpolation = Math.min(1.0, (curTime - timeStamp) / updateTime);
 
         for (var i = 0; i < objects.length; i++) {
             var obj = objects[i];

@@ -1,7 +1,7 @@
 function Graph(canvasName) {
     Widget.call(this, canvasName);
     
-    this.scaleX = 1/50;
+    this.scaleX = 1/5;
     this.scaleY = 1/50;
 
     this.simulation = null;
@@ -11,24 +11,27 @@ function Graph(canvasName) {
     var xText = new createjs.Text();
     var yText = new createjs.Text();
     
-    offsetX = 0.0;
-    offsetY = 0.0;
+    var offsetX = 0.0;
+    var offsetY = 0.0;
     
-    data = [];
-    start = 0;
-    maxLen = 100;
+    var data = [];
+    var start = 0;
+    var maxLen = 150;
 
     this.zoom = 1.0;
     
     var maxX = 0;
     var maxY = 0;
     
-    updated = false;
+    var updated = false;
     
     this.x = 0;
     this.y = 0;
     
     var renderY = 0;
+    
+    var x = 0;
+    var y = 0;
     
     this.init = function() {
         var xAxis = new createjs.Shape();
@@ -52,10 +55,9 @@ function Graph(canvasName) {
     
         this.stage.addChild(xText);
         this.stage.addChild(yText);
-    }
         
-    var x = 10;
-    var y = 10;
+        this.updateData();
+    }
     
     this.draw = function () {
         var width = this.width;
@@ -70,8 +72,8 @@ function Graph(canvasName) {
         
         var aLen = data.length-1;
         
-        var len = maxLen;
-        
+        var len = aLen;
+
         for (var j = 0; j < aLen-1; j++) {
             if (updated) {
                 updated = false;
@@ -80,8 +82,8 @@ function Graph(canvasName) {
             var i = (start+j)%len;
             var i2 = (start+j+1)%len;
             
-            var x2 = (data[i2].x*this.scaleX)-offsetX;
-            var y2 = data[i2].y*this.scaleY;
+            var x2 = (data[i].x*this.scaleX)-offsetX;
+            var y2 = (data[i].y*this.scaleY)+renderY;
             
             if (x2 > width) {
                 offsetX += x2-this.width;
@@ -100,12 +102,20 @@ function Graph(canvasName) {
             var y3 = (data[i2].y*this.scaleY)+renderY;
             
             g.beginStroke("red").moveTo(this.x+x1, this.y+this.height-y1).lineTo(this.x+x3, this.y+this.height-y3);
+            
+            if (j == aLen-3) {
+                console.log("1: "+data[i].x);
+            }
+            
+            if (j == aLen-2) {
+                console.log("2: "+data[i].x);
+            }
         }
         
         //xText.text = maxX;
         //yText.text = maxY;
         
-        x += this.simulation.updateTime;
+        x += this.simulation.getUpdateTime();
         y = this.getEnergy();
         
         this.addData(x, y);
@@ -124,12 +134,11 @@ function Graph(canvasName) {
             }
             
             var dataY = avg/len;
-        
             var targetY = this.height/2;
         
             renderY = targetY-(dataY*this.scaleY);
             
-            updated = true;
+            //updated = true;
         }
     }
     
@@ -164,6 +173,9 @@ function Graph(canvasName) {
             var s = start;
  
             start = (start + 1)%maxLen;
+            
+            console.log(start);
+            
             data[s] = new Point2D(x, y);
         } else {
             data.push(new Point2D(x, y));
@@ -173,7 +185,7 @@ function Graph(canvasName) {
     this.updateData = function() {
         var data2 = [];
 
-        maxLen = Math.round(this.width/(this.simulation.updateTime*this.scaleX));
+        maxLen = Math.round(this.width/(this.simulation.getUpdateTime()*this.scaleX))+5;
 
         var aLen = data.length-1;
         var diff = 0;
@@ -206,6 +218,7 @@ function Graph(canvasName) {
     this.attachSimulation = function(simulation) {
         this.simulation = simulation;
         this.updateData();
+        x = this.simulation.getUpdateTime();
     }
     
     this.detachSimulation = function() {

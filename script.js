@@ -1,3 +1,5 @@
+$(".ball-slider").sliderEx();
+
 $("#add-ball").click(function() {
     var velocity = $("#slider-velocity").sliderEx("value");
     var mass = $("#slider-mass").sliderEx("value");
@@ -39,9 +41,6 @@ $("#move-up").click(function() {
 $("#move-down").click(function() {
     graph.moveDown();
 });
-
-
-$(".ball-slider").sliderEx();
 
 $("#trace").click(function() {
     enableTrace = !enableTrace;   
@@ -86,5 +85,5 @@ $('#graph-canvas').attr("height",$('#graph-canvas').height());
 
 $('#widget-canvas').attr("width",$('#widget-canvas').width());
 $('#widget-canvas').attr("height",$('#widget-canvas').height());
-  
+
 start();

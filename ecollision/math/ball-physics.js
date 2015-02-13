@@ -42,29 +42,19 @@ function PhysObject(x, y, mass) {
 
 function Collision() {
     this.time = 0.0;
-    this.object;
+    this.object = null;
+    this.object2 = null;
 }
 
-function Cue() {
-    this.angle = 0.0;
-    this.show = false;
-}
-
-function Ball(x, y, radius, style, allowedCue) {
+function Ball(x, y, radius, style) {
     PhysObject.call(this, x, y, 10);
 
     this.radius = radius;
-    this.bounce = 1;
+    
     this.style = style;
-    this.cue = new Cue();
-
-    this.edgeOverlapX = 0.0;
-    this.edgeOverlapY = 0.0;
 
     this.mouseX = 0.0;
     this.mouseY = 0.0;
-    this.allowedCue = allowedCue;
-    this.clicked = false;
 
     this.pastPositions = [];
     this.curID = 0;

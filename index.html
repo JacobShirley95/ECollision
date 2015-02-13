@@ -84,8 +84,8 @@
                 },
                 
                 _create: function() {
-                    var min = parseInt(this.element.attr("min"));
-                    var max = parseInt(this.element.attr("max"));
+                    var min = parseFloat(this.element.attr("min"));
+                    var max = parseFloat(this.element.attr("max"));
                     
                     this.options.min = min;
                     this.options.max = max;

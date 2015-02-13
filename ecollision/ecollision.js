@@ -46,7 +46,6 @@ function start() {
 }
 
 var fpsDiv = null;
-enableDebug = true;
 
 var fpsCount = 0;
 var fpsTime = 0;
@@ -59,7 +58,7 @@ function tick() {
 
     var energy = 0.0;
     
-    if (enableDebug) {
+    if (enableColData) {
         fpsCount++;
 
         if (curTime - fpsTime >= 1000) {
@@ -71,16 +70,14 @@ function tick() {
             fpsCount = 0;
             fpsTime = curTime;
         }
-        if (enableColData) {
-            debugStr = "Fps: " + fps +
-                   "<br /> Game rate: " + setColGreen(sim.gameRate) + " Hz" +
+        debugStr = "Fps: " + fps +
+                   "<br /> Game rate: " + setColGreen(sim.getGameRate()) + " Hz" +
                    "<br /> Energy in system: " + setColGreen(graph.getEnergy()) + " kJ" +
                    "<br /> Number of objects: " + setColGreen(sim.objects.length) +
                    "<br /> Gravity enabled: "+dbgBool(enableGravity);
                    
-            fpsDiv.html(debugStr);
-        } else fpsDiv.html("");
-    }
+        fpsDiv.html(debugStr);
+    } else fpsDiv.html("");
     
     for (var i = 0; i < widgets.length; i++) {
         widgets[i].draw();
