@@ -10,7 +10,8 @@ var enableDragAndDrop = false;
 
 var enableColData = false;
 
-var yRows = 5; // min 1, max 10
-
-var speedState = -1;
 var slowMotionConst = 1.0;
+
+var gravity = 9.81 / 10;
+var enableInterpolation = true;
+var maxTracePositions = 30;

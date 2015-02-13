@@ -5,20 +5,9 @@ function Point2D(x, y) {
     this.y = y;
 }
 
-var gameRate = 0;
-
-var gravity = 9.81 / 10;
-var enableInterpolation = true;
-var maxTracePositions = 30;
-
-var touchRadius = 100;
-
-var mouseDown = false;
 
 var debugStr = "Debug: ";
-var timeStamp = new Date().getTime();
-var newTime = timeStamp;
-var fpsTime = timeStamp;
+var fpsTime = new Date().getTime();
 var sim;
 var graph;
 
@@ -48,7 +37,6 @@ function start() {
 var fpsDiv = null;
 
 var fpsCount = 0;
-var fpsTime = 0;
 
 function tick() {
     var curTime = new Date().getTime();
@@ -56,8 +44,6 @@ function tick() {
     if (fpsDiv == null)
         fpsDiv = $("#fps-div");
 
-    var energy = 0.0;
-    
     if (enableColData) {
         fpsCount++;
 

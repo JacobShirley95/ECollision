@@ -1,10 +1,77 @@
+$.widget("custom.sliderEx", $.ui.slider, {
+    _unit:"",
+    _amount: null,
+    _formatVal: function(val) {
+        if (val > 0.09 && val < 1) {
+            val = val.toPrecision(2);
+        }
+        return val+" "+this._unit;
+    },
+    _slide: function () {
+        this._superApply(arguments);
+
+        this._amount.text(this._formatVal(this.options.value));
+
+        var pos = this.handle.position();
+        var width = this._amount.width()/2;
+        
+        var newLeft = pos.left;
+        
+        this._amount.css("left", newLeft+"px");
+    },
+    
+    _start: function() {
+        var left = this.handle.css("left");
+        
+        this._amount.css('visibility','visible').hide().fadeIn("fast").css("left", left);
+    },
+    
+    _stop: function() {
+        this._amount.fadeOut("fast");
+    },
+    
+    _create: function() {
+        var min = parseFloat(this.element.attr("min"));
+        var max = parseFloat(this.element.attr("max"));
+        
+        this.options.min = min;
+        this.options.max = max;
+        
+        if (this.element.attr("step") != undefined) {
+            var step = parseFloat(this.element.attr("step"));
+            
+            this.options.step = step;
+        }
+        
+        var value = this.element.attr("value");
+        if (value == undefined) {
+            this.options.value = min+max/2;
+        } else {
+            this.options.value = parseFloat(value);
+        }
+        
+        var unit = this.element.attr("unit");
+        if (unit != undefined) {
+            this._unit = unit;
+        }
+        
+        this._amount = $('<div class="slider-amount">'+this._formatVal(this.options.value)+'</div>');
+        
+        this.element.append(this._amount).mousedown(function(event) {
+            event.stopPropagation();
+        });
+        
+        this._super();
+    }
+});
+
 $(".ball-slider").sliderEx();
 
 $("#add-ball").click(function() {
     var velocity = $("#slider-velocity").sliderEx("value");
     var mass = $("#slider-mass").sliderEx("value");
         
-    var friction = $("#slider-friction").sliderEx("value");
+    var cOR = $("#slider-cor").sliderEx("value");
     var radius = $("#slider-radius").sliderEx("value");
 
     var x = radius+(Math.random()*(sim.width-radius));
@@ -13,9 +80,11 @@ $("#add-ball").click(function() {
     var ball = sim.addBall(x, y, mass, radius, getRandomColor());
     var ang = Math.random()*2*Math.PI;
     
+   // var gameRate = sim.getGameRate();
+    
     ball.xVel = velocity*Math.cos(ang);
     ball.yVel = velocity*Math.sin(ang);
-    ball.cOR = friction;
+    ball.cOR = cOR;
 });
 
 $("#remove-ball").click(function() {
@@ -23,7 +92,7 @@ $("#remove-ball").click(function() {
 });
 
 $("#calibrate").click(function() {
-    graph.calibrate();
+    graph.userCalibrate();
 });
 
 $("#zoom-in").click(function() {

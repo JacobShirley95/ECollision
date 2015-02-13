@@ -101,8 +101,8 @@ function Simulation(canvasName) {
             }
         }*/
         
-        var b1 = this.addBall(100, 100, 155, 10, "blue");
-        b1.xVel = 1000;
+        //var b1 = this.addBall(100, 100, 155, 10, "blue");
+        //b1.xVel = 1000;
         /*var b2 = this.addBall(300, 300, 155, 10, "green");
         
         var v1 = 2;

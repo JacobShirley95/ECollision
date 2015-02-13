@@ -29,6 +29,7 @@ function Graph(canvasName) {
     this.y = 0;
     
     var renderY = 0;
+    var userY = 0;
     
     var x = 0;
     var y = 0;
@@ -83,7 +84,7 @@ function Graph(canvasName) {
             var i2 = (start+j+1)%len;
             
             var x2 = (data[i].x*this.scaleX)-offsetX;
-            var y2 = (data[i].y*this.scaleY)+renderY;
+            var y2 = (data[i].y*this.scaleY)+renderY+userY;
             
             if (x2 > width) {
                 offsetX += x2-this.width;
@@ -96,20 +97,12 @@ function Graph(canvasName) {
                 maxY = data[i].y;
     
             var x1 = (data[i].x*this.scaleX)-offsetX;
-            var y1 = (data[i].y*this.scaleY)+renderY;
+            var y1 = (data[i].y*this.scaleY)+renderY+userY;
             
             var x3 = (data[i2].x*this.scaleX)-offsetX;
-            var y3 = (data[i2].y*this.scaleY)+renderY;
+            var y3 = (data[i2].y*this.scaleY)+renderY+userY;
             
             g.beginStroke("red").moveTo(this.x+x1, this.y+this.height-y1).lineTo(this.x+x3, this.y+this.height-y3);
-            
-            if (j == aLen-3) {
-                console.log("1: "+data[i].x);
-            }
-            
-            if (j == aLen-2) {
-                console.log("2: "+data[i].x);
-            }
         }
         
         //xText.text = maxX;
@@ -137,9 +130,12 @@ function Graph(canvasName) {
             var targetY = this.height/2;
         
             renderY = targetY-(dataY*this.scaleY);
-            
-            //updated = true;
         }
+    }
+    
+    this.userCalibrate = function() {
+        this.calibrate();
+        userY = 0;
     }
     
     this.zoomIn = function() {
@@ -161,11 +157,11 @@ function Graph(canvasName) {
     }
     
     this.moveUp = function() {
-        renderY -= 5;
+        userY -= 5;
     }
     
     this.moveDown = function() {
-        renderY += 5;
+        userY += 5;
     }
     
     this.addData = function(x, y) {
@@ -173,9 +169,7 @@ function Graph(canvasName) {
             var s = start;
  
             start = (start + 1)%maxLen;
-            
-            console.log(start);
-            
+
             data[s] = new Point2D(x, y);
         } else {
             data.push(new Point2D(x, y));
