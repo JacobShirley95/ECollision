@@ -41,7 +41,7 @@ function Simulation(canvasName) {
     }
     
     this.addBall = function(x, y, mass, radius, style) {
-        var ball = new Ball(x, y, radius, style, false);
+        var ball = new Ball(x, y, radius, style);
         
         ball.mass = mass;
         
@@ -64,7 +64,6 @@ function Simulation(canvasName) {
         });
                 
         this.stage.addChild(ball.displayObj);
-        this.ballEnvironment.addBall(ball);
         this.objects.push(ball);
         
         return ball;
@@ -72,8 +71,27 @@ function Simulation(canvasName) {
     
     this.removeBall = function(index) {
         this.stage.removeChild(this.objects[index].displayObj);
-        this.ballEnvironment.removeBall(index);
         this.objects.splice(index, 1);
+    }
+
+    this.loadBalls = function(objects) {
+        this.init();
+
+        for (var i = 0; i < objects.length; i++) {
+            var obj = objects[i];
+            var ball = new Ball(obj.x, obj.y, obj.radius, obj.style);
+
+            ball.mass = obj.mass;
+            ball.xVel = obj.xVel;
+            ball.yVel = obj.yVel;
+            ball.cOR = obj.cOR;
+
+            this.objects.push(ball);
+        }
+        //this.ballEnvironment.balls = this.objects;
+        for (var i = 0; i < this.objects.length; i++) {
+            this.stage.addChild(this.objects[i].displayObj);
+        }
     }
     
     this.removeSelected = function() {
@@ -87,33 +105,7 @@ function Simulation(canvasName) {
         this.stage.removeAllChildren();
         
         this.objects = [];
-        this.ballEnvironment = new BallEnvironment(this.width, this.height);
-    
-        var xShift = 20;
-        var yShift = 20;
-    
-        var colours = ["black", "yellow", "blue", "red", "purple"];
-        var coloursLen = colours.length;
-        
-        /*for (i = 0; i < yRows; i++) {
-            for (j = 0; j < yRows - i; j++) {
-                this.addBall(xShift + (j * 21) + (i * 10), yShift + (i * 18), 155, 10, getRandomColor());
-            }
-        }*/
-        
-        //var b1 = this.addBall(100, 100, 155, 10, "blue");
-        //b1.xVel = 1000;
-        /*var b2 = this.addBall(300, 300, 155, 10, "green");
-        
-        var v1 = 2;
-        var v2 = -2;
-        
-        b1.xVel = v1;
-        b1.yVel = v1;
-        
-        b2.xVel = v2;
-        b2.yVel = v2;*/
-        
+        this.ballEnvironment = new BallEnvironment(this.width, this.height, this.objects);
     }
     
     this.addView = function (view) {
@@ -177,6 +169,7 @@ function Simulation(canvasName) {
     
     this.updateSimulation = function () {
         var objects = this.objects;
+
         var grav = gravity;
         var ballEnvironment = this.ballEnvironment;
         
@@ -210,6 +203,10 @@ function Simulation(canvasName) {
     
         for (var i = 0; i < colObjects.length; i++) {
             var collision = colObjects[i];
+
+            console.log("1: "+(collision.object==collision.object2));
+            console.log("2: "+collision.object2);
+
             ballEnvironment.handleCollision(collision);
         }
     
@@ -254,10 +251,16 @@ function Simulation(canvasName) {
             return a.time < b.time;
         });
     
-        for (var i = 0; i < colObjects.length; i++) {
+        /*for (var i = 0; i < colObjects.length; i++) {
             var collision = colObjects[i];
+
+            console.log("1: "+collision.object);
+            console.log("2: "+collision.object2)
+
             ballEnvironment.handleCollision(collision);
-        }
+        }*/
+
+
     
         for (var i = 0; i < objects.length; i++) {
             var obj = objects[i];

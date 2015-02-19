@@ -174,11 +174,11 @@ function splitVelocity(object1, object2) {
     return velocity;
 }
 
-function BallEnvironment(width, height) {
+function BallEnvironment(width, height, balls) {
     this.width = width;
     this.height = height;
     
-    this.balls = [];
+    this.balls = balls;
     
     this.edgeCollision = function (ball, rebound) {
         var cOR = ball.cOR;
@@ -222,14 +222,6 @@ function BallEnvironment(width, height) {
                 ball.y = ball.radius;
             }
         } 
-    } 
-    
-    this.addBall = function(ball) {
-        this.balls.push(ball);
-    }
-    
-    this.removeBall = function(index) {
-        this.balls.splice(index, 1);
     }
     
     this.collide = function(object, object2, collision) {

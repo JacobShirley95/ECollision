@@ -114,9 +114,11 @@ $("#move-down").click(function() {
 $("#trace").click(function() {
     enableTrace = !enableTrace;   
 });
+
 $("#gravity").click(function() {
     enableGravity = !enableGravity;   
 });
+
 $("#sim-data").click(function() {
     enableColData = !enableColData;  
 });
@@ -124,16 +126,42 @@ $("#sim-data").click(function() {
 $("#btn-run").click(function() {
     sim.paused = false;
 });
+
 $("#btn-stop").click(function() {
     sim.paused = true;
 });
+
 $("#btn-back").click(function() {
     sim.updateSimulationRev();
 });
+
 $("#btn-next").click(function() {
     if (sim.paused)
         sim.updateSimulation();
 });
+
+var savedState = [];
+
+$("#btn-save").click(function() {
+    savedState = [];
+    for (var i = 0; i < sim.objects.length; i++) {
+        var obj = sim.objects[i];
+        var ball = new Ball(obj.x, obj.y, obj.radius, obj.style);
+
+        ball.mass = obj.mass;
+        ball.xVel = obj.xVel;
+        ball.yVel = obj.yVel;
+        
+        ball.cOR = obj.cOR;
+
+        savedState.push(ball);
+    }
+});
+
+$("#btn-load").click(function() {
+    console.log(savedState.length);
+    sim.loadBalls(savedState);
+})
 
 $("#zoom-slider").sliderEx({
     value:100,
