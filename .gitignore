@@ -1,1 +1,3 @@
-
+objs/
+*.sublime-project
+*.sublime-workspace
