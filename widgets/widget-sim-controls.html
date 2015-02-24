@@ -3,11 +3,17 @@
     <button id="btn-stop" class="icon-stop control-button">STOP</button>
     <button id="btn-back" class="icon-previous control-button">BACK</button>
     <button id="btn-next" class="icon-next control-button">NEXT</button>
-    <button id="btn-save" class="icon-file control-button max">SAVE STATE</button>
-    <button id="btn-load" class="icon-file control-button max">LOAD STATE</button>
+    <button id="btn-save" class="icon-file control-button">SAVE</button>
+    <button id="btn-load" class="icon-file control-button">LOAD</button>
+    <button id="btn-reset" class="control-button no-icon">RESET</button>
 
-    <p style="text-align:center;">ZOOM</p>
-    <div id="zoom-slider" min=1 max=200></div>
-    <p style="text-align:center;">SIMULATION SPEED</p>
-    <div id="sim-speed-slider" min=1 max=500></div>
+    <div class="ball-slider-wrapper">
+        <div class="slider-label">Speed</div>
+        <div id="sim-speed-slider" class="ball-slider" min=1 max=100></div>
+    </div>
+
+    <div class="ball-slider-wrapper">
+        <div class="slider-label">Zoom</div>
+        <div id="zoom-slider" class="ball-slider" min=1 max=200></div>
+    </div>
 </div>

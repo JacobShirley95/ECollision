@@ -12,18 +12,18 @@
 	"buffers":
 	[
 		{
-			"file": "index.html",
+			"file": "script.js",
 			"settings":
 			{
-				"buffer_size": 3327,
+				"buffer_size": 4547,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "script.js",
+			"file": "ecollision/ui/graph.js",
 			"settings":
 			{
-				"buffer_size": 4406,
+				"buffer_size": 5556,
 				"line_ending": "Windows"
 			}
 		},
@@ -31,7 +31,15 @@
 			"file": "ecollision/ui/simulation.js",
 			"settings":
 			{
-				"buffer_size": 7471,
+				"buffer_size": 7062,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "widgets/widget-sim-controls.html",
+			"settings":
+			{
+				"buffer_size": 882,
 				"line_ending": "Windows"
 			}
 		}
@@ -39,11 +47,11 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 0.0,
+		"height": 392.0,
 		"selected_items":
 		[
 		],
-		"width": 0.0
+		"width": 416.0
 	},
 	"console":
 	{
@@ -64,15 +72,25 @@
 	"expanded_folders":
 	[
 		"/C/wamp/www/ecollision",
-		"/C/wamp/www/ecollision/ecollision",
-		"/C/wamp/www/ecollision/ecollision/math",
-		"/C/wamp/www/ecollision/ecollision/ui"
+		"/C/wamp/www/ecollision/ecollision/ui",
+		"/C/wamp/www/ecollision/widgets"
 	],
 	"file_history":
 	[
+		"/C/wamp/www/ecollision/9.txt",
+		"/C/wamp/www/ecollision/index.html",
+		"/C/wamp/www/ecollision/ecollision/debug.js",
+		"/C/wamp/www/ecollision/ecollision/ui/graph.js",
 		"/C/wamp/www/ecollision/ecollision/ecollision.js",
+		"/C/wamp/www/ecollision/ecollision/ui/simulation.js",
+		"/C/wamp/www/ecollision/script.js",
+		"/C/wamp/www/ecollision/widgets/widget-ball-controls.html",
 		"/C/wamp/www/ecollision/ecollision/math/ball-physics.js",
-		"/C/wamp/www/ecollision/widgets/widget-sim-controls.html"
+		"/C/wamp/www/ecollision/widgets/widget-debug-controls.html",
+		"/C/wamp/www/ecollision/widgets/widget-sim-controls.html",
+		"/C/wamp/www/ecollision/widgets/widget-graph.html",
+		"/C/wamp/www/ecollision/.gitignore",
+		"/C/wamp/www/ecollision/index.sublime-project"
 	],
 	"find":
 	{
@@ -107,24 +125,114 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "index.html",
+					"file": "script.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3327,
+						"buffer_size": 4547,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								325,
-								325
+								3856,
+								3856
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1997.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "ecollision/ui/graph.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5556,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3183,
+								3183
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 11.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "ecollision/ui/simulation.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7062,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2251,
+								2251
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 950.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "widgets/widget-sim-controls.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 882,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								656,
+								656
 							]
 						],
 						"settings":
@@ -134,70 +242,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 7.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "script.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4406,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3710,
-								3710
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1677.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "ecollision/ui/simulation.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 7471,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								946,
-								946
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2738.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
@@ -254,11 +302,11 @@
 	},
 	"select_project":
 	{
-		"height": 0.0,
+		"height": 500.0,
 		"selected_items":
 		[
 		],
-		"width": 0.0
+		"width": 380.0
 	},
 	"select_symbol":
 	{
@@ -276,7 +324,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 251.0,
+	"side_bar_width": 234.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

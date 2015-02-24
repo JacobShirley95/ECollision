@@ -21,12 +21,15 @@ $.widget("custom.sliderEx", $.ui.slider, {
     },
     
     _start: function() {
+        this._superApply(arguments);
         var left = this.handle.css("left");
         
         this._amount.css('visibility','visible').hide().fadeIn("fast").css("left", left);
     },
     
     _stop: function() {
+        this._superApply(arguments);
+
         this._amount.fadeOut("fast");
     },
     
@@ -159,21 +162,25 @@ $("#btn-save").click(function() {
 });
 
 $("#btn-load").click(function() {
-    console.log(savedState.length);
     sim.loadBalls(savedState);
-})
+});
+
+$("#btn-reset").click(function() {
+    sim.restart();
+});
 
 $("#zoom-slider").sliderEx({
-    value:100,
     slide: function(event, ui) {
         sim.renderData.zoom = ui.value/100;
     }
 });
 
 $("#sim-speed-slider").sliderEx({
-    value:250,
     slide: function(event, ui) {
         sim.setSpeed(ui.value);
+    },
+    stop: function(event, ui) {
+        graph.updateData();
     }
 });
 

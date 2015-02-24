@@ -61,61 +61,65 @@ function Graph(canvasName) {
     }
     
     this.draw = function () {
-        var width = this.width;
-        var height = this.height;
-        
-        var g = graph.graphics;
-        
-        g.clear();
-        
-        var rMaxX = 0;
-        var rMaxY = 0;
-        
-        var aLen = data.length-1;
-        
-        var len = aLen;
+        if (this.simulation != null) {
+            var width = this.width;
+            var height = this.height;
+            
+            var g = graph.graphics;
+            
+            g.clear();
+            
+            var rMaxX = 0;
+            var rMaxY = 0;
+            
+            var aLen = data.length-1;
+            
+            var len = aLen;
 
-        for (var j = 0; j < aLen-1; j++) {
-            if (updated) {
-                updated = false;
-                return;
+            for (var j = 0; j < aLen-1; j++) {
+                if (updated) {
+                    updated = false;
+                    return;
+                }
+                var i = (start+j)%len;
+                var i2 = (start+j+1)%len;
+                
+                var x2 = (data[i].x*this.scaleX)-offsetX;
+                var y2 = (data[i].y*this.scaleY)+renderY+userY;
+                
+                if (x2 > width) {
+                    offsetX += x2-this.width;
+                }
+                
+                if (maxX < data[i].x)
+                    maxX = data[i].x;
+                
+                if (maxY < data[i].y)
+                    maxY = data[i].y;
+        
+                var x1 = (data[i].x*this.scaleX)-offsetX;
+                var y1 = (data[i].y*this.scaleY)+renderY+userY;
+                
+                var x3 = (data[i2].x*this.scaleX)-offsetX;
+                var y3 = (data[i2].y*this.scaleY)+renderY+userY;
+                
+                g.beginStroke("red").moveTo(this.x+x1, this.y+this.height-y1).lineTo(this.x+x3, this.y+this.height-y3);
             }
-            var i = (start+j)%len;
-            var i2 = (start+j+1)%len;
             
-            var x2 = (data[i].x*this.scaleX)-offsetX;
-            var y2 = (data[i].y*this.scaleY)+renderY+userY;
+            //xText.text = maxX;
+            //yText.text = maxY;
             
-            if (x2 > width) {
-                offsetX += x2-this.width;
+            if (!this.simulation.paused) {
+                x += this.simulation.getUpdateTime();
+                y = this.getEnergy();
+                
+                this.addData(x, y);
             }
+                
+            this.calibrate();
             
-            if (maxX < data[i].x)
-                maxX = data[i].x;
-            
-            if (maxY < data[i].y)
-                maxY = data[i].y;
-    
-            var x1 = (data[i].x*this.scaleX)-offsetX;
-            var y1 = (data[i].y*this.scaleY)+renderY+userY;
-            
-            var x3 = (data[i2].x*this.scaleX)-offsetX;
-            var y3 = (data[i2].y*this.scaleY)+renderY+userY;
-            
-            g.beginStroke("red").moveTo(this.x+x1, this.y+this.height-y1).lineTo(this.x+x3, this.y+this.height-y3);
+            this.stage.update();
         }
-        
-        //xText.text = maxX;
-        //yText.text = maxY;
-        
-        x += this.simulation.getUpdateTime();
-        y = this.getEnergy();
-        
-        this.addData(x, y);
-        
-        this.calibrate();
-        
-        this.stage.update();
     }
     
     this.calibrate = function() {

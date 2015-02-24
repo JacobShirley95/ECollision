@@ -6,8 +6,9 @@ function Simulation(canvasName) {
     this.ballEnvironment = null;
     this.objects = [];
     
-    var timeStamp = new Date().getTime();
+    var timeStamp = 0;
     var newTime = timeStamp;
+    var curTime = timeStamp;
     
     var gameRate = defaultGameRate;
     var updateTime = 1000.0 / gameRate;
@@ -79,19 +80,13 @@ function Simulation(canvasName) {
 
         for (var i = 0; i < objects.length; i++) {
             var obj = objects[i];
-            var ball = new Ball(obj.x, obj.y, obj.radius, obj.style);
+            var ball = this.addBall(obj.x, obj.y, obj.mass, obj.radius, obj.style);
 
-            ball.mass = obj.mass;
             ball.xVel = obj.xVel;
             ball.yVel = obj.yVel;
             ball.cOR = obj.cOR;
-
-            this.objects.push(ball);
         }
-        //this.ballEnvironment.balls = this.objects;
-        for (var i = 0; i < this.objects.length; i++) {
-            this.stage.addChild(this.objects[i].displayObj);
-        }
+        selected = -1;
     }
     
     this.removeSelected = function() {
@@ -122,7 +117,7 @@ function Simulation(canvasName) {
     }
     
     this.draw = function () {
-        var curTime = new Date().getTime();
+        curTime += 1000/refreshRate;
         var objects = this.objects;
     
         if (!this.paused) {
@@ -203,9 +198,6 @@ function Simulation(canvasName) {
     
         for (var i = 0; i < colObjects.length; i++) {
             var collision = colObjects[i];
-
-            console.log("1: "+(collision.object==collision.object2));
-            console.log("2: "+collision.object2);
 
             ballEnvironment.handleCollision(collision);
         }
