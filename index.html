@@ -27,20 +27,6 @@
         <script src="ecollision/ui/graph.js"></script>
                 
         <script src="ecollision/ecollision.js"></script>
-        
-        <script type="text/javascript">
-            function downloadJSAtOnload() {
-                var element = document.createElement("script");
-                element.src = "script.js";
-                document.body.appendChild(element);
-            }
-            if (window.addEventListener)
-                window.addEventListener("load", downloadJSAtOnload, false);
-            else if (window.attachEvent)
-                window.attachEvent("onload", downloadJSAtOnload);
-            else window.onload = downloadJSAtOnload;
-        </script>
-        
     </head> 
     
     <body>
@@ -50,7 +36,7 @@
 
         <script>
             var gridster;
-            //test
+
             $(function(){
                 function resizeWidgets(e, ui, $widget) {
                 
@@ -74,13 +60,22 @@
                                 ['widget-debug-controls', 2, 2],
                                 ['widget-ball-controls', 4, 1]
                               ];
+
+                var numLoadedWidgets = 0;
             
                 $.each(widgets, function(i, widget){
                     var w = widget[0];
                     widget[0] = '<li id="'+w+'"></li>';
                     gridster.add_widget.apply(gridster, widget);
             
-                    $("#"+w).load("widgets/"+w+".html");
+                    $("#"+w).load("widgets/"+w+".html", function() {
+                        numLoadedWidgets++;
+                        if (numLoadedWidgets == widgets.length) {
+                            var element = document.createElement("script");
+                            element.src = "script.js";
+                            document.body.appendChild(element);
+                        }
+                    });
                 });
             });
         </script>
