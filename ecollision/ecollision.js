@@ -35,14 +35,17 @@ function start() {
 }
 
 var fpsDiv = null;
+var ballInfo = null;
 
 var fpsCount = 0;
 
 function tick() {
     var curTime = new Date().getTime();
     
-    if (fpsDiv == null)
+    if (fpsDiv == null && ballInfo == null) {
         fpsDiv = $("#fps-div");
+        ballInfo = $("#ball-info");
+    }
 
     if (enableColData) {
         fpsCount++;
@@ -65,6 +68,19 @@ function tick() {
         fpsDiv.html(debugStr);
     } else fpsDiv.html("");
     
+    var selected = sim.getSelected();
+    if (selected != null) {
+        var str = "Index " + sim.getSelectedID() +
+                  "<br /> XVel " + selected.xVel + 
+                  "<br /> YVel " + selected.yVel + 
+                  "<br /> Mass " + selected.mass + 
+                  "<br /> Radius " + selected.radius;
+
+        ballInfo.html(str);
+    } else {
+        ballInfo.html("");
+    }
+
     for (var i = 0; i < widgets.length; i++) {
         widgets[i].draw();
     }

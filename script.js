@@ -139,8 +139,11 @@ $("#btn-back").click(function() {
 });
 
 $("#btn-next").click(function() {
-    if (sim.paused)
-        sim.updateSimulation();
+    if (sim.paused) {
+        sim.paused = false;
+        tick();
+        sim.paused = true;
+    }
 });
 
 var savedState = [];

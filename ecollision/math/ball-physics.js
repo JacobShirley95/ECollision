@@ -56,8 +56,9 @@ function Ball(x, y, radius, style) {
     this.mouseX = 0.0;
     this.mouseY = 0.0;
 
-    this.pastPositions = [];
-    this.curID = 0;
+    var pastPositions = [];
+
+    var curID = 0;
     
     this.cOR = 0.99;
     
@@ -69,59 +70,55 @@ function Ball(x, y, radius, style) {
         
         this.displayObj.graphics.clear();
         
-        var len = this.pastPositions.length;
+        var len = pastPositions.length;
         
-        if (this.selected) {
-            this.displayObj.graphics.beginStroke("red").drawCircle(0, 0, this.radius).endStroke();
+        if (enableColData) {
+            var scaleFactor = 10;
+            this.displayObj.graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(this.xVel*scaleFactor, this.yVel*scaleFactor).endStroke();
         }
-        
-        if (!sim.paused && enableTrace) {
-            this.curID++;
-            this.curID %= maxTracePositions;
-            if (len < maxTracePositions) {
-                this.pastPositions.push(new Point2D(x, y));
-            } else {
-                this.pastPositions[this.curID] = new Point2D(x, y);
-            }
-            
-            var rr = Math.round(Math.random()*256);
-            var rg = Math.round(Math.random()*256);
-            var rb = Math.round(Math.random()*256);
+
+        if (this.selected) {
+            var rr = 50;//Math.round(Math.random()*256);
+            var rg = 50;//Math.round(Math.random()*256);
+            var rb = 50;//Math.round(Math.random()*256);
 
             for (var i = 1; i < len; i++) {
-                var p = this.pastPositions[(i + this.curID) % len];
+                var p = pastPositions[(i + curID) % len];
                 var px = p.x-x;
                 var py = p.y-y;
 
                 var r_a = i / len;
 
                 var col = "rgba("+rr+", "+rg+", "+rb+", "+r_a+")";
-                this.displayObj.graphics.beginStroke(col).drawCircle(px, py, this.radius);
+                this.displayObj.graphics.beginStroke(col).drawCircle(px, py, this.radius).endStroke();
             }
+
+            this.displayObj.graphics.beginStroke("red").setStrokeStyle(3).drawCircle(0, 0, this.radius).endStroke();
         }
-        
+
         this.displayObj.graphics.beginFill(this.style).drawCircle(0, 0, this.radius).endFill();
-        
-        if (enableColData) {
-            var scaleFactor = 10;
-            this.displayObj.graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(this.xVel*scaleFactor, this.yVel*scaleFactor).endStroke();
-        }
     };
     
     this.update = function () {
-        if (!this.clicked) {
-            if (enableGravity) this.yVel += gravity;
+        if (enableGravity) this.yVel += gravity;
 
-            if (enableFriction) {
-                this.xVel *= 0.995;
-                this.yVel *= 0.995;
+        if (enableFriction) {
+            this.xVel *= 0.995;
+            this.yVel *= 0.995;
+        }
+
+        this.x += this.xVel;
+        this.y += this.yVel;
+
+        var len = pastPositions.length;
+        if (this.selected) {
+            curID++;
+            curID %= maxTracePositions;
+            if (len < maxTracePositions) {
+                pastPositions.push(new Point2D(this.x, this.y));
+            } else {
+                pastPositions[curID] = new Point2D(this.x, this.y);
             }
-
-            this.x += this.xVel;
-            this.y += this.yVel;
-            
-            //if (this.y + this.yVel + this.radius < window.innerHeight)
-               // this.y += this.yVel;
         }
     };
     

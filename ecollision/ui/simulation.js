@@ -86,7 +86,6 @@ function Simulation(canvasName) {
             ball.yVel = obj.yVel;
             ball.cOR = obj.cOR;
         }
-        selected = -1;
     }
     
     this.removeSelected = function() {
@@ -95,8 +94,22 @@ function Simulation(canvasName) {
             selected = -1;
         }
     }
+
+    this.getSelected = function() {
+        var sel = null;
+        if (selected != -1) {
+            sel = this.objects[selected];
+        }
+        return sel;
+    }
+
+    this.getSelectedID = function() {
+        return selected;
+    }
     
     this.init = function() {
+        selected = -1;
+
         this.stage.removeAllChildren();
         
         this.objects = [];
@@ -117,10 +130,10 @@ function Simulation(canvasName) {
     }
     
     this.draw = function () {
-        curTime += 1000/refreshRate;
         var objects = this.objects;
-    
         if (!this.paused) {
+            curTime += 1000/refreshRate;
+        
             if (newTime + updateTime < curTime) {
                 timeStamp = curTime;
                 if (enableInterpolation) {
@@ -134,11 +147,13 @@ function Simulation(canvasName) {
                     newTime += updateTime;
                 }
             }
-        } else {
-            newTime = curTime;
         }
         
         var interpolation = Math.min(1.0, (curTime - timeStamp) / updateTime);
+
+        if (selected != -1) {
+            log(interpolation);
+        }
 
         for (var i = 0; i < objects.length; i++) {
             var obj = objects[i];
@@ -159,7 +174,12 @@ function Simulation(canvasName) {
         
         this.stage.scaleX = this.renderData.zoom;
         this.stage.scaleY = this.renderData.zoom;
+
         this.stage.update();
+    }
+
+    this.update = function() {
+        
     }
     
     this.updateSimulation = function () {
