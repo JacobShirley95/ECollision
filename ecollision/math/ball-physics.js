@@ -34,6 +34,10 @@ function PhysObject(x, y, mass) {
         this.displayObj.addEventListener(event, handler);
     }
     
+    this.getEnergy = function() {
+        return 0.5 * this.mass * (this.xVel*this.xVel) + (this.yVel*this.yVel);
+    }
+    
     this.draw = function (x, y) {
         this.displayObj.x = x;
         this.displayObj.y = y;
@@ -98,6 +102,11 @@ function Ball(x, y, radius, style) {
 
         this.displayObj.graphics.beginFill(this.style).drawCircle(0, 0, this.radius).endFill();
     };
+    
+    this.deselect = function() {
+        this.selected = false;
+        pastPositions = [];
+    }
     
     this.update = function () {
         if (enableGravity) this.yVel += gravity;

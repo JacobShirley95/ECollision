@@ -207,7 +207,7 @@ function Graph(canvasName) {
         var energy = 0.0;
         var objects = this.simulation.objects;
         $.each(objects, function(i, object) {
-            energy += 0.5*object.mass*((object.xVel*object.xVel)+(object.yVel*object.yVel));
+            energy += object.getEnergy();
         });
         
         return Math.round(energy/1000);

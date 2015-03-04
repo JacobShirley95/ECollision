@@ -82,9 +82,7 @@ $("#add-ball").click(function() {
     
     var ball = sim.addBall(x, y, mass, radius, getRandomColor());
     var ang = Math.random()*2*Math.PI;
-    
-   // var gameRate = sim.getGameRate();
-    
+
     ball.xVel = velocity*Math.cos(ang);
     ball.yVel = velocity*Math.sin(ang);
     ball.cOR = cOR;

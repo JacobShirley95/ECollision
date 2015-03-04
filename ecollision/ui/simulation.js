@@ -14,14 +14,14 @@ function Simulation(canvasName) {
     var updateTime = 1000.0 / gameRate;
     
     this.views = [];
+
+    selected = -1;
+    var thisSim = this;
     
-    var debugText = "";
-    
-    var selected = -1;
-    
-    this.addDebugText = function(text) {
-        
-    }
+    this.stage.addEventListener("dblclick", function() {
+        selected = -1;
+        thisSim.getSelected().selected = false;
+    });
     
     this.setSpeed = function(rate) {
         gameRate = rate;
@@ -48,8 +48,9 @@ function Simulation(canvasName) {
         
         var objects = this.objects;
         ball.addEventHandler("click", function (ev) {
-            if (selected != -1)
-                objects[selected].selected = false;
+            if (selected != -1) {
+                objects[selected].deselect();
+            }
                 
             for (var i = 0; i < objects.length; i++) {
                 if (objects[i].displayObj == ev.target) {
@@ -109,7 +110,7 @@ function Simulation(canvasName) {
     
     this.init = function() {
         selected = -1;
-
+        
         this.stage.removeAllChildren();
         
         this.objects = [];
@@ -181,6 +182,13 @@ function Simulation(canvasName) {
     this.update = function() {
         
     }
+    
+    var timeStamp = 0;
+    var newTime = timeStamp;
+    var curTime = timeStamp;
+    
+    var gameRate = defaultGameRate;
+    var updateTime = 1000.0 / gameRate;
     
     this.updateSimulation = function () {
         var objects = this.objects;
@@ -263,14 +271,11 @@ function Simulation(canvasName) {
             return a.time < b.time;
         });
     
-        /*for (var i = 0; i < colObjects.length; i++) {
+        for (var i = 0; i < colObjects.length; i++) {
             var collision = colObjects[i];
 
-            console.log("1: "+collision.object);
-            console.log("2: "+collision.object2)
-
             ballEnvironment.handleCollision(collision);
-        }*/
+        }
 
 
     

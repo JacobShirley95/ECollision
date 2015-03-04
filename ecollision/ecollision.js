@@ -70,11 +70,12 @@ function tick() {
     
     var selected = sim.getSelected();
     if (selected != null) {
-        var str = "Index " + sim.getSelectedID() +
-                  "<br /> XVel " + selected.xVel + 
-                  "<br /> YVel " + selected.yVel + 
-                  "<br /> Mass " + selected.mass + 
-                  "<br /> Radius " + selected.radius;
+        var str = "<b>Index:</b> " + sim.getSelectedID() +
+                  "<br /> <b>XVel:</b> " + Math.round(selected.xVel) + 
+                  "<br /> <b>YVel:</b> " + Math.round(selected.yVel) + 
+                  "<br /> <b>Mass:</b> " + selected.mass + 
+                  "<br /> <b>Radius:</b> " + selected.radius +
+                  "<br /> <b>Energy:</b> " + Math.round(selected.getEnergy());
 
         ballInfo.html(str);
     } else {
