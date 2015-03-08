@@ -1,44 +1,40 @@
-function Simulation(canvasName) {
+function Simulation(canvasName, rate) {
     Widget.call(this, canvasName);
 
     this.paused = false;
 
-    this.ballEnvironment = null;
+    this.simEngine = null;
     this.objects = [];
     
     var timeStamp = 0;
     var newTime = timeStamp;
     var curTime = timeStamp;
     
-    var gameRate = defaultGameRate;
-    var updateTime = 1000.0 / gameRate;
-    
-    this.views = [];
+    var updateRate = rate;
+    var updateTime = 1000.0 / updateRate;
 
-    selected = -1;
-    var thisSim = this;
-    
-    this.stage.addEventListener("dblclick", function() {
-        selected = -1;
-        thisSim.getSelected().selected = false;
-    });
-    
+    var selected = -1;
+
     this.setSpeed = function(rate) {
-        gameRate = rate;
-
-        updateTime = 1000.0 / gameRate;
+        this.simEngine.speedConst = rate/defaultGameRate;
     }
     
     this.resize = function(newWidth, newHeight) {
-        this.ballEnvironment.setBounds(newWidth, newHeight);
+        this.simEngine.setBounds(newWidth, newHeight);
     }
     
-    this.getGameRate = function() {
-        return gameRate;
+    this.getUpdateRate = function() {
+        return updateRate;
     }
     
     this.getUpdateTime = function() {
         return updateTime;
+    }
+    
+    this.setUpdateRate = function(rate) {
+        updateRate = rate;
+        
+        updateTime = 1000.0 / updateRate;
     }
     
     this.addBall = function(x, y, mass, radius, style) {
@@ -112,18 +108,9 @@ function Simulation(canvasName) {
         selected = -1;
         
         this.stage.removeAllChildren();
-        
         this.objects = [];
-        this.ballEnvironment = new BallEnvironment(this.width, this.height, this.objects);
-    }
-    
-    this.addView = function (view) {
-        this.views.push(view);
-        view.init();
-    }
-    
-    this.removeView = function(view) {
-        view.destroy();
+        
+        this.simEngine = new SimEngine(this.width, this.height, this.objects);
     }
     
     this.restart = function () {
@@ -143,7 +130,7 @@ function Simulation(canvasName) {
                     }
                 }
                 while (newTime + updateTime < curTime) {
-                    this.updateSimulation();
+                    this.simEngine.updateSimulation();
                     
                     newTime += updateTime;
                 }
@@ -151,10 +138,6 @@ function Simulation(canvasName) {
         }
         
         var interpolation = Math.min(1.0, (curTime - timeStamp) / updateTime);
-
-        if (selected != -1) {
-            log(interpolation);
-        }
 
         for (var i = 0; i < objects.length; i++) {
             var obj = objects[i];
@@ -177,113 +160,6 @@ function Simulation(canvasName) {
         this.stage.scaleY = this.renderData.zoom;
 
         this.stage.update();
-    }
-
-    this.update = function() {
-        
-    }
-    
-    var timeStamp = 0;
-    var newTime = timeStamp;
-    var curTime = timeStamp;
-    
-    var gameRate = defaultGameRate;
-    var updateTime = 1000.0 / gameRate;
-    
-    this.updateSimulation = function () {
-        var objects = this.objects;
-
-        var grav = gravity;
-        var ballEnvironment = this.ballEnvironment;
-        
-        for (var i = 0; i < objects.length; i++) {
-            var obj = objects[i];
-    
-            ballEnvironment.edgeCollision(obj, true);
-            obj.update();
-        }
-    
-        var colObjects = [];
-        
-        for (var i = 0; i < objects.length; i++) {
-            var obj = objects[i];
-    
-            for (var i2 = i + 1; i2 < objects.length; i2++) {
-                var obj2 = objects[i2];
-    
-                var collision = new Collision();
-                if (ballEnvironment.collide(obj, obj2, collision)) {
-                    collision.object = obj;
-                    collision.object2 = obj2;
-                    colObjects.push(collision);
-                }
-            }
-        }
-    
-        colObjects.sort(function (a, b) {
-            return a.time < b.time;
-        });
-    
-        for (var i = 0; i < colObjects.length; i++) {
-            var collision = colObjects[i];
-
-            ballEnvironment.handleCollision(collision);
-        }
-    
-        for (var i = 0; i < objects.length; i++) {
-            var obj = objects[i];
-    
-            ballEnvironment.edgeCollision(obj, false);
-        }
-    }
-    
-    this.updateSimulationRev = function () {
-        var objects = this.objects;
-        var grav = gravity;
-        var ballEnvironment = this.ballEnvironment;
-        
-        for (var i = 0; i < objects.length; i++) {
-            var obj = objects[i];
-    
-            ballEnvironment.edgeCollision(obj, true);
-            obj.updateReverse();
-        }
-    
-        var colObjects = [];
-        
-        for (var i = 0; i < objects.length; i++) {
-            var obj = objects[i];
-    
-            for (var i2 = i + 1; i2 < objects.length; i2++) {
-                var obj2 = objects[i2];
-    
-                var collision = new Collision();
-                if (ballEnvironment.collide(obj, obj2, collision)) {
-                    collision.object = obj;
-                    collision.object2 = obj2;
-                    
-                    colObjects.push(collision);
-                }
-            }
-        }
-    
-        colObjects.sort(function (a, b) {
-            return a.time < b.time;
-        });
-    
-        for (var i = 0; i < colObjects.length; i++) {
-            var collision = colObjects[i];
-
-            ballEnvironment.handleCollision(collision);
-        }
-
-
-    
-        for (var i = 0; i < objects.length; i++) {
-            var obj = objects[i];
-    
-            ballEnvironment.edgeCollision(obj, false);
-        }
     }
 }
 

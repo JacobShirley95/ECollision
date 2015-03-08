@@ -139,7 +139,7 @@ $("#btn-back").click(function() {
 $("#btn-next").click(function() {
     if (sim.paused) {
         sim.paused = false;
-        tick();
+        ecollision.tick();
         sim.paused = true;
     }
 });
@@ -191,4 +191,6 @@ $('#graph-canvas').attr("height",$('#graph-canvas').height());
 $('#widget-canvas').attr("width",$('#widget-canvas').width());
 $('#widget-canvas').attr("height",$('#widget-canvas').height());
 
-start();
+var ecollision = new Ecollision();
+
+ecollision.start();

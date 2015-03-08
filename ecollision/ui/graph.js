@@ -1,16 +1,13 @@
-function Graph(canvasName) {
+function Graph(canvasName, sim) {
     Widget.call(this, canvasName);
     
     this.scaleX = 1/5;
     this.scaleY = 1/50;
 
-    this.simulation = null;
+    this.simulation = sim;
     
     var graph = new createjs.Shape();
-    
-    var xText = new createjs.Text();
-    var yText = new createjs.Text();
-    
+
     var offsetX = 0.0;
     var offsetY = 0.0;
     
@@ -41,21 +38,10 @@ function Graph(canvasName) {
         xAxis.graphics.beginStroke("red").moveTo(this.x, this.height).lineTo(this.width, this.height);
         yAxis.graphics.beginStroke("red").moveTo(this.x, this.y).lineTo(this.x, this.height);
         
-        xText.x = this.width-10;
-        xText.y = this.height;
-        xText.color = "red";
-
-        yText.x = 0;
-        yText.y = 0;
-        yText.color = "red";
-        
         this.stage.addChild(xAxis);
         this.stage.addChild(yAxis);
         
         this.stage.addChild(graph);
-    
-        this.stage.addChild(xText);
-        this.stage.addChild(yText);
         
         this.updateData();
     }
@@ -105,9 +91,6 @@ function Graph(canvasName) {
                 
                 g.beginStroke("red").moveTo(this.x+x1, this.y+this.height-y1).lineTo(this.x+x3, this.y+this.height-y3);
             }
-            
-            //xText.text = maxX;
-            //yText.text = maxY;
             
             if (!this.simulation.paused) {
                 x += this.simulation.getUpdateTime();
