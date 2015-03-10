@@ -4,7 +4,7 @@ function Simulation(canvasName, rate) {
     this.paused = false;
 
     this.simEngine = null;
-    this.objects = [];
+    this.particles = [];
     
     var timeStamp = 0;
     var newTime = timeStamp;
@@ -37,13 +37,13 @@ function Simulation(canvasName, rate) {
         updateTime = 1000.0 / updateRate;
     }
     
-    this.addBall = function(x, y, mass, radius, style) {
-        var ball = new Ball(x, y, radius, style);
+    this.addParticle = function(x, y, mass, radius, style) {
+        var particle = new Particle(x, y, radius, style);
         
-        ball.mass = mass;
+        particle.mass = mass;
         
         var objects = this.objects;
-        ball.addEventHandler("click", function (ev) {
+        particle.addEventHandler("click", function (ev) {
             if (selected != -1) {
                 objects[selected].deselect();
             }
@@ -61,33 +61,33 @@ function Simulation(canvasName, rate) {
             }
         });
                 
-        this.stage.addChild(ball.displayObj);
-        this.objects.push(ball);
+        this.stage.addChild(particle.displayObj);
+        this.objects.push(particle);
         
-        return ball;
+        return particle;
     }
     
-    this.removeBall = function(index) {
+    this.removeParticle = function(index) {
         this.stage.removeChild(this.objects[index].displayObj);
         this.objects.splice(index, 1);
     }
 
-    this.loadBalls = function(objects) {
+    this.loadParticles = function(objects) {
         this.init();
 
         for (var i = 0; i < objects.length; i++) {
             var obj = objects[i];
-            var ball = this.addBall(obj.x, obj.y, obj.mass, obj.radius, obj.style);
+            var particle = this.addParticle(obj.x, obj.y, obj.mass, obj.radius, obj.style);
 
-            ball.xVel = obj.xVel;
-            ball.yVel = obj.yVel;
-            ball.cOR = obj.cOR;
+            particle.xVel = obj.xVel;
+            particle.yVel = obj.yVel;
+            particle.cOR = obj.cOR;
         }
     }
     
     this.removeSelected = function() {
         if (selected != -1) {
-            this.removeBall(selected);
+            this.removeParticle(selected);
             selected = -1;
         }
     }

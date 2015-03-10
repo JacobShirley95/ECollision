@@ -68,9 +68,9 @@ $.widget("custom.sliderEx", $.ui.slider, {
     }
 });
 
-$(".ball-slider").sliderEx();
+$(".particle-slider").sliderEx();
 
-$("#add-ball").click(function() {
+$("#add-particle").click(function() {
     var velocity = $("#slider-velocity").sliderEx("value");
     var mass = $("#slider-mass").sliderEx("value");
         
@@ -80,15 +80,15 @@ $("#add-ball").click(function() {
     var x = radius+(Math.random()*(sim.width-radius));
     var y = radius+(Math.random()*(sim.height-radius));
     
-    var ball = sim.addBall(x, y, mass, radius, getRandomColor());
+    var particle = sim.addParticle(x, y, mass, radius, getRandomColor());
     var ang = Math.random()*2*Math.PI;
 
-    ball.xVel = velocity*Math.cos(ang);
-    ball.yVel = velocity*Math.sin(ang);
-    ball.cOR = cOR;
+    particle.xVel = velocity*Math.cos(ang);
+    particle.yVel = velocity*Math.sin(ang);
+    particle.cOR = cOR;
 });
 
-$("#remove-ball").click(function() {
+$("#remove-particle").click(function() {
     sim.removeSelected();
 });
 
@@ -150,20 +150,20 @@ $("#btn-save").click(function() {
     savedState = [];
     for (var i = 0; i < sim.objects.length; i++) {
         var obj = sim.objects[i];
-        var ball = new Ball(obj.x, obj.y, obj.radius, obj.style);
+        var particle = new Particle(obj.x, obj.y, obj.radius, obj.style);
 
-        ball.mass = obj.mass;
-        ball.xVel = obj.xVel;
-        ball.yVel = obj.yVel;
+        particle.mass = obj.mass;
+        particle.xVel = obj.xVel;
+        particle.yVel = obj.yVel;
         
-        ball.cOR = obj.cOR;
+        particle.cOR = obj.cOR;
 
-        savedState.push(ball);
+        savedState.push(particle);
     }
 });
 
 $("#btn-load").click(function() {
-    sim.loadBalls(savedState);
+    sim.loadParticles(savedState);
 });
 
 $("#btn-reset").click(function() {
