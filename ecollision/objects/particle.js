@@ -84,4 +84,4 @@ function Particle(x, y, radius, style) {
     };
 }
 
-Ball.prototype = new PhysObject();
+Particle.prototype = new PhysObject();
