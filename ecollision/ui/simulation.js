@@ -33,7 +33,6 @@ function Simulation(canvasName, rate) {
     
     this.setUpdateRate = function(rate) {
         updateRate = rate;
-        
         updateTime = 1000.0 / updateRate;
     }
     
@@ -156,8 +155,8 @@ function Simulation(canvasName, rate) {
             obj.draw(newX, newY);
         }
         
-        this.stage.scaleX = this.renderData.zoom;
-        this.stage.scaleY = this.renderData.zoom;
+       // this.stage.scaleX = this.renderData.zoom;
+        //this.stage.scaleY = this.renderData.zoom;
 
         this.stage.update();
     }

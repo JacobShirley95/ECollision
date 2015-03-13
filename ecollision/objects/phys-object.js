@@ -30,7 +30,7 @@ function PhysObject(x, y, mass) {
     }
     
     this.getEnergy = function() {
-        return 0.5 * this.mass * (this.xVel*this.xVel) + (this.yVel*this.yVel);
+        return 0.5 * this.mass * ((this.xVel*this.xVel) + (this.yVel*this.yVel));
     }
     
     this.draw = function (x, y) {

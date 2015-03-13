@@ -53,7 +53,7 @@ function Ecollision() {
                 fpsTime = curTime;
             }
             debugStr = "Fps: " + fps +
-                       "<br /> Game rate: " + setColGreen(sim.getGameRate()) + " Hz" +
+                       "<br /> Game rate: " + setColGreen(sim.getUpdateRate()) + " Hz" +
                        "<br /> Energy in system: " + setColGreen(graph.getEnergy()) + " kJ" +
                        "<br /> Number of objects: " + setColGreen(sim.objects.length) +
                        "<br /> Gravity enabled: "+dbgBool(enableGravity);

@@ -15,3 +15,5 @@ var slowMotionConst = 1.0;
 var gravity = 9.81 / 10;
 var enableInterpolation = true;
 var maxTracePositions = 30;
+
+var zoom = 1.0;

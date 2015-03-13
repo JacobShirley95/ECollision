@@ -75,6 +75,18 @@ function SimEngine(width, height, particles) {
         velocity.y = magnitude * Math.sin(ang);
         
         velocity.rotate(-a);
+        
+      /*  var dx = object1.x - object2.x;
+        var dy = object1.y - object2.y;
+        
+        var velocity = new PVector(object1.xVel, object1.yVel);
+        var a = Math.atan2(dy, dx);
+        
+        
+        var magnitude = velocity.getMagnitude();
+        
+        velocity.x = magnitude * Math.cos(a);
+        velocity.y = magnitude * Math.sin(a);*/
     
         return velocity;
     }
@@ -121,19 +133,27 @@ function SimEngine(width, height, particles) {
     
         var ang = Math.atan((object.y - object2.y) / (object.x - object2.x));
     
-        var velocity1 = new PVector(newV * Math.cos(ang), newV * Math.sin(ang));
-        var velocity2 = new PVector(thisVel.y * Math.sin(ang), thisVel.y * Math.cos(ang));
+        var cosA = Math.cos(ang);
+        var sinA = Math.sin(ang);
     
-        ang = Math.atan((object2.y - object.y) / (object2.x - object.x));
+        var x1 = (newV * cosA) + (thisVel.y * sinA);
+        var y1 = (newV * sinA) - (thisVel.y * cosA);
+
+        var x2 = (newV2 * cosA) + (objVel.y * sinA);
+        var y2 = (newV2 * sinA) - (objVel.y * cosA);
+
+        this.seperateObjects(collision, object, object2);
     
-        var velocity3 = new PVector(newV2 * Math.cos(ang), newV2 * Math.sin(ang));
-        var velocity4 = new PVector(objVel.y * Math.sin(ang), objVel.y * Math.cos(ang));
+        object.xVel = x1;
+        object.yVel = y1;
     
-        var vF = new PVector(velocity1.x + velocity2.x, velocity1.y - velocity2.y);
-        var vF2 = new PVector(velocity3.x + velocity4.x, velocity3.y - velocity4.y);
+        object2.xVel = x2;
+        object2.yVel = y2;
+    }
     
+    this.seperateObjects = function(collision, object, object2) {
         var t = collision.time + (0.001 * collision.time);
-    
+        
         if (t < 1.0) {
             object.x -= object.xVel * this.speedConst * t;
             object.y -= object.yVel * this.speedConst * t;
@@ -163,12 +183,6 @@ function SimEngine(width, height, particles) {
             object2.x -= overlap * Math.cos(ang) * i;
             object2.y -= overlap * Math.sin(ang) * i;
         }
-    
-        object.xVel = vF.x;
-        object.yVel = vF.y;
-    
-        object2.xVel = vF2.x;
-        object2.yVel = vF2.y;
     }
     
     this.setBounds = function(width, height) {

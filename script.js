@@ -124,17 +124,18 @@ $("#sim-data").click(function() {
     enableColData = !enableColData;  
 });
 
-$("#btn-run").click(function() {
-    sim.paused = false;
+$("#btn-run-pause").click(function() {
+    sim.paused = !sim.paused;
+    changeRunPauseBtn();
 });
 
-$("#btn-stop").click(function() {
-    sim.paused = true;
-});
-
-$("#btn-back").click(function() {
-    sim.updateSimulationRev();
-});
+function changeRunPauseBtn() {
+    if (!sim.paused) {
+        $("#btn-run-pause").removeClass('icon-play').addClass('icon-pause').text("PAUSE");
+    } else {
+        $("#btn-run-pause").removeClass('icon-pause').addClass('icon-play').text("RUN");
+    }
+}
 
 $("#btn-next").click(function() {
     if (sim.paused) {
