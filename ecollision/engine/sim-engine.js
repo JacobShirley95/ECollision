@@ -113,7 +113,6 @@ function SimEngine(width, height, particles) {
                 t = (-b - Math.sqrt(discr)) / (2 * a);
                 t2 = (-b + Math.sqrt(discr)) / (2 * a);
             }
-    
             collision.time = t2;
     
             return true;
@@ -138,7 +137,7 @@ function SimEngine(width, height, particles) {
     
         var x1 = (newV * cosA) + (thisVel.y * sinA);
         var y1 = (newV * sinA) - (thisVel.y * cosA);
-
+ 
         var x2 = (newV2 * cosA) + (objVel.y * sinA);
         var y2 = (newV2 * sinA) - (objVel.y * cosA);
 
@@ -158,8 +157,8 @@ function SimEngine(width, height, particles) {
             object.x -= object.xVel * this.speedConst * t;
             object.y -= object.yVel * this.speedConst * t;
     
-            object2.x -= object2.xVel * t;
-            object2.y -= object2.yVel * t;
+            object2.x -= object2.xVel * this.speedConst * t;
+            object2.y -= object2.yVel * this.speedConst * t;
         } else {
             var dX = object2.x - object.x;
             var dY = object2.y - object.y;
@@ -168,8 +167,8 @@ function SimEngine(width, height, particles) {
     
             var overlap = object2.radius - Math.abs(Math.sqrt(sqr) - object.radius) + 0.1;
     
-            var vel1 = new PVector(object.xVel, object.yVel).getMagnitudeNS();
-            var vel2 = new PVector(object2.xVel, object2.yVel).getMagnitudeNS();
+            var vel1 = new PVector(object.xVel * this.speedConst, object.yVel * this.speedConst).getMagnitudeNS();
+            var vel2 = new PVector(object2.xVel * this.speedConst, object2.yVel * this.speedConst).getMagnitudeNS();
     
             var i = vel1 / (vel1 + vel2);
     
