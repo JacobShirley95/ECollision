@@ -15,8 +15,8 @@ function Simulation(canvasName, rate) {
 
     var selected = -1;
 
-    this.setSpeed = function(rate) {
-        this.simEngine.speedConst = rate/defaultGameRate;
+    this.setSpeedConst = function(speedConst) {
+        this.simEngine.speedConst = speedConst;
     }
     
     this.resize = function(newWidth, newHeight) {

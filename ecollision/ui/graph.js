@@ -61,12 +61,17 @@ function Graph(canvasName, sim) {
             var aLen = data.length-1;
             
             var len = aLen;
+            
+            var total = 0;
 
             for (var j = 0; j < aLen-1; j++) {
                 if (updated) {
                     updated = false;
                     return;
                 }
+                
+                total += data[j].y;
+                
                 var i = (start+j)%len;
                 var i2 = (start+j+1)%len;
                 
@@ -99,29 +104,16 @@ function Graph(canvasName, sim) {
                 this.addData(x, y);
             }
                 
-            this.calibrate();
+            var dataY = total/len;
+            var targetY = this.height/2;
+        
+            renderY = targetY-(dataY*this.scaleY);
             
             this.stage.update();
         }
     }
     
     this.calibrate = function() {
-        var len = data.length;
-        if (len > 0) {
-            var avg = 0;
-            for (var j = 0; j < len; j++) {
-                avg += data[j].y;
-            }
-            
-            var dataY = avg/len;
-            var targetY = this.height/2;
-        
-            renderY = targetY-(dataY*this.scaleY);
-        }
-    }
-    
-    this.userCalibrate = function() {
-        this.calibrate();
         userY = 0;
     }
     

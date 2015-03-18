@@ -131,9 +131,9 @@ $("#btn-run-pause").click(function() {
 
 function changeRunPauseBtn() {
     if (!sim.paused) {
-        $("#btn-run-pause").removeClass('icon-play').addClass('icon-pause').text("PAUSE");
+        $("#btn-run-pause").removeClass('icon-run').addClass('icon-pause').text("PAUSE");
     } else {
-        $("#btn-run-pause").removeClass('icon-pause').addClass('icon-play').text("RUN");
+        $("#btn-run-pause").removeClass('icon-pause').addClass('icon-run').text("RUN");
     }
 }
 
@@ -179,7 +179,7 @@ $("#zoom-slider").sliderEx({
 
 $("#sim-speed-slider").sliderEx({
     slide: function(event, ui) {
-        sim.setSpeed(ui.value);
+        sim.setSpeedConst(parseFloat(ui.value));
     },
     stop: function(event, ui) {
         graph.updateData();
