@@ -127,6 +127,7 @@ button:active {
 }
 
 .config-button {
+    font-size:110%;
     text-align:center;
     padding:5px 5px 5px 5px;
 }
