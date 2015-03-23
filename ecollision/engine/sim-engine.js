@@ -55,26 +55,50 @@ function SimEngine(width, height, particles) {
         if (object1.xVel !== 0) {
             a = Math.atan(object1.yVel / object1.xVel);
         }
-        velocity.rotate(-a);
-    
-        var magnitude = velocity.x * object1.cOR;
+
+        var magnitude = object1.xVel * Math.cos(-a) - object1.yVel * Math.sin(-a) * object1.cOR;
         
         var dx = object1.x - object2.x;
         var dy = object1.y - object2.y;
     
-        var vec = new PVector(dx, dy);
-        
         var ang = 0;
         if (dx !== 0) {
-            ang = Math.atan(vec.y / vec.x);
+            ang = Math.atan(dy / dx);
         } else {
-            ang = Math.atan(vec.y / (vec.x - 0.00001));
+            ang = Math.atan(dy / (dx - 0.00001));
         }
-    
-        velocity.x = magnitude * Math.cos(ang);
-        velocity.y = magnitude * Math.sin(ang);
-        
-        velocity.rotate(-a);
+
+        /*var l = Math.cos(ang) * Math.cos(-a);
+        var m = Math.sin(ang) * Math.sin(-a);
+
+        var i = (l - m) * (object1.xVel * Math.cos(-a) - object1.yVel * Math.sin(-a));
+
+        var 1 = (Math.cos(ang) * Math.cos(-a) * object1.xVel * Math.cos(-a));
+        var 2 = -((Math.cos(ang) * Math.cos(-a) * object1.yVel * Math.sin(-a))+(Math.sin(ang) * Math.sin(-a)*object1.xVel * Math.cos(-a))
+        var 3 = (Math.sin(ang) * Math.sin(-a)*object1.yVel * Math.sin(-a));
+
+
+
+
+        var r = ((1-Math.sin(-a)*Math.sin(-a)) * Math.cos(ang) * object1.xVel) + (Math.sin(ang) * Math.sin(-a)*object1.yVel * Math.sin(-a));
+        var r2 = (Math.sin(-a)*Math.sin(-a))(Math.cos(ang))
+
+        var x1 = (newV * cosA) + (thisVel.y * sinA);
+        var y1 = (newV * sinA) - (thisVel.y * cosA);
+
+        var x2 = (newV2 * cosA) + (objVel.y * sinA);
+        var y2 = (newV2 * sinA) - (objVel.y * cosA);
+
+
+
+
+
+        i = Math.cos(ang) * Math.sin(-a) + Math.sin(ang) * Math.cos(-a);
+
+        var fdsf = (object1.xVel * (Math.cos(-a)*Math.cos(ang)*Math.cos(-a) - Math.cos(-a)*Math.sin(ang)*Math.sin(-a))) - (object1.yVel * Math.sin(-a) * Math.cos(ang - a))*/
+
+        velocity.x = magnitude * (Math.cos(ang - a));
+        velocity.y = magnitude * (Math.sin(ang - a));
         
       /*  var dx = object1.x - object2.x;
         var dy = object1.y - object2.y;
@@ -113,7 +137,12 @@ function SimEngine(width, height, particles) {
                 t = (-b - Math.sqrt(discr)) / (2 * a);
                 t2 = (-b + Math.sqrt(discr)) / (2 * a);
             }
-            collision.time = t2;
+
+
+            if (t > 0.0 && t <= 1.0)
+                collision.time = t;
+            else
+                collision.time = t2;
     
             return true;
         }
@@ -154,11 +183,11 @@ function SimEngine(width, height, particles) {
         var t = collision.time + (0.001 * collision.time);
         
         if (t < 1.0) {
-            object.x -= object.xVel * this.speedConst * t;
-            object.y -= object.yVel * this.speedConst * t;
+            object.x -= object.xVel * t;
+            object.y -= object.yVel *  t;
     
-            object2.x -= object2.xVel * this.speedConst * t;
-            object2.y -= object2.yVel * this.speedConst * t;
+            object2.x -= object2.xVel * t;
+            object2.y -= object2.yVel * t;
         } else {
             var dX = object2.x - object.x;
             var dY = object2.y - object.y;
@@ -167,8 +196,8 @@ function SimEngine(width, height, particles) {
     
             var overlap = object2.radius - Math.abs(Math.sqrt(sqr) - object.radius) + 0.1;
     
-            var vel1 = new PVector(object.xVel * this.speedConst, object.yVel * this.speedConst).getMagnitudeNS();
-            var vel2 = new PVector(object2.xVel * this.speedConst, object2.yVel * this.speedConst).getMagnitudeNS();
+            var vel1 = new PVector(object.xVel, object.yVel).getMagnitudeNS();
+            var vel2 = new PVector(object2.xVel, object2.yVel).getMagnitudeNS();
     
             var i = vel1 / (vel1 + vel2);
     
@@ -193,7 +222,6 @@ function SimEngine(width, height, particles) {
         var objects = this.particles;
 
         var grav = gravity;
-        var ballEnvironment = this.ballEnvironment;
         
         for (var i = 0; i < objects.length; i++) {
             var obj = objects[i];

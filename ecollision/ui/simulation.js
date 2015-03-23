@@ -3,9 +3,9 @@ function Simulation(canvasName, rate) {
 
     this.paused = false;
 
-    this.simEngine = null;
     this.particles = [];
-    
+    this.simEngine = new SimEngine(this.width, this.height, this.particles);
+
     var timeStamp = 0;
     var newTime = timeStamp;
     var curTime = timeStamp;
@@ -41,17 +41,17 @@ function Simulation(canvasName, rate) {
         
         particle.mass = mass;
         
-        var objects = this.objects;
+        var particles = this.particles;
         particle.addEventHandler("click", function (ev) {
             if (selected != -1) {
-                objects[selected].deselect();
+                particles[selected].deselect();
             }
                 
-            for (var i = 0; i < objects.length; i++) {
-                if (objects[i].displayObj == ev.target) {
+            for (var i = 0; i < particles.length; i++) {
+                if (particles[i].displayObj == ev.target) {
                     if (i != selected) {
                         selected = i;
-                        objects[i].selected = true;
+                        particles[i].selected = true;
                     } else {
                         selected = -1;
                     }
@@ -61,21 +61,21 @@ function Simulation(canvasName, rate) {
         });
                 
         this.stage.addChild(particle.displayObj);
-        this.objects.push(particle);
+        this.particles.push(particle);
         
         return particle;
     }
     
     this.removeParticle = function(index) {
-        this.stage.removeChild(this.objects[index].displayObj);
-        this.objects.splice(index, 1);
+        this.stage.removeChild(this.particles[index].displayObj);
+        this.particles.splice(index, 1);
     }
 
-    this.loadParticles = function(objects) {
+    this.loadParticles = function(particles) {
         this.init();
 
-        for (var i = 0; i < objects.length; i++) {
-            var obj = objects[i];
+        for (var i = 0; i < particles.length; i++) {
+            var obj = particles[i];
             var particle = this.addParticle(obj.x, obj.y, obj.mass, obj.radius, obj.style);
 
             particle.xVel = obj.xVel;
@@ -94,7 +94,7 @@ function Simulation(canvasName, rate) {
     this.getSelected = function() {
         var sel = null;
         if (selected != -1) {
-            sel = this.objects[selected];
+            sel = this.particles[selected];
         }
         return sel;
     }
@@ -104,28 +104,30 @@ function Simulation(canvasName, rate) {
     }
     
     this.init = function() {
-        selected = -1;
-        
-        this.stage.removeAllChildren();
-        this.objects = [];
-        
-        this.simEngine = new SimEngine(this.width, this.height, this.objects);
+        var b1 = this.addParticle(100, 100, 100, 10, "red");
+        var b2 = this.addParticle(10, 100, 100, 10, "blue");
+
+        b2.xVel = 1;
     }
     
     this.restart = function () {
-        this.init();
+        this.stage.removeAllChildren();
+        selected = -1;
+        
+        this.particles = [];
+        this.simEngine = new SimEngine(this.width, this.height, this.particles);
     }
     
     this.draw = function () {
-        var objects = this.objects;
+        var particles = this.particles;
         if (!this.paused) {
             curTime += 1000/refreshRate;
         
             if (newTime + updateTime < curTime) {
                 timeStamp = curTime;
                 if (enableInterpolation) {
-                    for (var i = 0; i < objects.length; i++) {
-                        objects[i].capture();
+                    for (var i = 0; i < particles.length; i++) {
+                        particles[i].capture();
                     }
                 }
                 while (newTime + updateTime < curTime) {
@@ -138,8 +140,8 @@ function Simulation(canvasName, rate) {
         
         var interpolation = Math.min(1.0, (curTime - timeStamp) / updateTime);
 
-        for (var i = 0; i < objects.length; i++) {
-            var obj = objects[i];
+        for (var i = 0; i < particles.length; i++) {
+            var obj = particles[i];
     
             var newX = obj.x;
             var newY = obj.y;

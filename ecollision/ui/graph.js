@@ -188,8 +188,7 @@ function Graph(canvasName, sim) {
     
     this.getEnergy = function() {
         var energy = 0.0;
-        var objects = this.simulation.objects;
-        $.each(objects, function(i, object) {
+        $.each(this.simulation.particles, function(i, object) {
             energy += object.getEnergy();
         });
         
