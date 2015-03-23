@@ -5,7 +5,7 @@ function SimEngine(width, height, particles) {
     this.particles = particles;
     
     this.speedConst = 1.0;
-    
+
     this.edgeCollision = function (particle, rebound) {
         var cOR = particle.cOR;
 
@@ -149,7 +149,7 @@ function SimEngine(width, height, particles) {
         return false;
     }
     
-    this.handleCollision = function (collision) {
+    /*this.handleCollision = function (collision) {
         var object = collision.object;
         var object2 = collision.object2;
         
@@ -177,6 +177,29 @@ function SimEngine(width, height, particles) {
     
         object2.xVel = x2;
         object2.yVel = y2;
+    }*/
+    
+    this.handleCollision = function (collision) {
+        var object = collision.object;
+        var object2 = collision.object2;
+        
+        var vx = object.xVel;
+        var vx2 = object2.xVel;
+        
+        var vy = object.yVel;
+        var vy2 = object2.yVel;
+    
+        var newV = ((vx * (object.mass - object2.mass)) + (2 * object2.mass * vx2)) / (object.mass + object2.mass);
+        var newV2 = ((vx2 * (object2.mass - object.mass)) + (2 * object.mass * vx)) / (object.mass + object2.mass);
+        
+        var newVY = ((vy * (object.mass - object2.mass)) + (2 * object2.mass * vy2)) / (object.mass + object2.mass);
+        var newVY2 = ((vy2 * (object2.mass - object.mass)) + (2 * object.mass * vy)) / (object.mass + object2.mass);
+    
+        object.xVel = newV;
+        object.yVel = newVY;
+    
+        object2.xVel = newV2;
+        object2.yVel = newVY2;
     }
     
     this.seperateObjects = function(collision, object, object2) {
@@ -203,13 +226,13 @@ function SimEngine(width, height, particles) {
     
             ang = Math.atan2(object.y - object2.y, object.x - object2.x);
     
-            object.x += overlap * Math.cos(ang) * i;
-            object.y += overlap * Math.sin(ang) * i;
+            object.x += overlap * this.speedConst * Math.cos(ang) * i;
+            object.y += overlap * this.speedConst * Math.sin(ang) * i;
     
             i = 1 - i;
     
-            object2.x -= overlap * Math.cos(ang) * i;
-            object2.y -= overlap * Math.sin(ang) * i;
+            object2.x -= overlap * this.speedConst * Math.cos(ang) * i;
+            object2.y -= overlap * this.speedConst * Math.sin(ang) * i;
         }
     }
     

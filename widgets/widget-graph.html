@@ -1,14 +1,14 @@
 <div id="graph" style=" overflow:auto;">
-    <div id="buttons" style="width:100%;">
-        <button id="calibrate">Calibrate</button>
-        <button id="zoom-in">Zoom In</button>
-        <button id="zoom-out">Zoom Out</button>
-        <button id="move-up">Up</button>
-        <button id="move-down">Down</button>
+    <div id="buttons" style="width:13%; float:right;">
+        <button id="calibrate" class="icon-loop2 config-button" style="margin:0;"></button>
+        <button id="zoom-in" class="icon-zoom-in config-button" style="margin:0;"></button>
+        <button id="zoom-out" class="icon-zoom-out config-button" style="margin:0;"></button>
+        <button id="move-up" class="icon-arrow-up2 config-button" style="margin:0;"></button>
+        <button id="move-down" class="icon-arrow-down2 config-button" style="margin:0;"></button>
     </div>
-    <div id="graph-wrapper" style="width:90%; height:85%; left: 10px; position:relative;">
+    <div id="graph-wrapper" style="width:82%; height:100%; left: 10px; position: relative; float:left;">
         <div>Energy / kJ</div>
-        <canvas id="graph-canvas" style="width:100%; height:75%;">
+        <canvas id="graph-canvas" style="width:100%; height:80%;">
         </canvas>
         <div style="text-align:right;">Time / ms</div>
     </div>

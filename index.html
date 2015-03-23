@@ -5,6 +5,7 @@
         <link rel="stylesheet" type="text/css" href="lib/jquery.gridster.min.css">
         <link rel="stylesheet" type="text/css" href="style.css">
         <link rel="stylesheet" type="text/css" href="fonts/icomoon/style.css">
+        
         <link rel="stylesheet" href="lib/jquery-ui.css">
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
         
@@ -25,6 +26,7 @@
         <script src="ecollision/ui/graph.js"></script>
                 
         <script src="ecollision/engine/sim-engine.js"></script>
+        
         <script src="ecollision/ecollision.js"></script>
     </head> 
     
@@ -71,7 +73,9 @@
                         numLoadedWidgets++;
                         if (numLoadedWidgets == widgets.length) {
                             var element = document.createElement("script");
+                            
                             element.src = "script.js";
+                            
                             document.body.appendChild(element);
                         }
                     });
