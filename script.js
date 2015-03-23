@@ -93,7 +93,7 @@ $("#remove-particle").click(function() {
 });
 
 $("#calibrate").click(function() {
-    graph.userCalibrate();
+    graph.calibrate();
 });
 
 $("#zoom-in").click(function() {
