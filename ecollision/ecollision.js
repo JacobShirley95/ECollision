@@ -18,6 +18,7 @@ function Ecollision() {
         
         widgets.push(sim);
         widgets.push(graph);
+        widgets.push(new Placement("overlay"));
         
         for (var i = 0; i < widgets.length; i++) {
             widgets[i].init();

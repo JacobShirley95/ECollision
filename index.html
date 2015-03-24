@@ -25,6 +25,7 @@
         <script src="ecollision/ui/widget.js"></script>
         <script src="ecollision/ui/simulation.js"></script>
         <script src="ecollision/ui/graph.js"></script>
+        <script src="ecollision/ui/placement.js"></script>
                 
         <script src="ecollision/engine/sim-engine.js"></script>
         
@@ -56,23 +57,24 @@
                     }
                 }).data('gridster');
 
-                var widgets = [ ['widget-simulation', 4, 6],
-                                ['widget-graph', 2, 2], 
-                                ['widget-sim-controls', 2, 2],
-                                ['widget-debug-controls', 2, 2],
-                                ['widget-ball-controls', 4, 1]
+                var panels = [ ['simulation', 4, 6],
+                                ['graph', 2, 2], 
+                                ['sim-controls', 2, 2],
+                                ['debug-controls', 2, 2],
+                                ['ball-controls', 4, 1]
                               ];
 
-                var numLoadedWidgets = 0;
+                var numLoadedPanels = 0;
             
-                $.each(widgets, function(i, widget){
-                    var w = widget[0];
-                    widget[0] = '<li id="'+w+'"></li>';
-                    gridster.add_widget.apply(gridster, widget);
-            
-                    $("#"+w).load("widgets/"+w+".html", function() {
-                        numLoadedWidgets++;
-                        if (numLoadedWidgets == widgets.length) {
+                $.each(panels, function(i, panel){
+                    var p = panel[0];
+                    panel[0] = '<li id="'+p+'"></li>';
+                    gridster.add_widget.apply(gridster, panel);
+                    
+                    console.log(p);
+                    $("#"+p).load("panels/"+p+".html", function() {
+                        numLoadedPanels++;
+                        if (numLoadedPanels == panels.length) {
                             var element = document.createElement("script");
                             
                             element.src = "script.js";

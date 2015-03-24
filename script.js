@@ -69,8 +69,16 @@ $.widget("custom.sliderEx", $.ui.slider, {
 });
 
 $(".particle-slider").sliderEx();
+var hidden = false;
 
 $("#add-particle").click(function() {
+    if (!hidden)
+        $("#overlay").fadeOut();
+    else 
+        $("#overlay").fadeIn();
+        
+    hidden = !hidden;
+    
     var velocity = $("#slider-velocity").sliderEx("value");
     var mass = $("#slider-mass").sliderEx("value");
         
@@ -148,19 +156,7 @@ $("#btn-next").click(function() {
 var savedState = [];
 
 $("#btn-save").click(function() {
-    savedState = [];
-    for (var i = 0; i < sim.objects.length; i++) {
-        var obj = sim.objects[i];
-        var particle = new Particle(obj.x, obj.y, obj.radius, obj.style);
-
-        particle.mass = obj.mass;
-        particle.xVel = obj.xVel;
-        particle.yVel = obj.yVel;
-        
-        particle.cOR = obj.cOR;
-
-        savedState.push(particle);
-    }
+    sim.saveParticles(savedState);
 });
 
 $("#btn-load").click(function() {
@@ -186,11 +182,6 @@ $("#sim-speed-slider").sliderEx({
     }
 });
 
-$('#graph-canvas').attr("width",$('#graph-canvas').width());
-$('#graph-canvas').attr("height",$('#graph-canvas').height());
-
-$('#widget-canvas').attr("width",$('#widget-canvas').width());
-$('#widget-canvas').attr("height",$('#widget-canvas').height());
 
 var ecollision = new Ecollision();
 

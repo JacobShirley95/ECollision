@@ -4,6 +4,9 @@ function Widget(canvasName) {
     
     var can = $("#"+canvasName);
     
+    $("#"+canvasName).attr("width",$("#"+canvasName).width());
+    $("#"+canvasName).attr("height",$("#"+canvasName).height());
+    
     this.width = can.attr("width");
     this.height = can.attr("height");
     

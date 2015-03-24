@@ -71,16 +71,32 @@ function Simulation(canvasName, rate) {
         this.particles.splice(index, 1);
     }
 
-    this.loadParticles = function(particles) {
-        this.init();
+    this.loadParticles = function(toBeLoaded) {
+        this.restart();
 
-        for (var i = 0; i < particles.length; i++) {
-            var obj = particles[i];
+        for (var i = 0; i < toBeLoaded.length; i++) {
+            var obj = toBeLoaded[i];
             var particle = this.addParticle(obj.x, obj.y, obj.mass, obj.radius, obj.style);
 
             particle.xVel = obj.xVel;
             particle.yVel = obj.yVel;
             particle.cOR = obj.cOR;
+        }
+    }
+    
+    this.saveParticles = function(saved) {
+        saved = [];
+        for (var i = 0; i < this.particles.length; i++) {
+            var obj = this.particles[i];
+            var particle = new Particle(obj.x, obj.y, obj.radius, obj.style);
+    
+            particle.mass = obj.mass;
+            particle.xVel = obj.xVel;
+            particle.yVel = obj.yVel;
+            
+            particle.cOR = obj.cOR;
+    
+            saved.push(particle);
         }
     }
     
@@ -105,6 +121,9 @@ function Simulation(canvasName, rate) {
     
     this.init = function() {
         var b1 = this.addParticle(100, 100, 100, 10, "red");
+        this.addParticle(121, 100, 100, 10, "red");
+        this.addParticle(142, 100, 100, 10, "red");
+        this.addParticle(163, 100, 100, 10, "red");
         var b2 = this.addParticle(10, 100, 100, 10, "blue");
 
         b2.xVel = 1;
