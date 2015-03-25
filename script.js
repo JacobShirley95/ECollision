@@ -69,17 +69,14 @@ $.widget("custom.sliderEx", $.ui.slider, {
 });
 
 $(".particle-slider").sliderEx();
-var hidden = false;
 
 $("#add-particle").click(function() {
-    if (!hidden)
-        $("#overlay").fadeOut();
+    if (placement.hidden)
+        placement.show();
     else 
-        $("#overlay").fadeIn();
-        
-    hidden = !hidden;
+        placement.hide();
     
-    var velocity = $("#slider-velocity").sliderEx("value");
+    /*var velocity = $("#slider-velocity").sliderEx("value");
     var mass = $("#slider-mass").sliderEx("value");
         
     var cOR = $("#slider-cor").sliderEx("value");
@@ -93,11 +90,25 @@ $("#add-particle").click(function() {
 
     particle.xVel = velocity*Math.cos(ang);
     particle.yVel = velocity*Math.sin(ang);
-    particle.cOR = cOR;
+    particle.cOR = cOR;*/
+    
+    //var velocity = $("#slider-velocity").sliderEx("value");
+    var mass = $("#slider-mass").sliderEx("value");
+        
+    var cOR = $("#slider-cor").sliderEx("value");
+    //var radius = $("#slider-radius").sliderEx("value");
+    
+    placement.beginAdd(mass, 20, getRandomColor());
 });
 
 $("#remove-particle").click(function() {
-    sim.removeSelected();
+    //sim.removeSelected();
+    if (placement.hidden)
+        placement.show();
+    else 
+        placement.hide();
+        
+    placement.beginDelete();
 });
 
 $("#calibrate").click(function() {

@@ -1,14 +1,15 @@
 function Widget(canvasName) {
-    this.active = false;
+    this.hidden = false;
     this.owner = null;
     
-    var can = $("#"+canvasName);
+    this.canvasName = canvasName;
+    this.canvas = $("#"+canvasName);
     
-    $("#"+canvasName).attr("width",$("#"+canvasName).width());
-    $("#"+canvasName).attr("height",$("#"+canvasName).height());
+    this.width = this.canvas.width();
+    this.height = this.canvas.height();
     
-    this.width = can.attr("width");
-    this.height = can.attr("height");
+    this.canvas.attr("width", this.width);
+    this.canvas.attr("height", this.height);
     
     this.stage = new createjs.Stage(canvasName);
     
@@ -34,4 +35,14 @@ function Widget(canvasName) {
     this.stop = function() {}
     
     this.resize = function(newWidth, newHeight) {}
+    
+    this.show = function() {
+        this.canvas.fadeIn();
+        this.hidden = false;
+    }
+    
+    this.hide = function() {
+        this.canvas.fadeOut();
+        this.hidden = true;
+    }
 }

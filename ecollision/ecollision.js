@@ -5,6 +5,7 @@ function Point2D(x, y) {
 
 var sim;
 var graph;
+var placement;
 
 function Ecollision() {
     var widgets = [];
@@ -15,10 +16,11 @@ function Ecollision() {
     this.start = function() {
         sim = new Simulation("widget-canvas", 50);
         graph = new Graph("graph-canvas", sim);
+        placement = new Placement("overlay", sim);
         
         widgets.push(sim);
         widgets.push(graph);
-        widgets.push(new Placement("overlay"));
+        widgets.push(placement);
         
         for (var i = 0; i < widgets.length; i++) {
             widgets[i].init();

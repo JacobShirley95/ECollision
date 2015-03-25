@@ -149,7 +149,7 @@ function SimEngine(width, height, particles) {
         return false;
     }
     
-    /*this.handleCollision = function (collision) {
+    this.handleCollision = function (collision) {
         var object = collision.object;
         var object2 = collision.object2;
         
@@ -177,9 +177,9 @@ function SimEngine(width, height, particles) {
     
         object2.xVel = x2;
         object2.yVel = y2;
-    }*/
+    }
     
-    this.handleCollision = function (collision) {
+    /*this.handleCollision = function (collision) {
         var object = collision.object;
         var object2 = collision.object2;
         
@@ -200,17 +200,17 @@ function SimEngine(width, height, particles) {
     
         object2.xVel = newV2;
         object2.yVel = newVY2;
-    }
+    }*/
     
     this.seperateObjects = function(collision, object, object2) {
         var t = collision.time + (0.001 * collision.time);
         
         if (t < 1.0) {
-            object.x -= object.xVel * t;
-            object.y -= object.yVel *  t;
+            object.x -= object.xVel * this.speedConst * t;
+            object.y -= object.yVel * this.speedConst * t;
     
-            object2.x -= object2.xVel * t;
-            object2.y -= object2.yVel * t;
+            object2.x -= object2.xVel * this.speedConst * t;
+            object2.y -= object2.yVel * this.speedConst * t;
         } else {
             var dX = object2.x - object.x;
             var dY = object2.y - object.y;
