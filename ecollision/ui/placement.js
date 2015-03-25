@@ -93,7 +93,6 @@ function Placement(canvasName, simulation) {
                 var dx = p.x-mouseX;
                 var dy = p.y-mouseY;
                 if (dx*dx + dy*dy <= p.radius*p.radius) {
-                    console.log("AFSDF");
                     p.select();
                     
                     tempObject = p;
