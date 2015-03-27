@@ -12,7 +12,7 @@ function Particle(x, y, radius, style) {
 
     var curID = 0;
     
-    this.cOR = 0.99;
+    this.cOR = 1.0;
     
     this.selected = false;
     

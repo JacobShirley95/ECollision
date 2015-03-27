@@ -138,7 +138,6 @@ function SimEngine(width, height, particles) {
                 t2 = (-b + Math.sqrt(discr)) / (2 * a);
             }
 
-
             if (t > 0.0 && t <= 1.0)
                 collision.time = t;
             else

@@ -10,7 +10,7 @@ function Placement(canvasName, simulation) {
     var crossHair = new createjs.Shape();
     var grid = new createjs.Shape();
     var velocityLine = new createjs.Shape();
-    var infoText = new createjs.Text();
+    var infoText = new createjs.Text("", "bold 15px Arial");
     
     var gridGraphics = grid.graphics;
     gridGraphics.beginStroke("black");
@@ -20,14 +20,29 @@ function Placement(canvasName, simulation) {
     var addIndex = 0;
     
     var deleteMode = false;
+    var freePlace = false;
     
     this.canvas.mousewheel(function(event) {
         var d = event.deltaY;
         if (d < 0) {
-            tempObject.radius -= 1;
+            if (tempObject.radius > 20) {
+                tempObject.radius -= 1;
+            }
         } else {
-            tempObject.radius += 1;
+            if (tempObject.radius < 80) {
+                tempObject.radius += 1;
+            }
         }
+    });
+    
+    $(document).keydown(function(event) {
+        if (event.ctrlKey) {
+            freePlace = true;
+        }
+    });
+    
+    $(document).keyup(function(event) {
+        freePlace = false;
     });
     
     this.canvas.bind('contextmenu', function(e){
@@ -46,45 +61,48 @@ function Placement(canvasName, simulation) {
         
     }
     
-    this.stage.addEventListener("stagemousemove", function (ev) {
-        mouseX = ev.stageX;
-        mouseY = ev.stageY;
+    function getPos(x, y) {
         
-        if (addIndex == 0) {
+    }
+    
+    this.stage.addEventListener("stagemousemove", function (ev) {
+        mouseX = crossX = ev.stageX;
+        mouseY = crossY = ev.stageY;
+        
+        if (!freePlace) {
             var gridX = Math.round(mouseX/interval);
             var gridY = Math.round(mouseY/interval);
             
             crossX = gridX*interval;
             crossY = gridY*interval;
-            
+        }
+        
+        if (addIndex == 0) {
             velocityLine.x = crossX;
             velocityLine.y = crossY;
             
             tempObject.x = crossX;
             tempObject.y = crossY;
             
-            infoText.x = crossX;
-            infoText.y = crossY;
+            infoText.x = crossX-50;
+            infoText.y = crossY-50;
 
             showCrossHair();
         } else if (addIndex == 1) {
-            var gridX = Math.round(mouseX/interval);
-            var gridY = Math.round(mouseY/interval);
-            
-            var crossX2 = gridX*interval;
-            var crossY2 = gridY*interval;
-            
             var g = velocityLine.graphics;
             
-            var dx = crossX2-velocityLine.x;
-            var dy = crossY2-velocityLine.y;
+            var dx = crossX-velocityLine.x;
+            var dy = crossY-velocityLine.y;
+            
+            infoText.x = velocityLine.x + (dx/2);
+            infoText.y = velocityLine.y + (dy/2);
+            infoText.text = Math.round(Math.sqrt(dx*dx + dy*dy)) + " px/s";
             
             tempObject.xVel = dx/sim.getUpdateRate();
             tempObject.yVel = dy/sim.getUpdateRate();
             
             g.clear().beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(dx, dy);
         } else if (addIndex == 2) {
-            
             var particles = sim.particles;
             
             for (var i = 0; i < particles.length; i++) {
@@ -105,6 +123,8 @@ function Placement(canvasName, simulation) {
     
     var t = this;
     
+    var selected = null;
+
     this.stage.addEventListener("stagemousedown", function (ev) {
         if (ev.nativeEvent.button == 2) {
             reset();
@@ -113,6 +133,7 @@ function Placement(canvasName, simulation) {
                 velocityLine.graphics.clear();
                 
                 stage.addChild(velocityLine);
+                stage.addChild(infoText);
                 
                 addIndex++;
             } else if (addIndex == 1) {
@@ -122,11 +143,11 @@ function Placement(canvasName, simulation) {
                 p.yVel = tempObject.yVel;
                 
                 stage.removeChild(velocityLine);
+                stage.removeChild(infoText);
                 
                 addIndex = 0;
             }  else if (addIndex == 2) {
                 tempObject.displayObj.dispatchEvent("click");
-                sim.removeSelected();
             }
         }
     });
@@ -134,8 +155,8 @@ function Placement(canvasName, simulation) {
     this.draw = function() {
         if (!this.hidden) {
             if (tempObject != null) {
-                infoText.text = "Radius: "+tempObject.radius;
-                tempObject.draw(crossX, crossY);
+                //infoText.text = "Radius: "+tempObject.radius;
+                tempObject.draw(tempObject.x, tempObject.y);
             }
                 
             this.stage.update();
@@ -158,7 +179,7 @@ function Placement(canvasName, simulation) {
         addIndex = 0;
     }
     
-    this.beginAdd = function(mass, radius, style) {
+    this.beginAdd = function(mass, cOR, style) {
         this.stage.removeAllChildren();
         
         addIndex = 0;
@@ -166,16 +187,20 @@ function Placement(canvasName, simulation) {
         mouseX = crossX = this.width/2;
         mouseY = crossY = this.height/2;
     
-        tempObject = new Particle(crossX, crossY, radius, style);
+        showCrossHair();
+    
+        tempObject = new Particle(crossX, crossY, 25, style);
         tempObject.mass = mass;
+        tempObject.cOR = cOR;
         
         infoText.x = mouseX;
         infoText.y = mouseY;
         
-        this.stage.addChild(grid);
+        //this.stage.addChild(grid);
         this.stage.addChild(crossHair);
         this.stage.addChild(tempObject.displayObj);
-        this.stage.addChild(infoText);
+        
+        $("#overlay-mode").text("Mode: Add");
     }
     
     this.beginDelete = function() {
@@ -187,7 +212,9 @@ function Placement(canvasName, simulation) {
         mouseY = crossY = this.height/2;
         
         this.stage.addChild(grid);
-        this.stage.addChild(crossHair);
+        //this.stage.addChild(crossHair);
+        
+        $("#overlay-mode").text("Mode: Edit");
     }
     
     showCrossHair();
