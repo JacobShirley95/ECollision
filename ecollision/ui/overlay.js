@@ -51,10 +51,6 @@ function Overlay(canvasName, simulation, settings) {
     });
     
     $(document).keydown(function(event) {
-        if (event.charCode == 27) {
-            this.end();
-            return;
-        }
         freePlace = event.ctrlKey;
         copyPlace = event.shiftKey;
     });
@@ -159,6 +155,7 @@ function Overlay(canvasName, simulation, settings) {
                 
                     p.xVel = tempObject.xVel;
                     p.yVel = tempObject.yVel;
+                    p.cOR = tempObject.cOR;
                     
                     stage.removeChild(velocityLine);
                     stage.removeChild(infoText);

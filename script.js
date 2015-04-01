@@ -187,9 +187,9 @@ $("#btn-run-pause").click(function() {
 
 function changeRunPauseBtn() {
     if (!ecollision.paused) {
-        $("#btn-run-pause").removeClass('icon-run').addClass('icon-pause').text("PAUSE");
+        $("#btn-run-pause").removeClass('icon-playback-play').addClass('icon-pause').text("PAUSE");
     } else {
-        $("#btn-run-pause").removeClass('icon-pause').addClass('icon-run').text("RUN");
+        $("#btn-run-pause").removeClass('icon-pause').addClass('icon-playback-play').text("RUN");
     }
 }
 
@@ -205,7 +205,6 @@ $("#btn-save").click(function() {
 });
 
 $("#btn-load").click(function() {
-    console.log(savedState.length);
     ecollision.simulationUI.loadParticles(savedState);
 });
 
@@ -248,6 +247,7 @@ ecollision.onTick = function() {
         var str = "<b>XVel:</b> " + Math.round(selected.xVel*eCollisionSettings.updateRate) + " px/s" + 
                   "<br /> <b>YVel:</b> " + Math.round(selected.yVel*eCollisionSettings.updateRate) + " px/s" +
                   "<br /> <b>Mass:</b> " + selected.mass + " kg" +
+                  "<br /> <b>CoR:</b> " + selected.cOR +
                   "<br /> <b>Radius:</b> " + selected.radius + " px"
                   "<br /> <b>Energy:</b> " + Math.round(selected.getEnergy()) + " J";
 
