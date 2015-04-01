@@ -94,8 +94,10 @@ function Overlay(canvasName, simulation, settings) {
                 velocityLine.x = crossX;
                 velocityLine.y = crossY;
                 
-                tempObject.x = crossX;
-                tempObject.y = crossY;
+                if (tempObject != null) {
+                    tempObject.x = crossX;
+                    tempObject.y = crossY;
+                }
                 
                 infoText.x = crossX-50;
                 infoText.y = crossY-50;

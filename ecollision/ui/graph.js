@@ -13,19 +13,15 @@ function Graph(canvasName, engine, scaleX, scaleY, settings) {
 
     var offsetX = 0.0;
     var offsetY = 0.0;
+
+    var userY = 0;
     
     var data = [];
     var start = 0;
     var maxLen = 150;
     
-    var maxX = 0;
-    var maxY = 0;
-    
     var updated = false;
-    
-    var renderY = 0;
-    var userY = 0;
-    
+
     var currX = 0;
     var currY = 0;
     
@@ -66,7 +62,7 @@ function Graph(canvasName, engine, scaleX, scaleY, settings) {
                 var i2 = (start+j+1)%length;
                 
                 var x2 = (data[i].x*this.scaleX)-offsetX;
-                var y2 = (data[i].y*this.scaleY)+renderY+userY;
+                var y2 = (data[i].y*this.scaleY)+offsetY+userY;
                 
                 //if second x value is larger than width, move graph along
                 if (x2 > this.width) {
@@ -74,10 +70,10 @@ function Graph(canvasName, engine, scaleX, scaleY, settings) {
                 }
         
                 var x1 = (data[i].x*this.scaleX)-offsetX;
-                var y1 = (data[i].y*this.scaleY)+renderY+userY;
+                var y1 = (data[i].y*this.scaleY)+offsetY+userY;
                 
                 var x3 = (data[i2].x*this.scaleX)-offsetX;
-                var y3 = (data[i2].y*this.scaleY)+renderY+userY;
+                var y3 = (data[i2].y*this.scaleY)+offsetY+userY;
                 
                 g.beginStroke("red").moveTo(this.x+x1, this.y+this.height-y1).lineTo(this.x+x3, this.y+this.height-y3);
             }
@@ -92,7 +88,7 @@ function Graph(canvasName, engine, scaleX, scaleY, settings) {
             var dataY = total/data.length;
             var targetY = this.height/2;
         
-            renderY = targetY-(dataY*this.scaleY);
+            offsetY = targetY-(dataY*this.scaleY);
             
             this.stage.update();
         }

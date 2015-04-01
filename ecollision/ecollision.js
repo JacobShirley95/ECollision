@@ -17,8 +17,6 @@ function ECollision(settings) {
     var fps = 0;
     var fpsTime = 0;
 
-    var enableColData = false;
-
     var newTime = curTime = 0;
 
     var updateRate = settings.updateRate;
