@@ -1,10 +1,13 @@
-function Graph(canvasName, sim) {
+function Graph(canvasName, simulation, scaleX, scaleY) {
     Widget.call(this, canvasName);
     
-    this.scaleX = 1/5;
-    this.scaleY = 1/50;
+    this.scaleX = scaleX;
+    this.scaleY = scaleY;
 
-    this.simulation = sim;
+    this.x = 0;
+    this.y = 0;
+
+    this.simulation = simulation;
     
     var graph = new createjs.Shape();
 
@@ -14,22 +17,17 @@ function Graph(canvasName, sim) {
     var data = [];
     var start = 0;
     var maxLen = 150;
-
-    this.zoom = 1.0;
     
     var maxX = 0;
     var maxY = 0;
     
     var updated = false;
     
-    this.x = 0;
-    this.y = 0;
-    
     var renderY = 0;
     var userY = 0;
     
-    var x = 0;
-    var y = 0;
+    var currX = 0;
+    var currY = 0;
     
     this.init = function() {
         var xAxis = new createjs.Shape();
@@ -48,23 +46,14 @@ function Graph(canvasName, sim) {
     
     this.draw = function () {
         if (this.simulation != null) {
-            var width = this.width;
-            var height = this.height;
-            
             var g = graph.graphics;
             
             g.clear();
             
-            var rMaxX = 0;
-            var rMaxY = 0;
-            
-            var aLen = data.length-1;
-            
-            var len = aLen;
-            
+            var length = data.length-1;
             var total = 0;
 
-            for (var j = 0; j < aLen-1; j++) {
+            for (var j = 0; j < length-1; j++) {
                 if (updated) {
                     updated = false;
                     return;
@@ -72,21 +61,17 @@ function Graph(canvasName, sim) {
                 
                 total += data[j].y;
                 
-                var i = (start+j)%len;
-                var i2 = (start+j+1)%len;
+                //calculate offsetted index for point at index j
+                var i = (start+j)%length;
+                var i2 = (start+j+1)%length;
                 
                 var x2 = (data[i].x*this.scaleX)-offsetX;
                 var y2 = (data[i].y*this.scaleY)+renderY+userY;
                 
-                if (x2 > width) {
+                //if second x value is larger than width, move graph along
+                if (x2 > this.width) {
                     offsetX += x2-this.width;
                 }
-                
-                if (maxX < data[i].x)
-                    maxX = data[i].x;
-                
-                if (maxY < data[i].y)
-                    maxY = data[i].y;
         
                 var x1 = (data[i].x*this.scaleX)-offsetX;
                 var y1 = (data[i].y*this.scaleY)+renderY+userY;
@@ -98,13 +83,13 @@ function Graph(canvasName, sim) {
             }
             
             if (!this.simulation.paused) {
-                x += this.simulation.getUpdateTime();
-                y = this.getEnergy();
+                currX += this.simulation.getUpdateTime();
+                currY = this.getEnergy();
                 
-                this.addData(x, y);
+                this.addData(currX, currY);
             }
                 
-            var dataY = total/len;
+            var dataY = total/data.length;
             var targetY = this.height/2;
         
             renderY = targetY-(dataY*this.scaleY);
@@ -180,6 +165,7 @@ function Graph(canvasName, sim) {
     
     this.getEnergy = function() {
         var energy = 0.0;
+
         $.each(this.simulation.particles, function(i, object) {
             energy += object.getEnergy();
         });
@@ -190,7 +176,7 @@ function Graph(canvasName, sim) {
     this.attachSimulation = function(simulation) {
         this.simulation = simulation;
         this.updateData();
-        x = this.simulation.getUpdateTime();
+        currX = this.simulation.getUpdateTime();
     }
     
     this.detachSimulation = function() {

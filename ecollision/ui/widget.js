@@ -37,12 +37,12 @@ function Widget(canvasName) {
     this.resize = function(newWidth, newHeight) {}
     
     this.show = function() {
-        this.canvas.fadeIn();
+        this.canvas.fadeIn(200);
         this.hidden = false;
     }
     
     this.hide = function() {
-        this.canvas.fadeOut();
+        this.canvas.fadeOut(200);
         this.hidden = true;
     }
 }

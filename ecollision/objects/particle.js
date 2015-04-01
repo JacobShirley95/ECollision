@@ -50,6 +50,11 @@ function Particle(x, y, radius, style) {
         }
 
         graphics.beginFill(this.style).drawCircle(0, 0, this.radius).endFill();
+
+        if (this.selected) {
+            var scaleFactor = 10;
+            graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(this.xVel*scaleFactor, this.yVel*scaleFactor).endStroke();
+        }
     };
 
     this.select = function() {

@@ -15,6 +15,40 @@ function Simulation(canvasName, rate) {
 
     var selected = -1;
 
+    var mouseX = 0;
+    var mouseY = 0;
+
+    this.stage.addEventListener("stagemousemove", function (ev) {
+        mouseX = ev.stageX;
+        mouseY = ev.stageY; 
+    });
+
+    var zoom = 0.0;
+
+    var w = this.width;
+    var h = this.height;
+
+    this.canvas.mousewheel(function(event) {
+        var d = event.deltaY;
+        if (d < 0) {
+            if (zoom > 0) {
+                sim.stage.regX = mouseX-(w/2);
+                sim.stage.regY = mouseY-(h/2);
+                zoom -= 0.25;
+            }
+        } else {
+            if (zoom < 1) {
+                sim.stage.regX = mouseX-(w/2);
+                sim.stage.regY = mouseY-(h/2);
+                
+                zoom += 0.25;
+            }
+        }
+
+        sim.stage.scaleX = 1+zoom;
+        sim.stage.scaleY = 1+zoom;
+    });
+
     this.setSpeedConst = function(speedConst) {
         this.simEngine.speedConst = speedConst;
     }
@@ -85,7 +119,6 @@ function Simulation(canvasName, rate) {
     }
     
     this.saveParticles = function(saved) {
-        saved = [];
         for (var i = 0; i < this.particles.length; i++) {
             var obj = this.particles[i];
             var particle = new Particle(obj.x, obj.y, obj.radius, obj.style);

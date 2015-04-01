@@ -122,7 +122,7 @@ function SimEngine(width, height, particles) {
         var sqr = (dX * dX) + (dY * dY);
         var r = object2.radius + object.radius;
     
-        if (sqr <= r * r) {
+        if (sqr < r * r) {
             var pDiff = new PVector(object.x - object2.x, object.y - object2.y);
             var vDiff = new PVector(object.xVel - object2.xVel, object.yVel - object2.yVel);
     
@@ -140,8 +140,10 @@ function SimEngine(width, height, particles) {
 
             if (t > 0.0 && t <= 1.0)
                 collision.time = t;
-            else
+            else if (t2 > 0.0 && t2 <= 1.0)
                 collision.time = t2;
+            else
+                collision.time = 1.0;
     
             return true;
         }
@@ -203,7 +205,7 @@ function SimEngine(width, height, particles) {
     
     this.seperateObjects = function(collision, object, object2) {
         var t = collision.time + (0.001 * collision.time);
-        
+
         if (t < 1.0) {
             object.x -= object.xVel * this.speedConst * t;
             object.y -= object.yVel * this.speedConst * t;
@@ -218,20 +220,22 @@ function SimEngine(width, height, particles) {
     
             var overlap = object2.radius - Math.abs(Math.sqrt(sqr) - object.radius) + 0.1;
     
-            var vel1 = new PVector(object.xVel, object.yVel).getMagnitudeNS();
-            var vel2 = new PVector(object2.xVel, object2.yVel).getMagnitudeNS();
-    
-            var i = vel1 / (vel1 + vel2);
+            var vel1 = new PVector(object.xVel, object.yVel).getMagnitudeNS()+0.0001;
+            var vel2 = new PVector(object2.xVel, object2.yVel).getMagnitudeNS()+0.0001;
+
+            var vT = vel1 + vel2;
+
+            var i = vel1 / vT;
     
             ang = Math.atan2(object.y - object2.y, object.x - object2.x);
     
-            object.x += overlap * this.speedConst * Math.cos(ang) * i;
-            object.y += overlap * this.speedConst * Math.sin(ang) * i;
+            object.x += overlap * Math.cos(ang) * i;
+            object.y += overlap * Math.sin(ang) * i;
     
             i = 1 - i;
     
-            object2.x -= overlap * this.speedConst * Math.cos(ang) * i;
-            object2.y -= overlap * this.speedConst * Math.sin(ang) * i;
+            object2.x -= overlap * Math.cos(ang) * i;
+            object2.y -= overlap * Math.sin(ang) * i;
         }
     }
     

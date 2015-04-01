@@ -15,7 +15,7 @@ function Ecollision() {
 
     this.start = function() {
         sim = new Simulation("widget-canvas", 50);
-        graph = new Graph("graph-canvas", sim);
+        graph = new Graph("graph-canvas", sim, 1/50, 5);
         placement = new Placement("overlay", sim);
         
         widgets.push(sim);
@@ -55,19 +55,19 @@ function Ecollision() {
                 fpsCount = 0;
                 fpsTime = curTime;
             }
-            debugStr = "Fps: " + fps +
-                       "<br /> Game rate: " + setColGreen(sim.getUpdateRate()) + " Hz" +
+            debugStr = "Frame rate: " + fps +
+                       "<br /> Update rate: " + setColGreen(sim.getUpdateRate()) + " Hz" +
                        "<br /> Energy in system: " + setColGreen(graph.getEnergy()) + " kJ" +
-                       "<br /> Number of objects: " + setColGreen(sim.objects.length) +
-                       "<br /> Gravity enabled: "+dbgBool(enableGravity);
+                       "<br /> Number of objects: " + setColGreen(sim.particles.length) +
+                       "<br /> Gravity enabled: "+dbgBool(enableGravity) + 
+                       "<br /> Mode: "+placement.mode;
                        
             fpsDiv.html(debugStr);
         } else fpsDiv.html("");
         
         var selected = sim.getSelected();
         if (selected != null) {
-            var str = "<b>Index:</b> " + sim.getSelectedID() +
-                      "<br /> <b>XVel:</b> " + Math.round(selected.xVel) + 
+            var str = "<b>XVel:</b> " + Math.round(selected.xVel) + 
                       "<br /> <b>YVel:</b> " + Math.round(selected.yVel) + 
                       "<br /> <b>Mass:</b> " + selected.mass + 
                       "<br /> <b>Radius:</b> " + selected.radius +

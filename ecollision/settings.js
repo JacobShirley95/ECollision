@@ -1,3 +1,7 @@
+var eCollisionSettings = {
+	
+}
+
 var refreshRate = 50;
 var defaultGameRate = 50;
 
