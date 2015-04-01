@@ -39,24 +39,13 @@ $.widget("custom.sliderEx", $.ui.slider, {
         
         this.options.min = min;
         this.options.max = max;
+
+        this.options.step = parseFloat(this.element.attr("step")) || 1.0;
         
-        if (this.element.attr("step") != undefined) {
-            var step = parseFloat(this.element.attr("step"));
-            
-            this.options.step = step;
-        }
-        
-        var value = this.element.attr("value");
-        if (value == undefined) {
-            this.options.value = min+max/2;
-        } else {
-            this.options.value = parseFloat(value);
-        }
+        this.options.value = parseFloat(this.element.attr("value")) || (min+max/2);
         
         var unit = this.element.attr("unit");
-        if (unit != undefined) {
-            this._unit = unit;
-        }
+        this._unit = unit || "";
         
         this._amount = $('<div class="slider-amount">'+this._formatVal(this.options.value)+'</div>');
         
@@ -102,7 +91,7 @@ function log(s) {
 
 $("#slider-mass").sliderEx({
     slide: function(event, ui) {
-        var cp = ecollision.overlayUI.getCurrentParticle() || sim.getSelected();
+        var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
         if (cp != null)
             cp.mass = ui.value;
     }
@@ -110,9 +99,9 @@ $("#slider-mass").sliderEx({
     
 $("#slider-cor").sliderEx({
     slide: function(event, ui) {
-        var cp = ecollision.overlayUI.getCurrentParticle() || sim.getSelected();
+        var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
         if (cp != null)
-            cp.coR = ui.value;
+            cp.cOR = ui.value;
     }
 });
 
