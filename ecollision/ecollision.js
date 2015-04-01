@@ -1,85 +1,107 @@
-function Point2D(x, y) {
-    this.x = x;
-    this.y = y;
-}
+function ECollision(settings) {
+    this.settings = settings;
 
-var sim;
-var graph;
-var placement;
+    this.paused = false;
 
-function Ecollision() {
-    var widgets = [];
+    this.engine = new SimEngine(settings.simulationWidth, settings.simulationHeight);
 
-    var debugStr = "Debug: ";
-    var fpsTime = new Date().getTime();
+    this.simulationUI = new Simulation(settings.simulationCanvas, this.engine, this.settings);
+    this.graphUI = new Graph(settings.graphCanvas, this.engine, 1/50, 5, this.settings);
+    this.overlayUI = new Overlay(settings.overlayCanvas, this.simulationUI, this.settings);
+
+    this.fps = 0;
+
+    var widgets = [this.simulationUI, this.graphUI, this.overlayUI];
+
+    var fpsCount = 0;
+    var fps = 0;
+    var fpsTime = 0;
+
+    var enableColData = false;
+
+    var newTime = curTime = 0;
+
+    var updateRate = settings.updateRate;
+    var updateTime = 1000.0 / updateRate;
+
+    var refreshTime = 1000/settings.refreshRate;
+
+    var interpolation = 0.0;
+
+    var ecol = this; //so that i can refer to this object inside nested functions - javascript problem solved
 
     this.start = function() {
-        sim = new Simulation("widget-canvas", 50);
-        graph = new Graph("graph-canvas", sim, 1/50, 5);
-        placement = new Placement("overlay", sim);
-        
-        widgets.push(sim);
-        widgets.push(graph);
-        widgets.push(placement);
-        
         for (var i = 0; i < widgets.length; i++) {
             widgets[i].init();
         }
         
-        setInterval(this.tick, 1000.0 / refreshRate);
+        setInterval(this.tick, 1000.0 / settings.refreshRate);
+    }
+
+    this.restart = function() {
+        for (var i = 0; i < widgets.length; i++) {
+            widgets[i].restart();
+        }
+    }
+
+    this.resume = function() {
+        this.paused = false;
+        
+        for (var i = 0; i < widgets.length; i++) {
+            widgets[i].resume();
+        } 
+    }
+
+    this.pause = function() {
+        this.paused = true;
+
+        for (var i = 0; i < widgets.length; i++) {
+            widgets[i].pause();
+        } 
+    }
+
+    this.onTick = function() {};
+
+    this.update = function() {
+        var particles = ecol.engine.particles;
+
+        curTime += refreshTime;
+    
+        if (newTime + updateTime < curTime) {
+            timeStamp = curTime;
+            if (settings.enableInterpolation) {
+                for (var i = 0; i < particles.length; i++) {
+                    particles[i].capture();
+                }
+            }
+            while (newTime + updateTime < curTime) {
+                ecol.engine.update();
+                
+                newTime += updateTime;
+            }
+        }
+        interpolation = Math.min(1.0, (curTime - timeStamp) / updateTime);
     }
     
-    var fpsDiv = null;
-    var ballInfo = null;
-    
-    var fpsCount = 0;
-    var fps = 0;
-    
     this.tick = function() {
-        var curTime = new Date().getTime();
-        
-        if (fpsDiv == null && ballInfo == null) {
-            fpsDiv = $("#fps-div");
-            ballInfo = $("#ball-info");
+        if (!ecol.paused) {
+            ecol.update();
         }
-    
-        if (enableColData) {
-            fpsCount++;
-    
-            if (curTime - fpsTime >= 1000) {
-                if (fpsCount < 24) {
-                    fps = setCol(fpsCount, "red");
-                } else {
-                    fps = setCol(fpsCount, "green");
-                }
-                fpsCount = 0;
-                fpsTime = curTime;
-            }
-            debugStr = "Frame rate: " + fps +
-                       "<br /> Update rate: " + setColGreen(sim.getUpdateRate()) + " Hz" +
-                       "<br /> Energy in system: " + setColGreen(graph.getEnergy()) + " kJ" +
-                       "<br /> Number of objects: " + setColGreen(sim.particles.length) +
-                       "<br /> Gravity enabled: "+dbgBool(enableGravity) + 
-                       "<br /> Mode: "+placement.mode;
-                       
-            fpsDiv.html(debugStr);
-        } else fpsDiv.html("");
-        
-        var selected = sim.getSelected();
-        if (selected != null) {
-            var str = "<b>XVel:</b> " + Math.round(selected.xVel) + 
-                      "<br /> <b>YVel:</b> " + Math.round(selected.yVel) + 
-                      "<br /> <b>Mass:</b> " + selected.mass + 
-                      "<br /> <b>Radius:</b> " + selected.radius +
-                      "<br /> <b>Energy:</b> " + Math.round(selected.getEnergy());
-    
-            ballInfo.html(str);
-        } else {
-            ballInfo.html("");
+
+        var fpsCurTime = new Date().getTime();
+        fpsCount++;
+
+        if (fpsCurTime - fpsTime >= 1000) {
+            ecol.fps = fpsCount;
+
+            fpsCount = 0;
+            fpsTime = fpsCurTime;
         }
-    
+
         for (var i = 0; i < widgets.length; i++) {
-            widgets[i].draw();
+            widgets[i].draw(interpolation);
         }
+
+        ecol.onTick();
     }
 }

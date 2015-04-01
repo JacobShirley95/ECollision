@@ -1,6 +1,6 @@
-function Placement(canvasName, simulation) {
+function Overlay(canvasName, simulation, settings) {
     Widget.call(this, canvasName);
-    this.hidden = true;
+    this.hide();
 
     var INDEX_PLACE = 0;
     var INDEX_VELOCITY = 1;
@@ -12,8 +12,6 @@ function Placement(canvasName, simulation) {
     var MODE_EDIT = 1;
 
     var mode = -1;
-    
-    var sim = simulation;
     
     var mouseX = crossX = this.width/2;
     var mouseY = crossY = this.height/2;
@@ -113,14 +111,14 @@ function Placement(canvasName, simulation) {
                 infoText.y = velocityLine.y + (dy/2);
                 infoText.text = Math.round(Math.sqrt(dx*dx + dy*dy)) + " px/s";
                 
-                tempObject.xVel = dx/sim.getUpdateRate();
-                tempObject.yVel = dy/sim.getUpdateRate();
+                tempObject.xVel = dx/settings.updateRate;
+                tempObject.yVel = dy/settings.updateRate;
                 
                 g.clear().beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(dx, dy);
 
                 break;
             case INDEX_MODIFY:
-                var particles = sim.particles;
+                var particles = simulation.engine.particles;
                 
                 for (var i = 0; i < particles.length; i++) {
                     var p = particles[i];
@@ -141,7 +139,7 @@ function Placement(canvasName, simulation) {
     });
 
     this.stage.addEventListener("stagemousedown", function (ev) {
-        if (ev.nativeEvent.button == 2 && (index == 0 || index == 1)) {
+        if (ev.nativeEvent.button == 2 && (index == INDEX_PLACE || index == INDEX_VELOCITY)) {
             reset();
         } else {
             switch(index) {
@@ -151,11 +149,11 @@ function Placement(canvasName, simulation) {
                     stage.addChild(velocityLine);
                     stage.addChild(infoText);
                     
-                    index++;
+                    index = INDEX_VELOCITY;
 
                     break;
                 case INDEX_VELOCITY:
-                    var p = sim.addParticle(tempObject.x, tempObject.y, tempObject.mass, tempObject.radius, tempObject.style);
+                    var p = simulation.addParticle(tempObject.x, tempObject.y, tempObject.mass, tempObject.radius, tempObject.style);
                 
                     p.xVel = tempObject.xVel;
                     p.yVel = tempObject.yVel;
@@ -164,19 +162,20 @@ function Placement(canvasName, simulation) {
                     stage.removeChild(infoText);
 
                     if (mode == MODE_EDIT && !copyPlace) {
-                        index = 2;
+                        index = INDEX_MODIFY;
                         stage.removeChild(tempObject.displayObj);
                     } else 
-                        index = 0;
+                        index = INDEX_PLACE;
+
                     break;
                 case INDEX_MODIFY:
                     tempObject.displayObj.dispatchEvent("click");
                     if (ev.nativeEvent.button == 2) {
-                        sim.removeSelected();
+                        simulation.removeSelected();
                     } else {
-                        var selected = sim.getSelected();
+                        var selected = simulation.getSelected();
 
-                        tempObject = new Particle(crossX, crossY, tempObject.radius, tempObject.style);
+                        tempObject = new Particle(crossX, crossY, tempObject.radius, tempObject.style, settings);
                         tempObject.xVel = selected.xVel;
                         tempObject.yVel = selected.yVel;
                         tempObject.mass = selected.mass;
@@ -186,16 +185,17 @@ function Placement(canvasName, simulation) {
                         lastY = selected.y;
 
                         stage.addChild(tempObject.displayObj);
-                        sim.removeSelected();
+                        simulation.removeSelected();
 
-                        index = 0;
+                        index = INDEX_PLACE;
                     }
+
                     break;
             }
         }
     });
     
-    this.draw = function() {
+    this.draw = function(interpolation) {
         if (!this.hidden) {
             if (tempObject != null) {
                 //infoText.text = "Radius: "+tempObject.radius;
@@ -208,7 +208,7 @@ function Placement(canvasName, simulation) {
     
     function reset() {
         if (mode == MODE_EDIT) {
-            var p = sim.addParticle(lastX, lastY, tempObject.mass, tempObject.radius, tempObject.style);
+            var p = simulation.addParticle(lastX, lastY, tempObject.mass, tempObject.radius, tempObject.style);
 
             p.xVel = tempObject.xVel;
             p.yVel = tempObject.yVel;
@@ -216,10 +216,10 @@ function Placement(canvasName, simulation) {
             stage.removeChild(tempObject.displayObj);
             tempObject = null;
 
-            index = 2;
+            index = INDEX_MODIFY;
         } else {
             stage.removeChild(velocityLine);
-            index = 0;
+            index = INDEX_PLACE;
         }
     }
     
@@ -227,7 +227,7 @@ function Placement(canvasName, simulation) {
         this.show();
         this.init();
 
-        tempObject = new Particle(crossX, crossY, 25, style);
+        tempObject = new Particle(crossX, crossY, 25, style, settings);
         tempObject.mass = mass;
         tempObject.cOR = cOR;
         
@@ -238,8 +238,8 @@ function Placement(canvasName, simulation) {
 
         modeText.text = "Mode: Add";
 
-        index = 0;
-        mode = 0;
+        index = INDEX_PLACE;
+        mode = MODE_ADD;
     }
     
     this.beginEdit = function() {
@@ -248,8 +248,8 @@ function Placement(canvasName, simulation) {
 
         modeText.text = "Mode: Edit";
 
-        index = 2;
-        mode = 1;
+        index = INDEX_MODIFY;
+        mode = MODE_EDIT;
     }
 
     this.end = function() {
@@ -273,4 +273,4 @@ function Placement(canvasName, simulation) {
     }
 }
 
-Placement.prototype = new Widget();
+Overlay.prototype = new Widget();

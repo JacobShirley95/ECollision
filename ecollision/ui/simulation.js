@@ -1,60 +1,25 @@
-function Simulation(canvasName, rate) {
+function Simulation(canvasName, engine, settings) {
     Widget.call(this, canvasName);
 
-    this.paused = false;
-
-    this.particles = [];
-    this.simEngine = new SimEngine(this.width, this.height, this.particles);
+    this.engine = engine;
+    this.engine.width = this.width;
+    this.engine.height = this.height;
 
     var timeStamp = 0;
     var newTime = timeStamp;
     var curTime = timeStamp;
     
-    var updateRate = rate;
+    var updateRate = settings.updateRate;
     var updateTime = 1000.0 / updateRate;
 
     var selected = -1;
 
-    var mouseX = 0;
-    var mouseY = 0;
-
-    this.stage.addEventListener("stagemousemove", function (ev) {
-        mouseX = ev.stageX;
-        mouseY = ev.stageY; 
-    });
-
-    var zoom = 0.0;
-
-    var w = this.width;
-    var h = this.height;
-
-    this.canvas.mousewheel(function(event) {
-        var d = event.deltaY;
-        if (d < 0) {
-            if (zoom > 0) {
-                sim.stage.regX = mouseX-(w/2);
-                sim.stage.regY = mouseY-(h/2);
-                zoom -= 0.25;
-            }
-        } else {
-            if (zoom < 1) {
-                sim.stage.regX = mouseX-(w/2);
-                sim.stage.regY = mouseY-(h/2);
-                
-                zoom += 0.25;
-            }
-        }
-
-        sim.stage.scaleX = 1+zoom;
-        sim.stage.scaleY = 1+zoom;
-    });
-
     this.setSpeedConst = function(speedConst) {
-        this.simEngine.speedConst = speedConst;
+        this.engine.speedConst = speedConst;
     }
     
     this.resize = function(newWidth, newHeight) {
-        this.simEngine.setBounds(newWidth, newHeight);
+        this.engine.setBounds(newWidth, newHeight);
     }
     
     this.getUpdateRate = function() {
@@ -71,11 +36,11 @@ function Simulation(canvasName, rate) {
     }
     
     this.addParticle = function(x, y, mass, radius, style) {
-        var particle = new Particle(x, y, radius, style);
+        var particle = new Particle(x, y, radius, style, settings);
         
         particle.mass = mass;
         
-        var particles = this.particles;
+        var particles = this.engine.particles;
         particle.addEventHandler("click", function (ev) {
             if (selected != -1) {
                 particles[selected].deselect();
@@ -95,14 +60,14 @@ function Simulation(canvasName, rate) {
         });
                 
         this.stage.addChild(particle.displayObj);
-        this.particles.push(particle);
+        this.engine.particles.push(particle);
         
         return particle;
     }
     
     this.removeParticle = function(index) {
-        this.stage.removeChild(this.particles[index].displayObj);
-        this.particles.splice(index, 1);
+        this.stage.removeChild(this.engine.particles[index].displayObj);
+        this.engine.particles.splice(index, 1);
     }
 
     this.loadParticles = function(toBeLoaded) {
@@ -119,8 +84,8 @@ function Simulation(canvasName, rate) {
     }
     
     this.saveParticles = function(saved) {
-        for (var i = 0; i < this.particles.length; i++) {
-            var obj = this.particles[i];
+        for (var i = 0; i < this.engine.particles.length; i++) {
+            var obj = this.engine.particles[i];
             var particle = new Particle(obj.x, obj.y, obj.radius, obj.style);
     
             particle.mass = obj.mass;
@@ -143,7 +108,7 @@ function Simulation(canvasName, rate) {
     this.getSelected = function() {
         var sel = null;
         if (selected != -1) {
-            sel = this.particles[selected];
+            sel = this.engine.particles[selected];
         }
         return sel;
     }
@@ -153,52 +118,24 @@ function Simulation(canvasName, rate) {
     }
     
     this.init = function() {
-        var b1 = this.addParticle(100, 100, 100, 10, "red");
-        this.addParticle(121, 100, 100, 10, "red");
-        this.addParticle(142, 100, 100, 10, "red");
-        this.addParticle(163, 100, 100, 10, "red");
-        var b2 = this.addParticle(10, 100, 100, 10, "blue");
-
-        b2.xVel = 1;
     }
     
     this.restart = function () {
         this.stage.removeAllChildren();
         selected = -1;
-        
-        this.particles = [];
-        this.simEngine = new SimEngine(this.width, this.height, this.particles);
+        this.engine.reset();
     }
-    
-    this.draw = function () {
-        var particles = this.particles;
-        if (!this.paused) {
-            curTime += 1000/refreshRate;
-        
-            if (newTime + updateTime < curTime) {
-                timeStamp = curTime;
-                if (enableInterpolation) {
-                    for (var i = 0; i < particles.length; i++) {
-                        particles[i].capture();
-                    }
-                }
-                while (newTime + updateTime < curTime) {
-                    this.simEngine.updateSimulation();
-                    
-                    newTime += updateTime;
-                }
-            }
-        }
-        
-        var interpolation = Math.min(1.0, (curTime - timeStamp) / updateTime);
+
+    this.draw = function (interpolation) {
+        var particles = this.engine.particles;
 
         for (var i = 0; i < particles.length; i++) {
             var obj = particles[i];
-    
+
             var newX = obj.x;
             var newY = obj.y;
     
-            if (enableInterpolation) {
+            if (settings.enableInterpolation) {
                 var diffX = obj.x - obj.lastX;
                 var diffY = obj.y - obj.lastY;
     
@@ -208,9 +145,6 @@ function Simulation(canvasName, rate) {
      
             obj.draw(newX, newY);
         }
-        
-       // this.stage.scaleX = this.renderData.zoom;
-        //this.stage.scaleY = this.renderData.zoom;
 
         this.stage.update();
     }

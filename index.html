@@ -18,10 +18,10 @@
         <script src="lib/jquery.gridster.min.js"></script>
         <script src="lib/jquery-mousewheel-3.1.12/jquery.mousewheel.js"></script>
 
-        <script src="ecollision/debug.js"></script>
         <script src="ecollision/settings.js"></script>
 
-        <script src="ecollision/math/vector-math.js"></script>
+        <script src="ecollision/math/pvector.js"></script>
+        <script src="ecollision/math/point-2d.js"></script>
                 
         <script src="ecollision/objects/phys-object.js"></script>
         <script src="ecollision/objects/particle.js"></script>
@@ -29,10 +29,11 @@
         <script src="ecollision/ui/widget.js"></script>
         <script src="ecollision/ui/simulation.js"></script>
         <script src="ecollision/ui/graph.js"></script>
-        <script src="ecollision/ui/extras/placement.js"></script>
+        <script src="ecollision/ui/overlay.js"></script>
                 
         <script src="ecollision/engine/sim-engine.js"></script>
-        
+
+        <script src="ecollision/settings.js"></script>
         <script src="ecollision/ecollision.js"></script>
     </head> 
     
@@ -51,7 +52,7 @@
                 
                 gridster = $(".gridster > ul").gridster({
                     widget_margins: [5, 5],
-                    widget_base_dimensions: [100, 100],
+                    widget_base_dimensions: [100, 50],
                     max_cols: 6,
                     max_rows: 6,
                     resize: {
@@ -61,11 +62,11 @@
                     }
                 }).data('gridster');
 
-                var panels = [ ['simulation', 4, 6],
-                                ['graph', 2, 2], 
-                                ['sim-controls', 2, 2],
-                                ['debug-controls', 2, 2],
-                                ['ball-controls', 4, 1]
+                var panels = [ ['simulation', 4, 10],
+                                ['graph', 2, 4], 
+                                ['sim-controls', 2, 3],
+                                ['debug-controls', 2, 3],
+                                ['ball-controls', 4, 2]
                               ];
 
                 var numLoadedPanels = 0;

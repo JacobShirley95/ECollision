@@ -12,37 +12,36 @@ function Widget(canvasName) {
     this.canvas.attr("height", this.height);
     
     this.stage = new createjs.Stage(canvasName);
-    
-    function RenderData() {
-        this.zoom = 1.0;
 
-        this.offsetX = 0.0;
-        this.offsetY = 0.0;
-    }
-
-    this.renderData = new RenderData();
-    
     this.init = function() {}
 
     this.addEventListener = function(event, handler) {
         this.stage.addEventListener(event, handler);
     }
     
-    this.draw = function () {}
+    this.draw = function (interpolation) {}
     
     this.restart = function () {}
     
     this.stop = function() {}
+
+    this.resume = function() {
+        this.paused = false;
+    }
+
+    this.pause = function() {
+        this.paused = true;
+    }
     
     this.resize = function(newWidth, newHeight) {}
     
     this.show = function() {
-        this.canvas.fadeIn(200);
         this.hidden = false;
+        this.canvas.fadeIn(200);
     }
     
     this.hide = function() {
-        this.canvas.fadeOut(200);
         this.hidden = true;
+        this.canvas.fadeOut(200);
     }
 }

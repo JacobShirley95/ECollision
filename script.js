@@ -68,17 +68,41 @@ $.widget("custom.sliderEx", $.ui.slider, {
     }
 });
 
-/*$("#colour-picker").spectrum({
-    color: "#ff0000",
-    showButtons: false,
-    showInput:true,
-    preferredFormat: "rgb",
-    replacerClassName: 'colour-pickers'
-});*/
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function toDegrees(ang) {
+    return (ang / Math.PI) * 180;
+}
+
+function setCol(text, col) {
+    return ("" + text).fontcolor(col);
+}
+
+function setColGreen(text) {
+    return setCol(text, "green");
+}
+
+function dbgBool(bool) {
+    if (bool)
+        return setCol(""+bool, "green");
+    else
+        return setCol(""+bool, "red");
+}
+
+function log(s) {
+    console.log(s);
+}
 
 $("#slider-mass").sliderEx({
     slide: function(event, ui) {
-        var cp = placement.getCurrentParticle() || sim.getSelected();
+        var cp = ecollision.overlayUI.getCurrentParticle() || sim.getSelected();
         if (cp != null)
             cp.mass = ui.value;
     }
@@ -86,33 +110,30 @@ $("#slider-mass").sliderEx({
     
 $("#slider-cor").sliderEx({
     slide: function(event, ui) {
-        var cp = placement.getCurrentParticle() || sim.getSelected();
+        var cp = ecollision.overlayUI.getCurrentParticle() || sim.getSelected();
         if (cp != null)
             cp.coR = ui.value;
     }
 });
 
 function openAdd() {
-    var mode = placement.getMode();
+    var mode = ecollision.overlayUI.getMode();
     if (mode == 0) {
-        placement.end();
+        ecollision.overlayUI.end();
     } else {
         var mass = $("#slider-mass").sliderEx("value");
         var cOR = $("#slider-cor").sliderEx("value");
 
-        placement.beginAdd(mass, cOR, currentColor);
+        ecollision.overlayUI.beginAdd(mass, cOR, currentColor);
     }
 }
 
 function openEdit() {
-    var mode = placement.getMode();
+    var mode = ecollision.overlayUI.getMode();
     if (mode == 1) {
-        placement.end();
+        ecollision.overlayUI.end();
     } else {
-        var mass = $("#slider-mass").sliderEx("value");
-        var cOR = $("#slider-cor").sliderEx("value");
-
-        placement.beginEdit();
+        ecollision.overlayUI.beginEdit();
     }
 }
 
@@ -135,7 +156,7 @@ $("#remove-particle").click(function() {
 var currentColor = getRandomColor();
 
 $("#generate-colour").click(function() {
-    var cp = placement.getCurrentParticle() || sim.getSelected();
+    var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
     if (cp != null) {
         currentColor = getRandomColor();
         cp.style = currentColor;
@@ -143,40 +164,40 @@ $("#generate-colour").click(function() {
 })
 
 $("#calibrate").click(function() {
-    graph.calibrate();
+    ecollision.graphUI.calibrate();
 });
 
 $("#zoom-in").click(function() {
-    graph.zoomIn();
+    ecollision.graphUI.zoomIn();
 });
 
 $("#zoom-out").click(function() {
-    graph.zoomOut();
+    ecollision.graphUI.zoomOut();
 });
 
 $("#move-up").click(function() {
-    graph.moveUp();
+    ecollision.graphUI.moveUp();
 });
 
 $("#move-down").click(function() {
-    graph.moveDown();
+    ecollision.graphUI.moveDown();
 });
 
-$("#trace").click(function() {
-    enableTrace = !enableTrace;   
-});
-
-$("#sim-data").click(function() {
-    enableColData = !enableColData;  
+$("#btn-sim-data").click(function() {
+    eCollisionSettings.showVelocities = !eCollisionSettings.showVelocities;  
 });
 
 $("#btn-run-pause").click(function() {
-    sim.paused = !sim.paused;
+    if (ecollision.paused)
+        ecollision.resume();
+    else
+        ecollision.pause();
+
     changeRunPauseBtn();
 });
 
 function changeRunPauseBtn() {
-    if (!sim.paused) {
+    if (!ecollision.paused) {
         $("#btn-run-pause").removeClass('icon-run').addClass('icon-pause').text("PAUSE");
     } else {
         $("#btn-run-pause").removeClass('icon-pause').addClass('icon-run').text("RUN");
@@ -184,43 +205,67 @@ function changeRunPauseBtn() {
 }
 
 $("#btn-next").click(function() {
-    if (sim.paused) {
-        sim.paused = false;
-        ecollision.tick();
-        sim.paused = true;
-    }
+    ecollision.update();
 });
 
 var savedState = [];
 
 $("#btn-save").click(function() {
     savedState = [];
-    sim.saveParticles(savedState);
+    ecollision.simulationUI.saveParticles(savedState);
 });
 
 $("#btn-load").click(function() {
     console.log(savedState.length);
-    sim.loadParticles(savedState);
+    ecollision.simulationUI.loadParticles(savedState);
 });
 
 $("#btn-reset").click(function() {
-    sim.restart();
-});
-
-$("#zoom-slider").sliderEx({
-    slide: function(event, ui) {
-        sim.renderData.zoom = ui.value/100;
-    }
+    ecollision.simulationUI.restart();
 });
 
 $("#sim-speed-slider").sliderEx({
     slide: function(event, ui) {
-        sim.setSpeedConst(parseFloat(ui.value));
-    },
-    stop: function(event, ui) {
-        graph.updateData();
+        ecollision.simulationUI.setSpeedConst(parseFloat(ui.value));
     }
 });
 
-var ecollision = new Ecollision();
+var ecollision = new ECollision(eCollisionSettings);
+
+var fpsDiv = $("#fps-div");
+var ballInfo = $("#ball-info");
+
+ecollision.onTick = function() {
+    var fpsCurTime = new Date().getTime();
+
+    if (eCollisionSettings.showVelocities) {
+        var fps = "";
+        if (ecollision.fps < 24) {
+            fps = setCol(ecollision.fps, "red");
+        } else {
+            fps = setCol(ecollision.fps, "green");
+
+        }
+        debugStr = "Frame rate: " + fps +
+                   "<br /> Update rate: " + setColGreen(ecollision.simulationUI.getUpdateRate()) + " Hz" +
+                   "<br /> Energy in system: " + setColGreen(ecollision.graphUI.getEnergy()) + " kJ" +
+                   "<br /> Number of objects: " + setColGreen(ecollision.engine.particles.length);
+                   
+        fpsDiv.html(debugStr);
+    } else fpsDiv.html("");
+
+    var selected = ecollision.simulationUI.getSelected();
+    if (selected != null) {
+        var str = "<b>XVel:</b> " + Math.round(selected.xVel*eCollisionSettings.updateRate) + " px/s" + 
+                  "<br /> <b>YVel:</b> " + Math.round(selected.yVel*eCollisionSettings.updateRate) + " px/s" +
+                  "<br /> <b>Mass:</b> " + selected.mass + " kg" +
+                  "<br /> <b>Radius:</b> " + selected.radius + " px"
+                  "<br /> <b>Energy:</b> " + Math.round(selected.getEnergy()) + " J";
+
+        ballInfo.html(str);
+    } else {
+        ballInfo.html("");
+    }
+}
+
 ecollision.start();

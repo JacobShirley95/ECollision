@@ -1,4 +1,4 @@
-function Graph(canvasName, simulation, scaleX, scaleY) {
+function Graph(canvasName, engine, scaleX, scaleY, settings) {
     Widget.call(this, canvasName);
     
     this.scaleX = scaleX;
@@ -7,7 +7,7 @@ function Graph(canvasName, simulation, scaleX, scaleY) {
     this.x = 0;
     this.y = 0;
 
-    this.simulation = simulation;
+    this.engine = engine;
     
     var graph = new createjs.Shape();
 
@@ -44,8 +44,8 @@ function Graph(canvasName, simulation, scaleX, scaleY) {
         this.updateData();
     }
     
-    this.draw = function () {
-        if (this.simulation != null) {
+    this.draw = function (interpolation) {
+        if (this.engine != null) {
             var g = graph.graphics;
             
             g.clear();
@@ -82,8 +82,8 @@ function Graph(canvasName, simulation, scaleX, scaleY) {
                 g.beginStroke("red").moveTo(this.x+x1, this.y+this.height-y1).lineTo(this.x+x3, this.y+this.height-y3);
             }
             
-            if (!this.simulation.paused) {
-                currX += this.simulation.getUpdateTime();
+            if (!this.paused) {
+                currX += 1000/settings.updateRate;
                 currY = this.getEnergy();
                 
                 this.addData(currX, currY);
@@ -97,6 +97,7 @@ function Graph(canvasName, simulation, scaleX, scaleY) {
             this.stage.update();
         }
     }
+
     
     this.calibrate = function() {
         userY = 0;
@@ -143,7 +144,7 @@ function Graph(canvasName, simulation, scaleX, scaleY) {
     this.updateData = function() {
         var data2 = [];
 
-        maxLen = Math.round(this.width/(this.simulation.getUpdateTime()*this.scaleX))+5;
+        maxLen = Math.round(this.width/((1000/settings.updateRate)*this.scaleX))+5;
 
         var aLen = data.length-1;
         var diff = 0;
@@ -166,21 +167,11 @@ function Graph(canvasName, simulation, scaleX, scaleY) {
     this.getEnergy = function() {
         var energy = 0.0;
 
-        $.each(this.simulation.particles, function(i, object) {
+        $.each(this.engine.particles, function(i, object) {
             energy += object.getEnergy();
         });
         
         return Math.round(energy/1000);
-    }
-    
-    this.attachSimulation = function(simulation) {
-        this.simulation = simulation;
-        this.updateData();
-        currX = this.simulation.getUpdateTime();
-    }
-    
-    this.detachSimulation = function() {
-        this.simulation = null;
     }
 }
 

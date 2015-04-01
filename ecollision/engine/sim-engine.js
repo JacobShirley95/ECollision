@@ -1,8 +1,8 @@
-function SimEngine(width, height, particles) {
+function SimEngine(width, height) {
     this.width = width;
     this.height = height;
     
-    this.particles = particles;
+    this.particles = [];
     
     this.speedConst = 1.0;
 
@@ -40,6 +40,10 @@ function SimEngine(width, height, particles) {
                 particle.y = particle.radius;
             }
         } 
+    }
+
+    this.reset = function() {
+        this.particles = [];
     }
     
     function Collision() {
@@ -244,11 +248,9 @@ function SimEngine(width, height, particles) {
         this.height = height;
     }
     
-    this.updateSimulation = function () {
+    this.update = function () {
         var objects = this.particles;
 
-        var grav = gravity;
-        
         for (var i = 0; i < objects.length; i++) {
             var obj = objects[i];
     

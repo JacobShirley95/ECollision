@@ -1,23 +1,14 @@
 var eCollisionSettings = {
-	
+	simulationWidth: 100,
+	simulationHeight: 100,
+	simulationCanvas: "simulation-canvas",
+	graphCanvas: "graph-canvas",
+	overlayCanvas: "overlay-canvas",
+	refreshRate: 50,
+	updateRate: 60,
+	showVelocities: false,
+	enableInterpolation: true,
+	maxTraceLength: 30,
+	graphScaleX: 1/50,
+	graphScaleY: 5,
 }
-
-var refreshRate = 50;
-var defaultGameRate = 50;
-
-var enableDebug = false;
-var enableTrace = false;
-
-var enableGravity = false;
-var enableFriction = false;
-var enableDragAndDrop = false;
-
-var enableColData = false;
-
-var slowMotionConst = 1.0;
-
-var gravity = 9.81 / 10;
-var enableInterpolation = true;
-var maxTracePositions = 30;
-
-var zoom = 1.0;
