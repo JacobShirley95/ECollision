@@ -1,10 +1,8 @@
-function SimEngine(width, height) {
+function SimEngine(width, height, settings) {
     this.width = width;
     this.height = height;
     
     this.particles = [];
-    
-    this.speedConst = 1.0;
 
     this.edgeCollision = function (particle, rebound) {
         var cOR = particle.cOR;
@@ -211,11 +209,11 @@ function SimEngine(width, height) {
         var t = collision.time + (0.001 * collision.time);
 
         if (t < 1.0) {
-            object.x -= object.xVel * this.speedConst * t;
-            object.y -= object.yVel * this.speedConst * t;
+            object.x -= object.xVel * settings.speedConst * t;
+            object.y -= object.yVel * settings.speedConst * t;
     
-            object2.x -= object2.xVel * this.speedConst * t;
-            object2.y -= object2.yVel * this.speedConst * t;
+            object2.x -= object2.xVel * settings.speedConst * t;
+            object2.y -= object2.yVel * settings.speedConst * t;
         } else {
             var dX = object2.x - object.x;
             var dY = object2.y - object.y;
@@ -255,7 +253,7 @@ function SimEngine(width, height) {
             var obj = objects[i];
     
             this.edgeCollision(obj, true);
-            obj.update(this.speedConst);
+            obj.update();
         }
     
         var colObjects = [];

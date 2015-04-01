@@ -20,7 +20,7 @@ function PhysObject(x, y, mass) {
         this.lastY = this.y;
     };
 
-    this.update = function (speedConst) {
+    this.update = function () {
         this.x += this.xVel*speedConst;
         this.y += this.yVel*speedConst;
     };

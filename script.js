@@ -214,7 +214,7 @@ $("#btn-reset").click(function() {
 
 $("#sim-speed-slider").sliderEx({
     slide: function(event, ui) {
-        ecollision.simulationUI.setSpeedConst(parseFloat(ui.value));
+        eCollisionSettings.speedConst = parseFloat(ui.value);
     }
 });
 

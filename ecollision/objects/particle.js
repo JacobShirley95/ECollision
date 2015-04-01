@@ -5,9 +5,6 @@ function Particle(x, y, radius, style, settings) {
     
     this.style = style;
 
-    this.mouseX = 0.0;
-    this.mouseY = 0.0;
-
     var pastPositions = [];
     var curPos = 0;
     
@@ -56,9 +53,9 @@ function Particle(x, y, radius, style, settings) {
         pastPositions = [];
     }
     
-    this.update = function (speedConst) {
-        this.x += this.xVel*speedConst;
-        this.y += this.yVel*speedConst;
+    this.update = function () {
+        this.x += this.xVel*settings.speedConst;
+        this.y += this.yVel*settings.speedConst;
 
         var len = pastPositions.length;
         if (this.selected) {

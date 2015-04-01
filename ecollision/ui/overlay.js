@@ -28,23 +28,21 @@ function Overlay(canvasName, simulation, settings) {
     var freePlace = false;
     var copyPlace = false;
 
-    var minRadius = 5;
-    var maxRadius = 80;
-
     var lastX = 0;
     var lastY = 0;
 
-    var stage = this.stage;
     var tempObject = null;
+
+    var overlay = this; //so that i can refer to this object inside nested functions - javascript problem solved
     
     this.canvas.mousewheel(function(event) {
         var d = event.deltaY;
         if (d < 0) {
-            if (tempObject.radius > minRadius) {
+            if (tempObject.radius > settings.minRadius) {
                 tempObject.radius -= 1;
             }
         } else {
-            if (tempObject.radius < maxRadius) {
+            if (tempObject.radius < settings.maxRadius) {
                 tempObject.radius += 1;
             }
         }
@@ -137,15 +135,24 @@ function Overlay(canvasName, simulation, settings) {
     });
 
     this.stage.addEventListener("stagemousedown", function (ev) {
-        if (ev.nativeEvent.button == 2 && (index == INDEX_PLACE || index == INDEX_VELOCITY)) {
-            reset();
+        if (ev.nativeEvent.button == 2) {
+            switch (index) {
+                case INDEX_PLACE:
+                    overlay.end();
+                    reset();
+                    break;
+
+                case INDEX_VELOCITY:
+                    reset();
+                    break;
+            }
         } else {
             switch(index) {
                 case INDEX_PLACE:
                     velocityLine.graphics.clear();
                 
-                    stage.addChild(velocityLine);
-                    stage.addChild(infoText);
+                    overlay.stage.addChild(velocityLine);
+                    overlay.stage.addChild(infoText);
                     
                     index = INDEX_VELOCITY;
 
@@ -157,12 +164,12 @@ function Overlay(canvasName, simulation, settings) {
                     p.yVel = tempObject.yVel;
                     p.cOR = tempObject.cOR;
                     
-                    stage.removeChild(velocityLine);
-                    stage.removeChild(infoText);
+                    overlay.stage.removeChild(velocityLine);
+                    overlay.stage.removeChild(infoText);
 
                     if (mode == MODE_EDIT && !copyPlace) {
                         index = INDEX_MODIFY;
-                        stage.removeChild(tempObject.displayObj);
+                        overlay.stage.removeChild(tempObject.displayObj);
                     } else 
                         index = INDEX_PLACE;
 
@@ -183,7 +190,7 @@ function Overlay(canvasName, simulation, settings) {
                         lastX = selected.x;
                         lastY = selected.y;
 
-                        stage.addChild(tempObject.displayObj);
+                        overlay.stage.addChild(tempObject.displayObj);
                         simulation.removeSelected();
 
                         index = INDEX_PLACE;
@@ -212,12 +219,12 @@ function Overlay(canvasName, simulation, settings) {
             p.xVel = tempObject.xVel;
             p.yVel = tempObject.yVel;
 
-            stage.removeChild(tempObject.displayObj);
+            overlay.removeChild(tempObject.displayObj);
             tempObject = null;
 
             index = INDEX_MODIFY;
         } else {
-            stage.removeChild(velocityLine);
+            overlay.stage.removeChild(velocityLine);
             index = INDEX_PLACE;
         }
     }

@@ -3,7 +3,7 @@ function ECollision(settings) {
 
     this.paused = false;
 
-    this.engine = new SimEngine(settings.simulationWidth, settings.simulationHeight);
+    this.engine = new SimEngine(settings.simulationWidth, settings.simulationHeight, this.settings);
 
     this.simulationUI = new Simulation(settings.simulationCanvas, this.engine, this.settings);
     this.graphUI = new Graph(settings.graphCanvas, this.engine, 1/50, 5, this.settings);
