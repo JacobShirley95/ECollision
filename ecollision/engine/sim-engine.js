@@ -52,7 +52,7 @@ function SimEngine(width, height, settings) {
         }
     }
 
-    this.deleteParticle = function(index) {
+    this.removeParticle = function(index) {
         particles.splice(index, 1);
     }
 

@@ -68,7 +68,7 @@ function Simulation(canvasName, engine, settings) {
     }
     
     this.removeParticle = function(index) {
-        this.stage.removeChild(this.engine.getParticle[index].displayObj);
+        this.stage.removeChild(this.engine.getParticle(index).displayObj);
         this.engine.removeParticle(index);
     }
 
@@ -110,7 +110,7 @@ function Simulation(canvasName, engine, settings) {
     this.getSelected = function() {
         var sel = null;
         if (selected != -1) {
-            sel = this.engine.particles[selected];
+            sel = this.engine.getParticle(selected);
         }
         return sel;
     }

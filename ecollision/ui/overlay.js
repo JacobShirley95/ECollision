@@ -115,10 +115,8 @@ function Overlay(canvasName, simulation, settings) {
 
                 break;
             case INDEX_MODIFY:
-                var particles = simulation.engine.particles;
-                
-                for (var i = 0; i < particles.length; i++) {
-                    var p = particles[i];
+                for (var i = 0; i < simulation.engine.numOfParticles(); i++) {
+                    var p = simulation.engine.getParticle(i);
                     
                     var dx = p.x-mouseX;
                     var dy = p.y-mouseY;
@@ -185,7 +183,7 @@ function Overlay(canvasName, simulation, settings) {
                     break;
                 case INDEX_MODIFY:
                     tempObject.displayObj.dispatchEvent("click");
-                    if (ev.nativeEvent.button == 2) {
+                    if (ev.button == 2) {
                         simulation.removeSelected();
                     } else {
                         var selected = simulation.getSelected();
