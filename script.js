@@ -67,7 +67,13 @@ function getRandomColor() {
 }
 
 function toDegrees(ang) {
-    return (ang / Math.PI) * 180;
+    var a = ((ang / Math.PI) * 180)+90;
+    if (a < 0)
+        a += 360;
+    else if (a > 360) {
+        a -= 360;
+    }
+    return a;
 }
 
 function setCol(text, col) {
@@ -246,6 +252,7 @@ ecollision.onTick = function() {
     if (selected != null) {
         var str = "<b>XVel:</b> " + Math.round(selected.xVel*eCollisionSettings.updateRate) + " px/s" + 
                   "<br /> <b>YVel:</b> " + Math.round(selected.yVel*eCollisionSettings.updateRate) + " px/s" +
+                  "<br /> <b>Direction:</b> " + Math.round(toDegrees(Math.atan2(selected.yVel, selected.xVel))) + " degrees" +
                   "<br /> <b>Mass:</b> " + selected.mass + " kg" +
                   "<br /> <b>CoR:</b> " + selected.cOR +
                   "<br /> <b>Radius:</b> " + selected.radius + " px"
