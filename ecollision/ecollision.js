@@ -17,7 +17,7 @@ function ECollision(settings) {
     var fps = 0;
     var fpsTime = 0;
 
-    var newTime = curTime = 0;
+    var newTime = timeStamp = curTime = 0;
 
     var updateRate = settings.updateRate;
     var updateTime = 1000.0 / updateRate;
@@ -61,19 +61,17 @@ function ECollision(settings) {
     this.onTick = function() {};
 
     this.update = function() {
-        var particles = ecol.engine.particles;
-
         curTime += refreshTime;
     
         if (newTime + updateTime < curTime) {
             timeStamp = curTime;
             if (settings.enableInterpolation) {
-                for (var i = 0; i < particles.length; i++) {
-                    particles[i].capture();
+                for (var i = 0; i < this.engine.numOfParticles(); i++) {
+                    this.engine.getParticle(i).capture();
                 }
             }
             while (newTime + updateTime < curTime) {
-                ecol.engine.update();
+                this.engine.update();
                 
                 newTime += updateTime;
             }

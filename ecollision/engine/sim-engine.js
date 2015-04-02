@@ -2,7 +2,7 @@ function SimEngine(width, height, settings) {
     this.width = width;
     this.height = height;
     
-    this.particles = [];
+    particles = [];
 
     this.edgeCollision = function (particle, rebound) {
         var cOR = particle.cOR;
@@ -41,7 +41,27 @@ function SimEngine(width, height, settings) {
     }
 
     this.reset = function() {
-        this.particles = [];
+        particles = [];
+    }
+
+    this.addParticle = function(particle) {
+        if (particles.length < settings.maxParticles) {
+            particles.push(particle);
+        } else {
+            throw "ERROR: Number of balls exceeds the maximum value set.";
+        }
+    }
+
+    this.deleteParticle = function(index) {
+        particles.splice(index, 1);
+    }
+
+    this.getParticle = function(index) {
+        return particles[index];
+    }
+
+    this.numOfParticles = function() {
+        return particles.length;
     }
     
     function Collision() {
@@ -247,7 +267,7 @@ function SimEngine(width, height, settings) {
     }
     
     this.update = function () {
-        var objects = this.particles;
+        var objects = particles;
 
         for (var i = 0; i < objects.length; i++) {
             var obj = objects[i];

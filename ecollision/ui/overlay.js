@@ -18,6 +18,9 @@ function Overlay(canvasName, simulation, settings) {
     
     var velocityLine = new createjs.Shape();
     var infoText = new createjs.Text("", "bold 15px Arial");
+    var errorText = new createjs.Text("", "bold 15px Arial", "red");
+    var errorTimer = 0;
+    var showError = false;
 
     var modeText = new createjs.Text("", "bold 15px Arial");
     modeText.x = (this.width/2)-40;
@@ -134,8 +137,8 @@ function Overlay(canvasName, simulation, settings) {
         }
     });
 
-    this.stage.addEventListener("stagemousedown", function (ev) {
-        if (ev.nativeEvent.button == 2) {
+    this.canvas.mousedown(function (ev) {
+        if (ev.button == 2) {
             switch (index) {
                 case INDEX_PLACE:
                     overlay.end();
@@ -158,21 +161,29 @@ function Overlay(canvasName, simulation, settings) {
 
                     break;
                 case INDEX_VELOCITY:
-                    var p = simulation.addParticle(tempObject.x, tempObject.y, tempObject.mass, tempObject.radius, tempObject.style);
-                
-                    p.xVel = tempObject.xVel;
-                    p.yVel = tempObject.yVel;
-                    p.cOR = tempObject.cOR;
+                    try {
+                        var p = simulation.addParticle(tempObject.x, tempObject.y, tempObject.mass, tempObject.radius, tempObject.style);
                     
-                    overlay.stage.removeChild(velocityLine);
-                    overlay.stage.removeChild(infoText);
+                        p.xVel = tempObject.xVel;
+                        p.yVel = tempObject.yVel;
+                        p.cOR = tempObject.cOR;
+                        
+                        overlay.stage.removeChild(velocityLine);
+                        overlay.stage.removeChild(infoText);
 
-                    if (mode == MODE_EDIT && !copyPlace) {
-                        index = INDEX_MODIFY;
-                        overlay.stage.removeChild(tempObject.displayObj);
-                    } else 
-                        index = INDEX_PLACE;
-
+                        if (mode == MODE_EDIT && !copyPlace) {
+                            index = INDEX_MODIFY;
+                            overlay.stage.removeChild(tempObject.displayObj);
+                        } else 
+                            index = INDEX_PLACE;
+                    } catch (e) {
+                        errorText.text = e;
+                        errorText.x = overlay.width-(errorText.getMeasuredWidth())-10;
+                        errorText.y = overlay.height/2;
+                        overlay.stage.addChild(errorText);
+                        errorTimer = settings.errorTime;
+                        showError = true;
+                    }
                     break;
                 case INDEX_MODIFY:
                     tempObject.displayObj.dispatchEvent("click");
@@ -199,6 +210,7 @@ function Overlay(canvasName, simulation, settings) {
                     break;
             }
         }
+        ev.stopPropagation();
     });
     
     this.draw = function(interpolation) {
@@ -206,6 +218,15 @@ function Overlay(canvasName, simulation, settings) {
             if (tempObject != null) {
                 //infoText.text = "Radius: "+tempObject.radius;
                 tempObject.draw(tempObject.x, tempObject.y);
+            }
+
+            if (showError) {
+                errorTimer -= 1000/settings.updateRate;
+                if (errorTimer <= 0) {
+                    showError = false;
+
+                    this.stage.removeChild(errorText);
+                }
             }
                 
             this.stage.update();

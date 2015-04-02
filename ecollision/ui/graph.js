@@ -163,9 +163,9 @@ function Graph(canvasName, engine, scaleX, scaleY, settings) {
     this.getEnergy = function() {
         var energy = 0.0;
 
-        $.each(this.engine.particles, function(i, object) {
-            energy += object.getEnergy();
-        });
+        for (var i = 0; i < this.engine.numOfParticles(); i++) {
+            energy += this.engine.getParticle(i).getEnergy();
+        }
         
         return Math.round(energy/1000);
     }

@@ -40,17 +40,19 @@ function Simulation(canvasName, engine, settings) {
         
         particle.mass = mass;
         
-        var particles = this.engine.particles;
+        var engine = this.engine;
         particle.addEventHandler("click", function (ev) {
+            var p = engine.getParticle(selected);
+
             if (selected != -1) {
-                particles[selected].deselect();
+                p.deselect();
             }
                 
-            for (var i = 0; i < particles.length; i++) {
-                if (particles[i].displayObj == ev.target) {
+            for (var i = 0; i < engine.numOfParticles(); i++) {
+                if (engine.getParticle(i).displayObj == ev.target) {
                     if (i != selected) {
                         selected = i;
-                        particles[i].selected = true;
+                        engine.getParticle(i).selected = true;
                     } else {
                         selected = -1;
                     }
@@ -60,14 +62,14 @@ function Simulation(canvasName, engine, settings) {
         });
                 
         this.stage.addChild(particle.displayObj);
-        this.engine.particles.push(particle);
+        this.engine.addParticle(particle);
         
         return particle;
     }
     
     this.removeParticle = function(index) {
-        this.stage.removeChild(this.engine.particles[index].displayObj);
-        this.engine.particles.splice(index, 1);
+        this.stage.removeChild(this.engine.getParticle[index].displayObj);
+        this.engine.removeParticle(index);
     }
 
     this.loadParticles = function(toBeLoaded) {
@@ -84,8 +86,8 @@ function Simulation(canvasName, engine, settings) {
     }
     
     this.saveParticles = function(saved) {
-        for (var i = 0; i < this.engine.particles.length; i++) {
-            var obj = this.engine.particles[i];
+        for (var i = 0; i < this.engine.numOfParticles(); i++) {
+            var obj = this.engine.getParticle(i);
             var particle = new Particle(obj.x, obj.y, obj.radius, obj.style);
     
             particle.mass = obj.mass;
@@ -127,10 +129,8 @@ function Simulation(canvasName, engine, settings) {
     }
 
     this.draw = function (interpolation) {
-        var particles = this.engine.particles;
-
-        for (var i = 0; i < particles.length; i++) {
-            var obj = particles[i];
+        for (var i = 0; i < this.engine.numOfParticles(); i++) {
+            var obj = this.engine.getParticle(i);
 
             var newX = obj.x;
             var newY = obj.y;

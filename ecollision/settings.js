@@ -1,11 +1,11 @@
 var eCollisionSettings = {
-	simulationWidth: 100,
-	simulationHeight: 100,
+	simulationWidth: 1000,
+	simulationHeight: 1000,
 	simulationCanvas: "simulation-canvas",
 	graphCanvas: "graph-canvas",
 	overlayCanvas: "overlay-canvas",
-	refreshRate: 50,
-	updateRate: 60,
+	refreshRate: 60,
+	updateRate: 50,
 	showVelocities: false,
 	enableInterpolation: true,
 	maxTraceLength: 30,
@@ -14,5 +14,6 @@ var eCollisionSettings = {
 	speedConst: 1.0,
 	maxParticles: 100,
 	minRadius: 5,
-	maxRadius: 30
+	maxRadius: 30,
+	errorTime: 5000
 }
