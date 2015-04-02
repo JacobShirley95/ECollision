@@ -15,5 +15,6 @@ var eCollisionSettings = {
 	maxParticles: 100,
 	minRadius: 5,
 	maxRadius: 30,
-	errorTime: 5000
+	errorTime: 5000,
+	gridInterval: 50
 }

@@ -26,8 +26,6 @@ function Overlay(canvasName, simulation, settings) {
     modeText.x = (this.width/2)-40;
     modeText.y = 10;
 
-    var interval = 50;
-
     var freePlace = false;
     var copyPlace = false;
 
@@ -79,11 +77,11 @@ function Overlay(canvasName, simulation, settings) {
         mouseY = crossY = ev.stageY;
         
         if (!freePlace) {
-            var gridX = Math.round(mouseX/interval);
-            var gridY = Math.round(mouseY/interval);
+            var gridX = Math.round(mouseX/settings.gridInterval);
+            var gridY = Math.round(mouseY/settings.gridInterval);
             
-            crossX = gridX*interval;
-            crossY = gridY*interval;
+            crossX = gridX*settings.gridInterval;
+            crossY = gridY*settings.gridInterval;
         }
         
         switch (index) {
