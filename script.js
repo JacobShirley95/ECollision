@@ -243,7 +243,7 @@ ecollision.onTick = function() {
         debugStr = "Frame rate: " + fps +
                    "<br /> Update rate: " + setColGreen(ecollision.simulationUI.getUpdateRate()) + " Hz" +
                    "<br /> Energy in system: " + setColGreen(ecollision.graphUI.getEnergy()) + " kJ" +
-                   "<br /> Number of objects: " + setColGreen(ecollision.engine.particles.length);
+                   "<br /> Number of objects: " + setColGreen(ecollision.engine.numOfParticles());
                    
         fpsDiv.html(debugStr);
     } else fpsDiv.html("");

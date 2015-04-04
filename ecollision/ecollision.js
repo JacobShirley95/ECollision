@@ -3,7 +3,7 @@ function ECollision(settings) {
 
     this.paused = false;
 
-    this.engine = new SimEngine(settings.simulationWidth, settings.simulationHeight, this.settings);
+    this.engine = new SimulationEngine(settings.simulationWidth, settings.simulationHeight, this.settings);
 
     this.simulationUI = new Simulation(settings.simulationCanvas, this.engine, this.settings);
     this.graphUI = new Graph(settings.graphCanvas, this.engine, 1/50, 5, this.settings);
@@ -26,6 +26,8 @@ function ECollision(settings) {
 
     var interpolation = 0.0;
 
+    var thread = -1;
+
     var ecol = this; //so that i can refer to this object inside nested functions - javascript problem solved
 
     this.start = function() {
@@ -33,7 +35,7 @@ function ECollision(settings) {
             widgets[i].init();
         }
         
-        setInterval(this.tick, 1000.0 / settings.refreshRate);
+        thread = setInterval(this.tick, 1000.0 / settings.refreshRate);
     }
 
     this.restart = function() {
@@ -56,6 +58,31 @@ function ECollision(settings) {
         for (var i = 0; i < widgets.length; i++) {
             widgets[i].pause();
         } 
+    }
+
+    this.stop = function() {
+        if (thread != -1) {
+            clearInterval(thread);
+
+            thread = -1;
+        }
+    }
+
+    this.getUpdateRate = function() {
+        return updateRate;
+    }
+    
+    this.getUpdateTime = function() {
+        return updateTime;
+    }
+    
+    this.setUpdateRate = function(rate) {
+        updateRate = rate;
+        updateTime = 1000.0 / updateRate;
+    }
+
+    this.setSpeedConst = function(speedConst) {
+        this.engine.speedConst = speedConst;
     }
 
     this.onTick = function() {};

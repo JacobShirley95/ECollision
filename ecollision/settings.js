@@ -11,6 +11,7 @@ var eCollisionSettings = {
 	maxTraceLength: 30,
 	graphScaleX: 1/50,
 	graphScaleY: 5,
+	graphZoomFactor: 1.25,
 	speedConst: 1.0,
 	maxParticles: 100,
 	minRadius: 5,

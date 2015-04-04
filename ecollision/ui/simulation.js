@@ -8,31 +8,11 @@ function Simulation(canvasName, engine, settings) {
     var timeStamp = 0;
     var newTime = timeStamp;
     var curTime = timeStamp;
-    
-    var updateRate = settings.updateRate;
-    var updateTime = 1000.0 / updateRate;
 
     var selected = -1;
 
-    this.setSpeedConst = function(speedConst) {
-        this.engine.speedConst = speedConst;
-    }
-    
     this.resize = function(newWidth, newHeight) {
         this.engine.setBounds(newWidth, newHeight);
-    }
-    
-    this.getUpdateRate = function() {
-        return updateRate;
-    }
-    
-    this.getUpdateTime = function() {
-        return updateTime;
-    }
-    
-    this.setUpdateRate = function(rate) {
-        updateRate = rate;
-        updateTime = 1000.0 / updateRate;
     }
     
     this.addParticle = function(x, y, mass, radius, style) {
@@ -88,15 +68,8 @@ function Simulation(canvasName, engine, settings) {
     this.saveParticles = function(saved) {
         for (var i = 0; i < this.engine.numOfParticles(); i++) {
             var obj = this.engine.getParticle(i);
-            var particle = new Particle(obj.x, obj.y, obj.radius, obj.style);
     
-            particle.mass = obj.mass;
-            particle.xVel = obj.xVel;
-            particle.yVel = obj.yVel;
-            
-            particle.cOR = obj.cOR;
-    
-            saved.push(particle);
+            saved.push(obj.copy());
         }
     }
     

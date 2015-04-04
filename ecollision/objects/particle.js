@@ -1,6 +1,8 @@
 function Particle(x, y, radius, style, settings) {
     PhysObject.call(this, x, y, 10);
 
+    this.index = -1;
+
     this.radius = radius;
     
     this.style = style;
@@ -68,6 +70,18 @@ function Particle(x, y, radius, style, settings) {
             }
         }
     };
+
+    this.copy = function() {
+       var p = new Particle(this.x, this.y, this.radius, this.style, settings);
+
+       p.index = this.index;
+       p.cOR = this.cOR;
+       p.mass = this.mass;
+       p.xVel = this.xVel;
+       p.yVel = this.yVel;
+
+       return p;
+    }
 }
 
 Particle.prototype = new PhysObject();

@@ -134,7 +134,7 @@ function Overlay(canvasName, simulation, settings) {
     });
 
     this.canvas.mousedown(function (ev) {
-        if (ev.button == 2) {
+        if (ev.button == 2 && index != INDEX_MODIFY) {
             switch (index) {
                 case INDEX_PLACE:
                     overlay.end();
@@ -186,13 +186,9 @@ function Overlay(canvasName, simulation, settings) {
                     if (ev.button == 2) {
                         simulation.removeSelected();
                     } else {
-                        var selected = simulation.getSelected();
+                        var selected = tempObject;
 
-                        tempObject = new Particle(crossX, crossY, tempObject.radius, tempObject.style, settings);
-                        tempObject.xVel = selected.xVel;
-                        tempObject.yVel = selected.yVel;
-                        tempObject.mass = selected.mass;
-                        tempObject.cOR = selected.cOR;
+                        tempObject = selected.copy();
 
                         lastX = selected.x;
                         lastY = selected.y;
@@ -212,7 +208,6 @@ function Overlay(canvasName, simulation, settings) {
     this.draw = function(interpolation) {
         if (!this.hidden) {
             if (tempObject != null) {
-                //infoText.text = "Radius: "+tempObject.radius;
                 tempObject.draw(tempObject.x, tempObject.y);
             }
 

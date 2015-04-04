@@ -100,19 +100,21 @@ function Graph(canvasName, engine, scaleX, scaleY, settings) {
     }
     
     this.zoomIn = function() {
-        this.scaleX *= 1.25;
-        this.scaleY *= 1.25;
+        this.scaleX *= settings.graphZoomFactor;
+        this.scaleY *= settings.graphZoomFactor;
         
         offsetX *= this.scaleX;
+        offsetY *= this.scaleY;
         
         this.updateData();
     }
     
     this.zoomOut = function() {
-        this.scaleX /= 1.25;
-        this.scaleY /= 1.25;
+        this.scaleX /= settings.graphZoomFactor;
+        this.scaleY /= settings.graphZoomFactor;
         
         offsetX *= this.scaleX;
+        offsetY *= this.scaleY;
 
         this.updateData();
     }

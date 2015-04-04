@@ -1,4 +1,4 @@
-function SimEngine(width, height, settings) {
+function SimulationEngine(width, height, settings) {
     this.width = width;
     this.height = height;
     
@@ -46,6 +46,7 @@ function SimEngine(width, height, settings) {
 
     this.addParticle = function(particle) {
         if (particles.length < settings.maxParticles) {
+            particle.index = particles.length;
             particles.push(particle);
         } else {
             throw "ERROR: Number of balls exceeds the maximum value set.";
