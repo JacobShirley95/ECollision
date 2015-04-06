@@ -227,7 +227,7 @@ $("#sim-speed-slider").sliderEx({
 var ecollision = new ECollision(eCollisionSettings);
 
 var fpsDiv = $("#fps-div");
-var ballInfo = $("#ball-info");
+var ballInfo = $("#particle-info");
 
 ecollision.onTick = function() {
     var fpsCurTime = new Date().getTime();
@@ -243,7 +243,7 @@ ecollision.onTick = function() {
         debugStr = "Frame rate: " + fps +
                    "<br /> Update rate: " + setColGreen(ecollision.simulationUI.getUpdateRate()) + " Hz" +
                    "<br /> Energy in system: " + setColGreen(ecollision.graphUI.getEnergy()) + " kJ" +
-                   "<br /> Number of objects: " + setColGreen(ecollision.engine.numOfParticles());
+                   "<br /> Number of particles: " + setColGreen(ecollision.engine.numOfParticles());
                    
         fpsDiv.html(debugStr);
     } else fpsDiv.html("");

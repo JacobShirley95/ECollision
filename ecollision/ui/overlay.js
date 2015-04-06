@@ -194,7 +194,9 @@ function Overlay(canvasName, simulation, settings) {
                         lastY = selected.y;
 
                         overlay.stage.addChild(tempObject.displayObj);
-                        simulation.removeSelected();
+
+                        if (!copyPlace)
+                            simulation.removeSelected();
 
                         index = INDEX_PLACE;
                     }
