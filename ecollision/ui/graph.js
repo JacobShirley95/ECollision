@@ -94,6 +94,12 @@ function Graph(canvasName, engine, scaleX, scaleY, settings) {
         }
     }
 
+    this.restart = function() {
+        data = [];
+        this.updateData();
+        currX = 0;
+        currY = 0;
+    }
     
     this.calibrate = function() {
         userY = 0;

@@ -41,8 +41,7 @@ function Particle(x, y, radius, style, settings) {
         graphics.beginFill(this.style).drawCircle(0, 0, this.radius).endFill();
 
         if (this.selected || settings.showVelocities) {
-            var scaleFactor = 10;
-            graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(this.xVel*scaleFactor, this.yVel*scaleFactor).endStroke();
+            graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(this.xVel*settings.updateRate, this.yVel*settings.updateRate).endStroke();
         }
     };
 

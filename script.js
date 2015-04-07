@@ -215,7 +215,7 @@ $("#btn-load").click(function() {
 });
 
 $("#btn-reset").click(function() {
-    ecollision.simulationUI.restart();
+    ecollision.restart();
 });
 
 $("#sim-speed-slider").sliderEx({

@@ -167,6 +167,8 @@ function Overlay(canvasName, simulation, settings) {
                         overlay.stage.removeChild(velocityLine);
                         overlay.stage.removeChild(infoText);
 
+                        tempObject.xVel = tempObject.yVel = 0;
+
                         if (mode == MODE_EDIT && !copyPlace) {
                             index = INDEX_MODIFY;
                             overlay.stage.removeChild(tempObject.displayObj);
