@@ -96,9 +96,10 @@ function Graph(canvasName, engine, scaleX, scaleY, settings) {
 
     this.restart = function() {
         data = [];
-        this.updateData();
-        currX = 0;
-        currY = 0;
+        start = 0;
+        currX = currY = 0;
+        offsetX = offsetY = 0;
+        updated = true;
     }
     
     this.calibrate = function() {
