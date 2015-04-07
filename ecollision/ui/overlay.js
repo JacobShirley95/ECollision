@@ -34,6 +34,15 @@ function Overlay(canvasName, simulation, settings) {
 
     var tempObject = null;
 
+    function gcd(a, b) {
+        if ( ! b) {
+            return a;
+        }
+        return gcd(b, a % b);
+    }
+
+    var interval = gcd(this.width, this.height);
+
     var overlay = this; //so that i can refer to this object inside nested functions - javascript problem solved
     
     this.canvas.mousewheel(function(event) {
@@ -48,6 +57,10 @@ function Overlay(canvasName, simulation, settings) {
             }
         }
     });
+
+    this.resize = function(width, height) {
+        interval = gcd(this.width, this.height);
+    }
     
     $(document).keydown(function(event) {
         freePlace = event.ctrlKey;
@@ -71,17 +84,18 @@ function Overlay(canvasName, simulation, settings) {
 
         this.stage.addChild(modeText);
     }
+
     
     this.stage.addEventListener("stagemousemove", function (ev) {
         mouseX = crossX = ev.stageX;
         mouseY = crossY = ev.stageY;
         
         if (!freePlace) {
-            var gridX = Math.round(mouseX/settings.gridInterval);
-            var gridY = Math.round(mouseY/settings.gridInterval);
+            var gridX = Math.round(mouseX/interval);
+            var gridY = Math.round(mouseY/interval);
             
-            crossX = gridX*settings.gridInterval;
-            crossY = gridY*settings.gridInterval;
+            crossX = gridX*interval;
+            crossY = gridY*interval;
         }
         
         switch (index) {
