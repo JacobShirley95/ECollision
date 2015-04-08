@@ -16,22 +16,6 @@
         <script src="lib/easeljs-0.7.1.min.js"></script>
         <script src="lib/jquery.gridster.min.js"></script>
         <script src="lib/jquery-mousewheel-3.1.12/jquery.mousewheel.js"></script>
-
-        <script src="ecollision/math/pvector.js"></script>
-        <script src="ecollision/math/point-2d.js"></script>
-                
-        <script src="ecollision/objects/phys-object.js"></script>
-        <script src="ecollision/objects/particle.js"></script>
-        
-        <script src="ecollision/ui/widget.js"></script>
-        <script src="ecollision/ui/simulation.js"></script>
-        <script src="ecollision/ui/graph.js"></script>
-        <script src="ecollision/ui/overlay.js"></script>
-                
-        <script src="ecollision/engine/simulation-engine.js"></script>
-
-        <script src="ecollision/settings.js"></script>
-        <script src="ecollision/ecollision.js"></script>
     </head> 
     
     <body>
@@ -73,13 +57,13 @@
                     panel[0] = '<li id="'+p+'"></li>';
                     gridster.add_widget.apply(gridster, panel);
                     
-                    console.log(p);
+                    console.log("Loading: "+p);
                     $("#"+p).load("panels/"+p+".html", function() {
                         numLoadedPanels++;
                         if (numLoadedPanels == panels.length) {
                             var element = document.createElement("script");
                             
-                            element.src = "script.js";
+                            element.src = "bin/build.js";
                             
                             document.body.appendChild(element);
                         }
