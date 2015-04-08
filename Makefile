@@ -5,7 +5,7 @@ OUTPUT_FILE = build.js
 
 OUTPUT = $(OUTPUT_FOLDER)/$(OUTPUT_FILE)
 
-COMPILE_CMD = $(shell ./compressJS/compressjs.sh $(PATH) $(OUTPUT))
+COMPILE_CMD = $(shell ./compressjs.sh $(PATH) $(OUTPUT))
 
 compile: 
 	@echo "Compiling..."
