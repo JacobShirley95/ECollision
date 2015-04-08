@@ -227,7 +227,7 @@ $("#sim-speed-slider").sliderEx({
 var ecollision = new ECollision(eCollisionSettings);
 
 var fpsDiv = $("#fps-div");
-var ballInfo = $("#particle-info");
+var particleInfo = $("#particle-info-box");
 
 ecollision.onTick = function() {
     var fpsCurTime = new Date().getTime();
@@ -241,7 +241,7 @@ ecollision.onTick = function() {
 
         }
         debugStr = "Frame rate: " + fps +
-                   "<br /> Update rate: " + setColGreen(ecollision.simulationUI.getUpdateRate()) + " Hz" +
+                   "<br /> Update rate: " + setColGreen(ecollision.getUpdateRate()) + " Hz" +
                    "<br /> Energy in system: " + setColGreen(ecollision.graphUI.getEnergy()) + " kJ" +
                    "<br /> Number of particles: " + setColGreen(ecollision.engine.numOfParticles());
                    
@@ -258,9 +258,9 @@ ecollision.onTick = function() {
                   "<br /> <b>Radius:</b> " + selected.radius + " px"
                   "<br /> <b>Energy:</b> " + Math.round(selected.getEnergy()) + " J";
 
-        ballInfo.html(str);
+        particleInfo.html(str);
     } else {
-        ballInfo.html("");
+        particleInfo.html("");
     }
 }
 

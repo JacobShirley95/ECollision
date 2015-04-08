@@ -88,7 +88,7 @@ function Graph(canvasName, engine, scaleX, scaleY, settings) {
             var dataY = total/data.length;
             var targetY = this.height/2;
         
-            offsetY = targetY-(dataY*this.scaleY);
+            //offsetY = targetY-(dataY*this.scaleY);
             
             this.stage.update();
         }

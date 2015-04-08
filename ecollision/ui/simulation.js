@@ -82,6 +82,7 @@ function Simulation(canvasName, engine, settings) {
 
     this.getSelected = function() {
         var sel = null;
+
         if (selected != -1) {
             sel = this.engine.getParticle(selected);
         }
