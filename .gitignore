@@ -1,3 +1,4 @@
 objs/
 *.sublime-project
 *.sublime-workspace
+*.tmp
