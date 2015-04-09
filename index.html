@@ -70,6 +70,7 @@
                     
                     console.log("Loading: "+p);
                     $("#"+p).load("panels/"+p+".html", function() {
+                        console.log("Successfully loaded: "+p);
                         numLoadedPanels++;
                         if (numLoadedPanels == panels.length) {
                             var element = document.createElement("script");

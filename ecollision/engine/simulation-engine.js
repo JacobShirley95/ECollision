@@ -71,84 +71,64 @@ function SimulationEngine(width, height, settings) {
         this.object2 = null;
     }
     
-    function splitVelocity(object1, object2) {
-        var velocity = new PVector(object1.xVel, object1.yVel);
-        var a = Math.PI / 2;
-    
-        if (object1.xVel !== 0) {
-            a = Math.atan(object1.yVel / object1.xVel);
-        }
-
-        var magnitude = object1.xVel * Math.cos(-a) - object1.yVel * Math.sin(-a) * object1.cOR;
-        
-        var dx = object1.x - object2.x;
-        var dy = object1.y - object2.y;
-    
-        var ang = 0;
-        if (dx !== 0) {
-            ang = Math.atan(dy / dx);
-        } else {
-            ang = Math.atan(dy / (dx - 0.00001));
-        }
-
-        /*var l = Math.cos(ang) * Math.cos(-a);
-        var m = Math.sin(ang) * Math.sin(-a);
-
-        var i = (l - m) * (object1.xVel * Math.cos(-a) - object1.yVel * Math.sin(-a));
-
-        var 1 = (Math.cos(ang) * Math.cos(-a) * object1.xVel * Math.cos(-a));
-        var 2 = -((Math.cos(ang) * Math.cos(-a) * object1.yVel * Math.sin(-a))+(Math.sin(ang) * Math.sin(-a)*object1.xVel * Math.cos(-a))
-        var 3 = (Math.sin(ang) * Math.sin(-a)*object1.yVel * Math.sin(-a));
-
-
-
-
-        var r = ((1-Math.sin(-a)*Math.sin(-a)) * Math.cos(ang) * object1.xVel) + (Math.sin(ang) * Math.sin(-a)*object1.yVel * Math.sin(-a));
-        var r2 = (Math.sin(-a)*Math.sin(-a))(Math.cos(ang))
-
-        var x1 = (newV * cosA) + (thisVel.y * sinA);
-        var y1 = (newV * sinA) - (thisVel.y * cosA);
-
-        var x2 = (newV2 * cosA) + (objVel.y * sinA);
-        var y2 = (newV2 * sinA) - (objVel.y * cosA);
-
-
-
-
-
-        i = Math.cos(ang) * Math.sin(-a) + Math.sin(ang) * Math.cos(-a);
-
-        var fdsf = (object1.xVel * (Math.cos(-a)*Math.cos(ang)*Math.cos(-a) - Math.cos(-a)*Math.sin(ang)*Math.sin(-a))) - (object1.yVel * Math.sin(-a) * Math.cos(ang - a))*/
-
-        velocity.x = magnitude * (Math.cos(ang - a));
-        velocity.y = magnitude * (Math.sin(ang - a));
-        
-      /*  var dx = object1.x - object2.x;
-        var dy = object1.y - object2.y;
-        
-        var velocity = new PVector(object1.xVel, object1.yVel);
-        var a = Math.atan2(dy, dx);
-        
-        
-        var magnitude = velocity.getMagnitude();
-        
-        velocity.x = magnitude * Math.cos(a);
-        velocity.y = magnitude * Math.sin(a);*/
-    
-        return velocity;
-    }
-    
     this.collide = function(object, object2, collision) {
+        //Take the distances between the objects on the x and y axes
         var dX = object2.x - object.x;
         var dY = object2.y - object.y;
-    
+        
+        //Calculate the square of the distance
         var sqr = (dX * dX) + (dY * dY);
         var r = object2.radius + object.radius;
-    
+        
+        //Could sqrt to get the distance, but there's no need because the otherside would also have to be sqrted
         if (sqr < r * r) {
+            //Now to get the time constant between the last update and this update at which the objects would have collided perfectly
+            //Put into pvectors as we need to get the dot products
             var pDiff = new PVector(object.x - object2.x, object.y - object2.y);
             var vDiff = new PVector(object.xVel - object2.xVel, object.yVel - object2.yVel);
-    
+            
+            //The following can be derived thus:
+            //          At the time of a perfect collision:
+            //              let dx = obj2_currentX - obj1_currentX
+            //              let dy = obj2_currentY - obj1_currentY
+            //
+            //              let dVelX = obj2_velocityX-obj1_velocityX
+            //              let dVelY = obj2_velocityY-obj1_velocityY
+            //
+            //              let obj1_xFinal = obj1_currentX - (obj1_velocityX * time)
+            //              let obj1_yFinal = obj1_currentY - (obj1_velocityY * time)
+            //
+            //              let obj2_xFinal = obj2_currentX - (obj2_velocityX * time)
+            //              let obj2_yFinal = obj2_currentY - (obj2_velocityY * time)
+            //
+            //          We need to solve for time:
+            //              let diffX = obj2_xFinal-obj1_xFinal
+            //              let diffY = obj2_yFinal-obj1_yFinal
+            //
+            //          Rearranging and subbing-in this gives:
+            //              diffX = obj2_currentX - (obj2_velocityX * time) - obj1_currentX - (obj1_velocityX * time) 
+            //                    = (obj2_currentX - obj1_currentX) - time*(obj2_velocityX-obj1_velocityX) 
+            //                    = dx - time*dVelX
+            //
+            //              diffY = obj2_currentY - (obj2_velocityY * time) - obj1_currentY - (obj1_velocityY * time) 
+            //                    = (obj2_currentY - obj1_currentY) - time*(obj2_velocityY-obj1_velocityY)
+            //                    = dy - time*dVelY          
+            //
+            //          Now it is just like a collision check, as above, except this time we can solve for time:
+            //              let sqr = sqr(diffX) + sqr(diffY) 
+            //                      = sqr(dx - time*dVelX) + sqr(dy - time*dVelY)
+            //
+            //          Now to expand the brackets:
+            //              sqr = sqr(dx) - 2*time*dVelX*dx + sqr(time)*sqr(dVelX) + sqr(dy) - 2*time*dVelY*dy + sqr(time)*sqr(dVelY)
+            //              
+            //          We're trying to find time, and or a perfect collision, sqr must equal the sum of the radii squared
+            //          So our quadratic equation is:
+            //              sqr = a*sqr(time) + b*time + c-radiiSqred = 0
+            //              a = sqr(dVelX)+sqr(dVelY) (NOTE: dotProduct as below)
+            //              b = -2*(dx*dVelX + dVelY*dy) (NOTE: dotProduct as below)
+            //              c = sqr(dx)+sqr(dy) - radiiSqred
+            //          
+            //          We then use the quadratic formula (-b +- sqrt(b*b - 4*a*c))/(2*a) to calculate time
             var a = vDiff.dotProduct(vDiff);
             var b = -2 * vDiff.dotProduct(pDiff);
             var c = (pDiff.dotProduct(pDiff)) - (r * r);
@@ -171,6 +151,32 @@ function SimulationEngine(width, height, settings) {
             return true;
         }
         return false;
+    }
+
+    function splitVelocity(object1, object2) {
+        var velocity = new PVector(object1.xVel, object1.yVel);
+        var a = Math.PI / 2;
+    
+        if (object1.xVel !== 0) {
+            a = Math.atan(object1.yVel / object1.xVel);
+        }
+
+        var magnitude = object1.xVel * Math.cos(-a) - object1.yVel * Math.sin(-a) * object1.cOR;
+        
+        var dx = object1.x - object2.x;
+        var dy = object1.y - object2.y;
+    
+        var ang = 0;
+        if (dx !== 0) {
+            ang = Math.atan(dy / dx);
+        } else {
+            ang = Math.atan(dy / (dx - 0.00001));
+        }
+
+        velocity.x = magnitude * (Math.cos(ang - a));
+        velocity.y = magnitude * (Math.sin(ang - a));
+    
+        return velocity;
     }
     
     this.handleCollision = function (collision) {
@@ -202,29 +208,6 @@ function SimulationEngine(width, height, settings) {
         object2.xVel = x2;
         object2.yVel = y2;
     }
-    
-    /*this.handleCollision = function (collision) {
-        var object = collision.object;
-        var object2 = collision.object2;
-        
-        var vx = object.xVel;
-        var vx2 = object2.xVel;
-        
-        var vy = object.yVel;
-        var vy2 = object2.yVel;
-    
-        var newV = ((vx * (object.mass - object2.mass)) + (2 * object2.mass * vx2)) / (object.mass + object2.mass);
-        var newV2 = ((vx2 * (object2.mass - object.mass)) + (2 * object.mass * vx)) / (object.mass + object2.mass);
-        
-        var newVY = ((vy * (object.mass - object2.mass)) + (2 * object2.mass * vy2)) / (object.mass + object2.mass);
-        var newVY2 = ((vy2 * (object2.mass - object.mass)) + (2 * object.mass * vy)) / (object.mass + object2.mass);
-    
-        object.xVel = newV;
-        object.yVel = newVY;
-    
-        object2.xVel = newV2;
-        object2.yVel = newVY2;
-    }*/
     
     this.seperateObjects = function(collision, object, object2) {
         var t = collision.time + (0.001 * collision.time);
