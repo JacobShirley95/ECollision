@@ -12,6 +12,8 @@ var eCollisionSettings = {
 	graphScaleX: 1/50,
 	graphScaleY: 5,
 	graphZoomFactor: 1.25,
+	graphMinification: 5,
+	graphMagnification: 5,
 	speedConst: 1.0,
 	maxParticles: 100,
 	minRadius: 5,

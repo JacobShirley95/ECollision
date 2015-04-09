@@ -4,11 +4,50 @@ function SimulationEngine(width, height, settings) {
     
     particles = [];
 
+    this.setBounds = function(width, height) {
+        this.width = width;
+        this.height = height;
+    }
+    this.reset = function() {
+        particles = [];
+    }
+
+    this.addParticle = function(particle) {
+        if (particles.length < settings.maxParticles) {
+            particle.index = particles.length;
+            particles.push(particle);
+        } else {
+            throw "ERROR: Number of particles exceeds the maximum value set.";
+        }
+    }
+
+    this.removeParticle = function(index) {
+        particles.splice(index, 1);
+    }
+
+    this.getParticle = function(index) {
+        return particles[index];
+    }
+
+    this.numOfParticles = function() {
+        return particles.length;
+    }
+    
+    //Collision class that stores which objects collided and a time constant of how much to seperate them by.
+    function Collision() {
+        this.time = 0.0;
+        this.particle = null;
+        this.particle2 = null;
+    }
+
+    //This detects if there is an edge collision.
     this.edgeCollision = function (particle, rebound) {
         var cOR = particle.cOR;
 
+        //If the particle is outside the width set, it will be placed back inside
         if (particle.x + particle.radius >= this.width) {
             if (rebound) {
+                //The particle may lose energy if it's coefficient of restitution is less than 1.
                 particle.xVel *= -cOR;
                 particle.yVel *= cOR;
             } else {
@@ -22,7 +61,8 @@ function SimulationEngine(width, height, settings) {
                 particle.x = particle.radius;
             }
         }
-    
+        
+        //If the particle is outside the height set, it will be placed back inside
         if (particle.y + particle.radius >= this.height) {
             if (rebound) {
                 particle.xVel *= cOR;
@@ -39,93 +79,65 @@ function SimulationEngine(width, height, settings) {
             }
         } 
     }
-
-    this.reset = function() {
-        particles = [];
-    }
-
-    this.addParticle = function(particle) {
-        if (particles.length < settings.maxParticles) {
-            particle.index = particles.length;
-            particles.push(particle);
-        } else {
-            throw "ERROR: Number of balls exceeds the maximum value set.";
-        }
-    }
-
-    this.removeParticle = function(index) {
-        particles.splice(index, 1);
-    }
-
-    this.getParticle = function(index) {
-        return particles[index];
-    }
-
-    this.numOfParticles = function() {
-        return particles.length;
-    }
     
-    function Collision() {
-        this.time = 0.0;
-        this.object = null;
-        this.object2 = null;
-    }
-    
-    this.collide = function(object, object2, collision) {
-        //Take the distances between the objects on the x and y axes
-        var dX = object2.x - object.x;
-        var dY = object2.y - object.y;
+    //This functions checks for a collision and returns true or false if yes. It also calculates the required amount of time to seperate the particles.
+    this.collide = function(particle, particle2, collision) {
+        //Take the distances between the particles on the x and y axes
+        var dX = particle2.x - particle.x;
+        var dY = particle2.y - particle.y;
         
         //Calculate the square of the distance
         var sqr = (dX * dX) + (dY * dY);
-        var r = object2.radius + object.radius;
+        var r = particle2.radius + particle.radius;
         
         //Could sqrt to get the distance, but there's no need because the otherside would also have to be sqrted
         if (sqr < r * r) {
-            //Now to get the time constant between the last update and this update at which the objects would have collided perfectly
+            //Now to get the time constant between the last update and this update at which the particles would have collided perfectly
             //Put into pvectors as we need to get the dot products
-            var pDiff = new PVector(object.x - object2.x, object.y - object2.y);
-            var vDiff = new PVector(object.xVel - object2.xVel, object.yVel - object2.yVel);
+            var pDiff = new PVector(particle.x - particle2.x, particle.y - particle2.y);
+            var vDiff = new PVector(particle.xVel - particle2.xVel, particle.yVel - particle2.yVel);
             
             //The following can be derived thus:
             //          At the time of a perfect collision:
-            //              let dx = obj2_currentX - obj1_currentX
-            //              let dy = obj2_currentY - obj1_currentY
+            //              let dx = particle2_currentX - particle1_currentX
+            //              let dy = particle2_currentY - particle1_currentY
             //
-            //              let dVelX = obj2_velocityX-obj1_velocityX
-            //              let dVelY = obj2_velocityY-obj1_velocityY
+            //              let diffVelocityX = particle2_velocityX-particle1_velocityX
+            //              let diffVelocityY = particle2_velocityY-particle1_velocityY
             //
-            //              let obj1_xFinal = obj1_currentX - (obj1_velocityX * time)
-            //              let obj1_yFinal = obj1_currentY - (obj1_velocityY * time)
+            //              let particle1_xFinal = particle1_currentX - (particle1_velocityX * time)
+            //              let particle1_yFinal = particle1_currentY - (particle1_velocityY * time)
             //
-            //              let obj2_xFinal = obj2_currentX - (obj2_velocityX * time)
-            //              let obj2_yFinal = obj2_currentY - (obj2_velocityY * time)
+            //              let particle2_xFinal = particle2_currentX - (particle2_velocityX * time)
+            //              let particle2_yFinal = particle2_currentY - (particle2_velocityY * time)
             //
             //          We need to solve for time:
-            //              let diffX = obj2_xFinal-obj1_xFinal
-            //              let diffY = obj2_yFinal-obj1_yFinal
+            //              let diffX = particle2_xFinal-particle1_xFinal
+            //              let diffY = particle2_yFinal-particle1_yFinal
             //
             //          Rearranging and subbing-in this gives:
-            //              diffX = obj2_currentX - (obj2_velocityX * time) - obj1_currentX - (obj1_velocityX * time) 
-            //                    = (obj2_currentX - obj1_currentX) - time*(obj2_velocityX-obj1_velocityX) 
-            //                    = dx - time*dVelX
+            //              diffX = particle2_currentX - (particle2_velocityX * time) - particle1_currentX - (particle1_velocityX * time) 
+            //                    = (particle2_currentX - particle1_currentX) - time*(particle2_velocityX-particle1_velocityX) 
+            //                    = dx - time*diffVelocityX
             //
-            //              diffY = obj2_currentY - (obj2_velocityY * time) - obj1_currentY - (obj1_velocityY * time) 
-            //                    = (obj2_currentY - obj1_currentY) - time*(obj2_velocityY-obj1_velocityY)
-            //                    = dy - time*dVelY          
+            //              diffY = particle2_currentY - (particle2_velocityY * time) - particle1_currentY - (particle1_velocityY * time) 
+            //                    = (particle2_currentY - particle1_currentY) - time*(particle2_velocityY-particle1_velocityY)
+            //                    = dy - time*diffVelocityY          
             //
             //          Now it is just like a collision check, as above, except this time we can solve for time:
             //              let sqr = sqr(diffX) + sqr(diffY) 
-            //                      = sqr(dx - time*dVelX) + sqr(dy - time*dVelY)
+            //                      = sqr(dx - time*diffVelocityX) + sqr(dy - time*diffVelocityY)
             //
             //          Now to expand the brackets:
-            //              sqr = sqr(dx) - 2*time*dVelX*dx + sqr(time)*sqr(dVelX) + sqr(dy) - 2*time*dVelY*dy + sqr(time)*sqr(dVelY)
+            //              sqr = sqr(dx) - 2*time*diffVelocityX*dx + sqr(time)*sqr(diffVelocityX) + sqr(dy) - 2*time*diffVelocityY*dy + sqr(time)*sqr(diffVelocityY)
             //              
             //          We're trying to find time, and or a perfect collision, sqr must equal the sum of the radii squared
             //          So our quadratic equation is:
+            //              let radiiSqred = sqr(particle1_radius+particle2_radius)
+            //
             //              sqr = a*sqr(time) + b*time + c-radiiSqred = 0
-            //              a = sqr(dVelX)+sqr(dVelY) (NOTE: dotProduct as below)
-            //              b = -2*(dx*dVelX + dVelY*dy) (NOTE: dotProduct as below)
+            //              a = sqr(diffVelocityX)+sqr(diffVelocityY) (NOTE: dotProduct as below)
+            //              b = -2*(dx*diffVelocityX + diffVelocityY*dy) (NOTE: dotProduct as below)
             //              c = sqr(dx)+sqr(dy) - radiiSqred
             //          
             //          We then use the quadratic formula (-b +- sqrt(b*b - 4*a*c))/(2*a) to calculate time
@@ -153,19 +165,32 @@ function SimulationEngine(width, height, settings) {
         return false;
     }
 
-    function splitVelocity(object1, object2) {
-        var velocity = new PVector(object1.xVel, object1.yVel);
+    //This function splits particle1's velocity into parallel and perpendicular components.
+    function splitVelocity(particle1, particle2) {
+        //The overall process of visualising how this works is:
+        //      1. Imagine the collision happening such that particle1's velocity is rotated so that it is in one dimension, or the x-axis
+        //      2. Then calculate its parallel and perpendicular components when it collides.
+        //      3. Finally rotate these components back by the same amount.
+        //
+        //Store the current velocity in a vector structure
+        var velocity = new PVector(particle1.xVel, particle1.yVel);
+
+        //Default angle
         var a = Math.PI / 2;
-    
-        if (object1.xVel !== 0) {
-            a = Math.atan(object1.yVel / object1.xVel);
+        
+        //Calculate the angle of the velocity
+        if (particle1.xVel !== 0) {
+            a = Math.atan(particle1.yVel / particle1.xVel);
         }
 
-        var magnitude = object1.xVel * Math.cos(-a) - object1.yVel * Math.sin(-a) * object1.cOR;
+        //Calculate the magnitude as if it were on the x-axis only. This was originally part of my rotate function.
+        //See math/pector.js for similarities
+        var magnitude = (particle1.xVel * Math.cos(-a) - particle1.yVel * Math.sin(-a)) * particle1.cOR;
         
-        var dx = object1.x - object2.x;
-        var dy = object1.y - object2.y;
-    
+        var dx = particle1.x - particle2.x;
+        var dy = particle1.y - particle2.y;
+        
+        //Calculate the position angle
         var ang = 0;
         if (dx !== 0) {
             ang = Math.atan(dy / dx);
@@ -173,124 +198,141 @@ function SimulationEngine(width, height, settings) {
             ang = Math.atan(dy / (dx - 0.00001));
         }
 
+        //This is a simplification of multiple cosines and sines using trig identities. It is essentially doing stages 2 and 3 as stated above.
         velocity.x = magnitude * (Math.cos(ang - a));
         velocity.y = magnitude * (Math.sin(ang - a));
     
         return velocity;
     }
     
+    //This function actually handles the collision between two particles.
     this.handleCollision = function (collision) {
-        var object = collision.object;
-        var object2 = collision.object2;
+        var particle = collision.particle;
+        var particle2 = collision.particle2;
         
-        var thisVel = splitVelocity(object, object2);
-        var objVel = splitVelocity(object2, object);
-    
-        var newV = ((thisVel.x * (object.mass - object2.mass)) + (2 * object2.mass * objVel.x)) / (object.mass + object2.mass);
-        var newV2 = ((objVel.x * (object2.mass - object.mass)) + (2 * object.mass * thisVel.x)) / (object.mass + object2.mass);
-    
-        var ang = Math.atan((object.y - object2.y) / (object.x - object2.x));
+        //Split the velocities into parallel and perpendicular components. See "splitVelocity" above.
+        var thisVel = splitVelocity(particle, particle2);
+        var particleVel = splitVelocity(particle2, particle);
+        
+        //Finally do some real physics. This calculates the new velocities of the parallel components as if they were one-dimensional.
+        var newV = ((thisVel.x * (particle.mass - particle2.mass)) + (2 * particle2.mass * particleVel.x)) / (particle.mass + particle2.mass);
+        var newV2 = ((particleVel.x * (particle2.mass - particle.mass)) + (2 * particle.mass * thisVel.x)) / (particle.mass + particle2.mass);
+        
+        //Calculate the angle between the particles
+        var ang = Math.atan((particle.y - particle2.y) / (particle.x - particle2.x));
     
         var cosA = Math.cos(ang);
         var sinA = Math.sin(ang);
-    
+
+        //Then these new velocityies are split further so they fit the Cartesian coordinate system. They are then added to the remaining velocity from the perpendicular components
         var x1 = (newV * cosA) + (thisVel.y * sinA);
         var y1 = (newV * sinA) - (thisVel.y * cosA);
  
-        var x2 = (newV2 * cosA) + (objVel.y * sinA);
-        var y2 = (newV2 * sinA) - (objVel.y * cosA);
+        var x2 = (newV2 * cosA) + (particleVel.y * sinA);
+        var y2 = (newV2 * sinA) - (particleVel.y * cosA);
 
-        this.seperateObjects(collision, object, object2);
+        //Seperate the particles. See "seperateObjects" below.
+        this.seperateObjects(collision, particle, particle2);
     
-        object.xVel = x1;
-        object.yVel = y1;
+        //Finally give each particle their new velocities.
+        particle.xVel = x1;
+        particle.yVel = y1;
     
-        object2.xVel = x2;
-        object2.yVel = y2;
+        particle2.xVel = x2;
+        particle2.yVel = y2;
     }
-    
-    this.seperateObjects = function(collision, object, object2) {
+
+    //This function seperates the particles after collision.
+    this.seperateObjects = function(collision, particle, particle2) {
+        //Add a small extra amount of time so that the particles can never get stuck on each other
         var t = collision.time + (0.001 * collision.time);
 
         if (t < 1.0) {
-            object.x -= object.xVel * settings.speedConst * t;
-            object.y -= object.yVel * settings.speedConst * t;
+            //Pull both particles back by the perfect collision time. See "collide" function
+            particle.x -= particle.xVel * settings.speedConst * t;
+            particle.y -= particle.yVel * settings.speedConst * t;
     
-            object2.x -= object2.xVel * settings.speedConst * t;
-            object2.y -= object2.yVel * settings.speedConst * t;
+            particle2.x -= particle2.xVel * settings.speedConst * t;
+            particle2.y -= particle2.yVel * settings.speedConst * t;
         } else {
-            var dX = object2.x - object.x;
-            var dY = object2.y - object.y;
+            //Failsafe method of seperating particles
+
+            //First calculate the overlap
+            var dX = particle2.x - particle.x;
+            var dY = particle2.y - particle.y;
     
             var sqr = (dX * dX) + (dY * dY);
+            
+            var overlap = particle2.radius - Math.abs(Math.sqrt(sqr) - particle.radius) + 0.1;
     
-            var overlap = object2.radius - Math.abs(Math.sqrt(sqr) - object.radius) + 0.1;
-    
-            var vel1 = new PVector(object.xVel, object.yVel).getMagnitudeNS()+0.0001;
-            var vel2 = new PVector(object2.xVel, object2.yVel).getMagnitudeNS()+0.0001;
+            var vel1 = new PVector(particle.xVel, particle.yVel).getMagnitudeNS()+0.0001;
+            var vel2 = new PVector(particle2.xVel, particle2.yVel).getMagnitudeNS()+0.0001;
 
+            //Total velocity
             var vT = vel1 + vel2;
 
+            //Work out the first propotion for movement
             var i = vel1 / vT;
     
-            ang = Math.atan2(object.y - object2.y, object.x - object2.x);
-    
-            object.x += overlap * Math.cos(ang) * i;
-            object.y += overlap * Math.sin(ang) * i;
-    
+            ang = Math.atan2(particle.y - particle2.y, particle.x - particle2.x);
+            
+            //Move particle
+            particle.x += overlap * Math.cos(ang) * i;
+            particle.y += overlap * Math.sin(ang) * i;
+            
+            //Work out other proportion for movement
             i = 1 - i;
     
-            object2.x -= overlap * Math.cos(ang) * i;
-            object2.y -= overlap * Math.sin(ang) * i;
+            particle2.x -= overlap * Math.cos(ang) * i;
+            particle2.y -= overlap * Math.sin(ang) * i;
         }
     }
-    
-    this.setBounds = function(width, height) {
-        this.width = width;
-        this.height = height;
-    }
-    
-    this.update = function () {
-        var objects = particles;
 
-        for (var i = 0; i < objects.length; i++) {
-            var obj = objects[i];
-    
-            this.edgeCollision(obj, true);
-            obj.update();
+    //This function causes the particles to update and react to each other. It is the heart of the system.
+    this.update = function () {
+        //Loop through the particles, make sure they are not overlapping with the edges, then update their position.
+        for (var i = 0; i < particles.length; i++) {
+            var particle = particles[i];
+            
+            this.edgeCollision(particle, true);
+            particle.update();
         }
     
         var colObjects = [];
-        
-        for (var i = 0; i < objects.length; i++) {
-            var obj = objects[i];
+
+        //Loop through the particles, check for collisions once between pairs of particles. 
+        //If colliding, add them to a collision array
+        for (var i = 0; i < particles.length; i++) {
+            var particle = particles[i];
     
-            for (var i2 = i + 1; i2 < objects.length; i2++) {
-                var obj2 = objects[i2];
+            for (var i2 = i + 1; i2 < particles.length; i2++) {
+                var particle2 = particles[i2];
     
                 var collision = new Collision();
-                if (this.collide(obj, obj2, collision)) {
-                    collision.object = obj;
-                    collision.object2 = obj2;
+                if (this.collide(particle, particle2, collision)) {
+                    collision.particle = particle;
+                    collision.particle2 = particle2;
                     colObjects.push(collision);
                 }
             }
         }
-    
+        //Loop through the collision array and sort out which one happened first
         colObjects.sort(function (a, b) {
             return a.time < b.time;
         });
-    
+        
+        //Handle the collisions stored in the collision array. See "handleCollision" above
         for (var i = 0; i < colObjects.length; i++) {
             var collision = colObjects[i];
 
             this.handleCollision(collision);
         }
+
+        //Finally check for an edge collision again but do not rebound the particle
+        for (var i = 0; i < particles.length; i++) {
+            var particle = particles[i];
     
-        for (var i = 0; i < objects.length; i++) {
-            var obj = objects[i];
-    
-            this.edgeCollision(obj, false);
+            this.edgeCollision(particle, false);
         }
     }
 }
