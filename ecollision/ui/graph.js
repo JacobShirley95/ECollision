@@ -24,6 +24,8 @@ function Graph(canvasName, engine, scaleX, scaleY, settings) {
 
     var currX = 0;
     var currY = 0;
+
+    var zoomIndex = 0;
     
     this.init = function() {
         var xAxis = new createjs.Shape();
@@ -107,23 +109,31 @@ function Graph(canvasName, engine, scaleX, scaleY, settings) {
     }
     
     this.zoomIn = function() {
-        this.scaleX *= settings.graphZoomFactor;
-        this.scaleY *= settings.graphZoomFactor;
-        
-        offsetX *= this.scaleX;
-        offsetY *= this.scaleY;
-        
-        this.updateData();
+        if (zoomIndex < settings.graphMaxZoomIndex) {
+            this.scaleX *= settings.graphZoomFactor;
+            this.scaleY *= settings.graphZoomFactor;
+            
+            offsetX *= this.scaleX;
+            offsetY *= this.scaleY;
+            
+            this.updateData();
+
+            zoomIndex++;
+        } else throw("ERROR: Maximum zoom reached");
     }
     
     this.zoomOut = function() {
-        this.scaleX /= settings.graphZoomFactor;
-        this.scaleY /= settings.graphZoomFactor;
-        
-        offsetX *= this.scaleX;
-        offsetY *= this.scaleY;
+        if (zoomIndex > -settings.graphMinZoomIndex) {
+            this.scaleX /= settings.graphZoomFactor;
+            this.scaleY /= settings.graphZoomFactor;
+            
+            offsetX *= this.scaleX;
+            offsetY *= this.scaleY;
 
-        this.updateData();
+            this.updateData();
+
+            zoomIndex--;
+        } else throw("ERROR: Minimum zoom reached");
     }
     
     this.moveUp = function() {

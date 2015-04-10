@@ -1,18 +1,13 @@
 function Particle(x, y, radius, style, settings) {
-    PhysObject.call(this, x, y, 10);
-
-    this.index = -1;
+    PhysicsObject.call(this, x, y, 10);
 
     this.radius = radius;
-    
     this.style = style;
+    this.cOR = 1.0;
+    this.selected = false;
 
     var pastPositions = [];
     var curPos = 0;
-    
-    this.cOR = 1.0;
-    
-    this.selected = false;
     
     this.draw = function (x, y) {
         this.displayObj.x = x;
@@ -83,4 +78,4 @@ function Particle(x, y, radius, style, settings) {
     }
 }
 
-Particle.prototype = new PhysObject();
+Particle.prototype = new PhysicsObject();

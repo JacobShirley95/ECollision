@@ -1,6 +1,5 @@
 function Widget(canvasName) {
     this.hidden = false;
-    this.owner = null;
     
     this.canvasName = canvasName;
     this.canvas = $("#"+canvasName);
@@ -8,10 +7,10 @@ function Widget(canvasName) {
     this.width = this.canvas.width();
     this.height = this.canvas.height();
     
+    this.stage = new createjs.Stage(canvasName);
+
     this.canvas.attr("width", this.width);
     this.canvas.attr("height", this.height);
-    
-    this.stage = new createjs.Stage(canvasName);
 
     this.init = function() {}
 

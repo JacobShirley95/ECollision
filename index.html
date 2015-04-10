@@ -35,6 +35,7 @@
         </div>
 
         <script>
+            var BUILD_SCRIPT = "bin/build.js"
             var gridster;
 
             $(function(){
@@ -75,7 +76,7 @@
                         if (numLoadedPanels == panels.length) {
                             var element = document.createElement("script");
                             
-                            element.src = "bin/build.js";
+                            element.src = BUILD_SCRIPT;
                             
                             document.body.appendChild(element);
                         }

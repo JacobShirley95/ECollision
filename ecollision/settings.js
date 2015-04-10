@@ -5,19 +5,18 @@ var eCollisionSettings = {
 	graphCanvas: "graph-canvas",
 	overlayCanvas: "overlay-canvas",
 	refreshRate: 60,
-	updateRate: 50,
+	updateRate: 60,
 	showVelocities: false,
 	enableInterpolation: true,
 	maxTraceLength: 30,
 	graphScaleX: 1/50,
 	graphScaleY: 5,
 	graphZoomFactor: 1.25,
-	graphMinification: 5,
-	graphMagnification: 5,
+	graphMinZoomIndex: 5,
+	graphMaxZoomIndex: 5,
 	speedConst: 1.0,
 	maxParticles: 100,
 	minRadius: 5,
 	maxRadius: 30,
-	errorTime: 5000,
-	gridInterval: 50
+	errorTime: 5000
 }

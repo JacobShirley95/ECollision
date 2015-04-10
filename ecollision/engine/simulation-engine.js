@@ -2,7 +2,7 @@ function SimulationEngine(width, height, settings) {
     this.width = width;
     this.height = height;
     
-    particles = [];
+    var particles = [];
 
     this.setBounds = function(width, height) {
         this.width = width;

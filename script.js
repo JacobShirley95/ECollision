@@ -240,7 +240,7 @@ ecollision.onTick = function() {
             fps = setCol(ecollision.fps, "green");
 
         }
-        debugStr = "Frame rate: " + fps +
+        debugStr = "Frame rate: " + fps + " Hz" +
                    "<br /> Update rate: " + setColGreen(ecollision.getUpdateRate()) + " Hz" +
                    "<br /> Energy in system: " + setColGreen(ecollision.graphUI.getEnergy()) + " kJ" +
                    "<br /> Number of particles: " + setColGreen(ecollision.engine.numOfParticles());

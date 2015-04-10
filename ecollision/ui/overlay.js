@@ -6,10 +6,10 @@ function Overlay(canvasName, simulation, settings) {
     var INDEX_VELOCITY = 1;
     var INDEX_MODIFY = 2;
 
-    var index = 0;
-
     var MODE_ADD = 0;
     var MODE_EDIT = 1;
+
+    var index = 0;
 
     var mode = -1;
     
@@ -45,8 +45,8 @@ function Overlay(canvasName, simulation, settings) {
 
     var overlay = this; //so that i can refer to this object inside nested functions - javascript problem solved
     
-    this.canvas.mousewheel(function(event) {
-        var d = event.deltaY;
+    function handleMouseWheel(ev) {
+        var d = ev.deltaY;
         if (d < 0) {
             if (tempObject.radius > settings.minRadius) {
                 tempObject.radius -= 1;
@@ -56,7 +56,9 @@ function Overlay(canvasName, simulation, settings) {
                 tempObject.radius += 1;
             }
         }
-    });
+    }
+
+    this.canvas.mousewheel(handleMouseWheel);
 
     this.resize = function(width, height) {
         interval = gcd(this.width, this.height);
@@ -85,8 +87,7 @@ function Overlay(canvasName, simulation, settings) {
         this.stage.addChild(modeText);
     }
 
-    
-    this.stage.addEventListener("stagemousemove", function (ev) {
+    function handleMouseMove(ev) {
         mouseX = crossX = ev.stageX;
         mouseY = crossY = ev.stageY;
         
@@ -145,9 +146,11 @@ function Overlay(canvasName, simulation, settings) {
 
                 break;
         }
-    });
+    }
+    
+    this.stage.addEventListener("stagemousemove", handleMouseMove);
 
-    this.canvas.mousedown(function (ev) {
+    function handleClick(ev) {
         if (ev.button == 2 && index != INDEX_MODIFY) {
             switch (index) {
                 case INDEX_PLACE:
@@ -221,7 +224,9 @@ function Overlay(canvasName, simulation, settings) {
             }
         }
         ev.stopPropagation();
-    });
+    }
+
+    this.canvas.mousedown(handleClick);
     
     this.draw = function(interpolation) {
         if (!this.hidden) {

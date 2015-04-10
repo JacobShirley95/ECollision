@@ -5,10 +5,6 @@ function Simulation(canvasName, engine, settings) {
     this.engine.width = this.width;
     this.engine.height = this.height;
 
-    var timeStamp = 0;
-    var newTime = timeStamp;
-    var curTime = timeStamp;
-
     var selected = -1;
 
     this.resize = function(newWidth, newHeight) {
@@ -91,9 +87,6 @@ function Simulation(canvasName, engine, settings) {
 
     this.getSelectedID = function() {
         return selected;
-    }
-    
-    this.init = function() {
     }
     
     this.restart = function () {

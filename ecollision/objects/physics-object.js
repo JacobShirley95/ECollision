@@ -1,4 +1,4 @@
-function PhysObject(x, y, mass) {
+function PhysicsObject(x, y, mass) {
     this.x = x;
     this.y = y;
 
