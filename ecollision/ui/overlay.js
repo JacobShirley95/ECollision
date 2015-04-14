@@ -193,7 +193,7 @@ function Overlay(canvasName, simulation, settings) {
                             index = INDEX_PLACE;
                     } catch (e) {
                         errorText.text = e;
-                        errorText.x = overlay.width-(errorText.getMeasuredWidth())-10;
+                        errorText.x = overlay.width-(errorText.getMeasuredWidth());
                         errorText.y = overlay.height/2;
                         overlay.stage.addChild(errorText);
                         errorTimer = settings.errorTime;
