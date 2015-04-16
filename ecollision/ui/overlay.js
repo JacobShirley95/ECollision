@@ -155,13 +155,12 @@ function Overlay(canvasName, simulation, settings) {
             switch (index) {
                 case INDEX_PLACE:
                     overlay.end();
-                    reset();
                     break;
 
                 case INDEX_VELOCITY:
-                    reset();
                     break;
             }
+            reset();
         } else {
             switch(index) {
                 case INDEX_PLACE:
@@ -170,6 +169,7 @@ function Overlay(canvasName, simulation, settings) {
                     overlay.stage.addChild(velocityLine);
                     overlay.stage.addChild(infoText);
                     
+
                     index = INDEX_VELOCITY;
 
                     break;
@@ -260,6 +260,7 @@ function Overlay(canvasName, simulation, settings) {
             index = INDEX_MODIFY;
         } else {
             overlay.stage.removeChild(velocityLine);
+            overlay.stage.removeChild(infoText);
             index = INDEX_PLACE;
         }
     }
