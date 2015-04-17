@@ -15,7 +15,7 @@ var eCollisionSettings = {
 	graphMinZoomIndex: 5,
 	graphMaxZoomIndex: 5,
 	speedConst: 1.0,
-	maxParticles: 100,
+	maxParticles: 20,
 	minRadius: 5,
 	maxRadius: 30,
 	errorTime: 5000
