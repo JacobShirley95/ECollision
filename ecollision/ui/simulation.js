@@ -17,18 +17,22 @@ function Simulation(canvasName, engine, settings) {
         particle.mass = mass;
         
         var engine = this.engine;
+        var t = this;
         particle.addEventHandler("click", function (ev) {
             var p = engine.getParticle(selected);
 
             if (selected != -1) {
                 p.deselect();
+                t.onDeselect(p);
             }
                 
             for (var i = 0; i < engine.numOfParticles(); i++) {
-                if (engine.getParticle(i).displayObj == ev.target) {
+                p = engine.getParticle(i);
+                if (p.displayObj == ev.target) {
                     if (i != selected) {
+                        t.onSelect(p);
                         selected = i;
-                        engine.getParticle(i).selected = true;
+                        p.selected = true;
                     } else {
                         selected = -1;
                     }
@@ -41,6 +45,14 @@ function Simulation(canvasName, engine, settings) {
         this.engine.addParticle(particle);
         
         return particle;
+    }
+    
+    this.onSelect = function(particle) {
+        
+    }
+    
+    this.onDeselect = function(particle) {
+        
     }
     
     this.removeParticle = function(index) {

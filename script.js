@@ -229,6 +229,11 @@ var ecollision = new ECollision(eCollisionSettings);
 var fpsDiv = $("#fps-div");
 var particleInfo = $("#particle-info-box");
 
+ecollision.simulationUI.onSelect = function(particle) {
+    $("#slider-mass").sliderEx("value", particle.mass);
+    $("#slider-cor").sliderEx("value", particle.cOR);
+}
+
 ecollision.onTick = function() {
     var fpsCurTime = new Date().getTime();
 
@@ -257,7 +262,7 @@ ecollision.onTick = function() {
                   "<br /> <b>CoR:</b> " + selected.cOR +
                   "<br /> <b>Radius:</b> " + selected.radius + " px"
                   "<br /> <b>Energy:</b> " + Math.round(selected.getEnergy()) + " J";
-
+        
         particleInfo.html(str);
     } else {
         particleInfo.html("");
