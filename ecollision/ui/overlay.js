@@ -109,8 +109,8 @@ function Overlay(canvasName, simulation, settings) {
                     tempObject.y = crossY;
                 }
                 
-                infoText.x = crossX-50;
-                infoText.y = crossY-50;
+                infoText.x = crossX;
+                infoText.y = crossY;
 
                 break;
             case INDEX_VELOCITY:
@@ -168,7 +168,6 @@ function Overlay(canvasName, simulation, settings) {
                 
                     overlay.stage.addChild(velocityLine);
                     overlay.stage.addChild(infoText);
-                    
 
                     index = INDEX_VELOCITY;
 
