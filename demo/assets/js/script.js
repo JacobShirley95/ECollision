@@ -1,4 +1,5 @@
 var eCollisionSettings = new ECollisionSettings();
+var ecollision = new ECollision(eCollisionSettings);
 
 $.widget("custom.sliderEx", $.ui.slider, {
     _unit:"",
@@ -181,7 +182,7 @@ $("#move-down").click(function() {
 });
 
 $("#btn-sim-data").click(function() {
-    eCollisionSettings.showVelocities = !eCollisionSettings.showVelocities;  
+    eCollisionSettings.global.showVelocities = !eCollisionSettings.global.showVelocities;  
 });
 
 $("#btn-run-pause").click(function() {
@@ -222,11 +223,9 @@ $("#btn-reset").click(function() {
 
 $("#sim-speed-slider").sliderEx({
     slide: function(event, ui) {
-        eCollisionSettings.speedConst = parseFloat(ui.value);
+        eCollisionSettings.global.speedConst = parseFloat(ui.value);
     }
 });
-
-var ecollision = new ECollision(eCollisionSettings);
 
 var fpsDiv = $("#fps-div");
 var particleInfo = $("#particle-info-box");
@@ -239,7 +238,7 @@ ecollision.simulationUI.onSelect = function(particle) {
 ecollision.onTick = function() {
     var fpsCurTime = new Date().getTime();
 
-    if (eCollisionSettings.showVelocities) {
+    if (eCollisionSettings.global.showVelocities) {
         var fps = "";
         if (ecollision.fps < 24) {
             fps = setCol(ecollision.fps, "red");
@@ -257,8 +256,8 @@ ecollision.onTick = function() {
 
     var selected = ecollision.simulationUI.getSelected();
     if (selected != null) {
-        var str = "<b>XVel:</b> " + Math.round(selected.xVel*eCollisionSettings.updateRate) + " px/s" + 
-                  "<br /> <b>YVel:</b> " + Math.round(selected.yVel*eCollisionSettings.updateRate) + " px/s" +
+        var str = "<b>XVel:</b> " + Math.round(selected.xVel*eCollisionSettings.global.updateRate) + " px/s" + 
+                  "<br /> <b>YVel:</b> " + Math.round(selected.yVel*eCollisionSettings.global.updateRate) + " px/s" +
                   "<br /> <b>Direction:</b> " + Math.round(toDegrees(Math.atan2(selected.yVel, selected.xVel))) + " degrees" +
                   "<br /> <b>Mass:</b> " + selected.mass + " kg" +
                   "<br /> <b>CoR:</b> " + selected.cOR +
