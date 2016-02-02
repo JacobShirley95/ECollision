@@ -236,8 +236,6 @@ ecollision.simulationUI.onSelect = function(particle) {
 }
 
 ecollision.onTick = function() {
-    var fpsCurTime = new Date().getTime();
-
     if (eCollisionSettings.global.showVelocities) {
         var fps = "";
         if (ecollision.fps < 24) {

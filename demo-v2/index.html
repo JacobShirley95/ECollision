@@ -1,0 +1,132 @@
+<!-- https://jsfiddle.net/Auferious/u5umm67e/ -->
+
+<html>
+    <head>
+        <title>ECollision</title>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        
+        <!-- Load Open Sans font -->
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+        <!-- Load jQuery library -->
+        <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+
+        <!-- Load jQuery UI library -->
+        <link rel="stylesheet" href="../bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css">
+        <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
+
+        <!-- Load jQuery gridster plugin -->
+        <link rel="stylesheet" type="text/css" href="../bower_components/gridster/dist/jquery.gridster.min.css">
+        <script src="../bower_components/gridster/dist/jquery.gridster.min.js"></script>
+
+        <!-- Load ECollision -->
+        <script src="../bin/ecollision.deps.min.js"></script>
+
+        <!-- Load my stylesheet -->
+        <link rel="stylesheet" type="text/css" href="assets/stylesheets/style.css">
+    </head> 
+    <body>
+        <canvas id="ecol-canvas" class="sub-panel"></canvas>
+
+        <div id="right-panel" class="panel">
+          <div id="sim-controls" class="sub-panel">
+            <div id="sim-btn-controls">
+              <div id="run-pause" class="button">
+              Pause
+              </div>
+              <div id="step" class="button">
+              Step
+              </div>
+            </div>
+            <div id="sim-slider-controls">
+              <div class="slider-comp">
+                  <div class="slider-header">
+                    Simulation speed
+                  </div>
+                  <div id="sim-speed-slider" class="slider"></div>
+                  <div id="sim-speed-val" class="slider-val"></div>
+              </div> 
+            </div>
+          </div>
+          
+          <div id="particle-controls" class="sub-panel">
+            <div id="add-remove">
+              <div id="add" class="particle-btn button">
+                Add
+              </div>
+              <div id="remove" class="particle-btn button">
+                Remove
+              </div>
+              <div id="clear" class="particle-btn button">
+                Clear
+              </div>
+            </div>
+            <div id="particle-sliders">
+              <div class="slider-comp">
+                <div class="slider-header">
+                  X
+                </div>
+                <div id="x-slider" class="slider"></div>
+                <div id="x-val" class="slider-val"></div>
+              </div>
+              
+              <div class="slider-comp">
+                <div class="slider-header">
+                  Y
+                </div>
+                <div id="y-slider" class="slider"></div>
+                <div id="y-val" class="slider-val"></div>
+              </div>
+              
+              <div class="slider-comp">
+                <div class="slider-header">
+                  X Velocity
+                </div>
+                <div id="x-vel-slider" class="slider"></div>
+                <div id="x-vel-val" class="slider-val"></div>
+              </div>
+              
+              <div class="slider-comp">
+                <div class="slider-header">
+                  Y Velocity
+                </div>
+                <div id="y-vel-slider" class="slider"></div>
+                <div id="y-vel-val" class="slider-val"></div>
+              </div>
+              
+              <div class="slider-comp">
+                <div class="slider-header">
+                  Radius
+                </div>
+                <div id="radius-slider" class="slider"></div>
+                <div id="radius-val" class="slider-val"></div>
+              </div>
+              
+              <div class="slider-comp">
+                <div class="slider-header">
+                  Mass
+                </div>
+                <div id="mass-slider" class="slider"></div>
+                <div id="mass-val" class="slider-val"></div>
+              </div>    
+              
+              <div class="slider-comp">
+                <div class="slider-header">
+                  Coefficient of Restitution
+                </div>
+                <div id="cor-slider" class="slider"></div>
+                <div id="cor-val" class="slider-val"></div>
+              </div> 
+            </div>
+          </div>
+        </div>
+
+        <div id="bottom-panel" class="panel">
+          <div id="simulation-info" class="sub-panel">
+            <div id="fps-counter"></div>
+          </div>
+        </div>
+
+        <script src="assets/js/script.js"></script>
+    </body>
+</html>
