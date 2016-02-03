@@ -3,11 +3,7 @@
 <html>
     <head>
         <title>ECollision</title>
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
         
-        <!-- Load Open Sans font -->
-        <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-
         <!-- Load jQuery library -->
         <script src="../bower_components/jquery/dist/jquery.min.js"></script>
 
@@ -15,18 +11,14 @@
         <link rel="stylesheet" href="../bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css">
         <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
 
-        <!-- Load jQuery gridster plugin -->
-        <link rel="stylesheet" type="text/css" href="../bower_components/gridster/dist/jquery.gridster.min.css">
-        <script src="../bower_components/gridster/dist/jquery.gridster.min.js"></script>
-
-        <!-- Load ECollision -->
-        <script src="../bin/ecollision.standalone.min.js"></script>
+        <script src="../bower_components/EaselJS/lib/easeljs-0.8.2.min.js"></script>
+        <script src="../bower_components/jquery-mousewheel/jquery.mousewheel.min.js"></script>
 
         <!-- Load my stylesheet -->
         <link rel="stylesheet" type="text/css" href="assets/stylesheets/style.css">
     </head> 
     <body>
-        <canvas id="ecol-canvas" class="sub-panel"></canvas>
+        <canvas id="ecol-canvas"></canvas>
 
         <div id="right-panel" class="panel">
           <div id="sim-controls" class="sub-panel">
@@ -39,13 +31,7 @@
               </div>
             </div>
             <div id="sim-slider-controls">
-              <div class="slider-comp">
-                  <div class="slider-header">
-                    Simulation speed
-                  </div>
-                  <div id="sim-speed-slider" class="slider"></div>
-                  <div id="sim-speed-val" class="slider-val"></div>
-              </div> 
+              <div id="sim-speed-slider" title="Speed"></div>
             </div>
           </div>
           
@@ -62,71 +48,25 @@
               </div>
             </div>
             <div id="particle-sliders">
-              <div class="slider-comp">
-                <div class="slider-header">
-                  X
-                </div>
-                <div id="x-slider" class="slider"></div>
-                <div id="x-val" class="slider-val"></div>
-              </div>
-              
-              <div class="slider-comp">
-                <div class="slider-header">
-                  Y
-                </div>
-                <div id="y-slider" class="slider"></div>
-                <div id="y-val" class="slider-val"></div>
-              </div>
-              
-              <div class="slider-comp">
-                <div class="slider-header">
-                  X Velocity
-                </div>
-                <div id="x-vel-slider" class="slider"></div>
-                <div id="x-vel-val" class="slider-val"></div>
-              </div>
-              
-              <div class="slider-comp">
-                <div class="slider-header">
-                  Y Velocity
-                </div>
-                <div id="y-vel-slider" class="slider"></div>
-                <div id="y-vel-val" class="slider-val"></div>
-              </div>
-              
-              <div class="slider-comp">
-                <div class="slider-header">
-                  Radius
-                </div>
-                <div id="radius-slider" class="slider"></div>
-                <div id="radius-val" class="slider-val"></div>
-              </div>
-              
-              <div class="slider-comp">
-                <div class="slider-header">
-                  Mass
-                </div>
-                <div id="mass-slider" class="slider"></div>
-                <div id="mass-val" class="slider-val"></div>
-              </div>    
-              
-              <div class="slider-comp">
-                <div class="slider-header">
-                  Coefficient of Restitution
-                </div>
-                <div id="cor-slider" class="slider"></div>
-                <div id="cor-val" class="slider-val"></div>
-              </div> 
+              <div id="x-slider" title="X"></div>
+              <div id="y-slider" title="Y"></div>
+              <div id="x-vel-slider" title="X Velocity"></div>
+              <div id="y-vel-slider" title="Y Velocity"></div>
+              <div id="radius-slider" title="Radius"></div>
+              <div id="mass-slider" title="Mass"></div>
+              <div id="cor-slider" title="Coefficient of Restitution"></div>
             </div>
           </div>
         </div>
 
         <div id="bottom-panel" class="panel">
           <div id="simulation-info" class="sub-panel">
-            <div id="fps-counter"></div>
+            <div id="fps-counter" class="sim-info"></div>
+            <div id="num-particles" class="sim-info"></div>
           </div>
         </div>
 
-        <script src="assets/js/script.js"></script>
+        <script src="assets/js/script2.js"></script>
+        
     </body>
 </html>

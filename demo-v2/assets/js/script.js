@@ -1,3 +1,31 @@
+$.widget("custom.sliderEx", $.ui.slider, {
+  _create: function() {
+    this.options.title = this.options.title || this.element.attr("title");
+    
+    this.options._valueDiv = $("<div class='slider-val'></div>");
+    
+    var title = this.options.title;
+    var parent = $("<div class='slider-comp'></div>");
+  
+    parent.insertBefore(this.element);
+    parent.append("<div class='slider-title'>"+title+"</div>");
+    
+    this.element.addClass("slider");
+
+    parent.append(this.element.detach());
+    parent.append(this.options._valueDiv);
+    
+    this.options._valueDiv.text(this.options.value);
+    
+    return this._super();
+  },
+  _slide: function() {
+    this._superApply(arguments);
+    
+    this.options._valueDiv.text(this.options.value);
+  }
+});
+
 function getRandomColor() {
   var letters = '0123456789ABCDEF'.split('');
   var color = '#';
@@ -12,7 +40,13 @@ var canvas = $("#ecol-canvas");
 var w = canvas.width();
 var h = canvas.height();
 
+var ECollisionSettings = require('../../../src/settings');
+var ECollision = require('../../../src/ecollision');
+
 var settings = new ECollisionSettings();
+
+console.log(settings);
+
 settings.simulation.simulationCanvas = "ecol-canvas";
 settings.global.maxParticles = 1000;
 
@@ -36,10 +70,9 @@ ecollision.onTick = function() {
   } else {
     fps = setCol(ecollision.fps, "green");
   }
-  var debugStr = "FPS: " + fps + " Hz "+
-  							 "<br/> Number of particles: " + setCol(ecollision.engine.numOfParticles(), "green");
 
-  $("#fps-counter").html(debugStr);
+  $("#fps-counter").html("FPS: " + fps + " Hz");
+  $("#num-particles").html("Number of particles: " + setCol(ecollision.engine.particles.length, "green"));
 }
 
 ecollision.simulationUI.onSelect = function(particle) {
@@ -64,7 +97,7 @@ $("#run-pause").click(function() {
 });
 
 $("#step").click(function() {
-	if (ecollision.paused)
+  if (ecollision.paused)
     ecollision.update();
 });
 
@@ -77,15 +110,15 @@ function changeRunPauseBtn() {
 }
 
 $("#add").click(function() {
-	var x = $("#x-slider").slider("value");
-	var y = $("#y-slider").slider("value");
-  var xVel = $("#x-vel-slider").slider("value");
-  var yVel = $("#y-vel-slider").slider("value");
-  var radius = $("#radius-slider").slider("value");
-  var mass = $("#mass-slider").slider("value");
-  var cor = $("#cor-slider").slider("value");
+  var x = $("#x-slider").sliderEx("value");
+  var y = $("#y-slider").sliderEx("value");
+  var xVel = $("#x-vel-slider").sliderEx("value");
+  var yVel = $("#y-vel-slider").sliderEx("value");
+  var radius = $("#radius-slider").sliderEx("value");
+  var mass = $("#mass-slider").sliderEx("value");
+  var cor = $("#cor-slider").sliderEx("value");
   
-	var p = ecollision.simulationUI.addParticle(x, y, mass, radius, getRandomColor());
+  var p = ecollision.simulationUI.addParticle(x, y, mass, radius, getRandomColor());
   
   p.cOR = cor;
   p.xVel = xVel;
@@ -93,102 +126,61 @@ $("#add").click(function() {
 });
 
 $("#remove").click(function() {
-	ecollision.simulationUI.removeSelected();
+  ecollision.simulationUI.removeSelected();
 });
 
 $("#clear").click(function() {
-	ecollision.restart();
+  ecollision.restart();
 });
 
 $(".button").button();
 
-$("#x-slider").slider({
-		value:w/2,
-		min:0,
-    max:w,
-		slide: function( event, ui ) {
-        $("#x-val").text(ui.value);
-    }
-});
-
-$("#x-val").text($("#x-slider").slider("value"));
-
-$("#y-slider").slider({
-		value:h/2,
-		min:0,
-    max:h,
-		slide: function( event, ui ) {
-        $("#y-val").text(ui.value);
-    }
-});
-
-$("#y-val").text($("#y-slider").slider("value"));
-
-$("#x-vel-slider").slider({
-		value:0,
-		min:-10,
-    max:10,
-		slide: function( event, ui ) {
-        $("#x-vel-val").text(ui.value);
-    }
-});
-
-$("#x-vel-val").text($("#x-vel-slider").slider("value"));
-
-$("#y-vel-slider").slider({
-		value:0,
-		min:-10,
-    max:10,
-		slide: function( event, ui ) {
-        $("#y-vel-val").text(ui.value);
-    }
-});
-
-$("#y-vel-val").text($("#y-vel-slider").slider("value"));
-
-$("#radius-slider").slider({
-		value:30,
-		min:0,
-    max:60,
-		slide: function( event, ui ) {
-        $("#radius-val").text(ui.value);
-    }
-});
-
-$("#radius-val").text($("#radius-slider").slider("value"));
-
-$("#mass-slider").slider({	
-		value:500,
-		min:0,
-    max:1000,
-		slide: function( event, ui ) {
-        $("#mass-val").text(ui.value);
-    }
-});
-
-$("#mass-val").text($("#mass-slider").slider("value"));
-
-$("#cor-slider").slider({
-		value:1,
-		step:0.01,
-		min:0,
-    max:1,
-		slide: function( event, ui ) {
-        $("#cor-val").text(ui.value);
-    }
-});
-
-$("#cor-val").text($("#cor-slider").slider("value"));
-
-$("#sim-speed-slider").slider({
-		step:0.01,
+$("#sim-speed-slider").sliderEx({
+    step:0.01,
     value: 1,
-		min:0,
-    max:2,
-		slide: function( event, ui ) {
-        settings.global.speedConst = ui.value;
-        $("#sim-speed-val").text(ui.value);
-    }
+    min:0,
+    max:2
 });
 
-$("#sim-speed-val").text($("#sim-speed-slider").slider("value"));
+$("#x-slider").sliderEx({
+    value:w/2,
+    min:0,
+    max:w
+});
+
+$("#y-slider").sliderEx({
+    value:h/2,
+    min:0,
+    max:h
+});
+
+$("#x-vel-slider").sliderEx({
+    value:0,
+    min:-30,
+    max:30
+});
+
+$("#y-vel-slider").sliderEx({
+    value:0,
+    min:-30,
+    max:30
+});
+
+$("#radius-slider").sliderEx({
+    value:30,
+    min:0,
+    max:60
+});
+
+$("#mass-slider").sliderEx({  
+    value:500,
+    min:0,
+    max:1000
+});
+
+$("#cor-slider").sliderEx({
+    value:1,
+    step:0.01,
+    min:0,
+    max:1
+});
