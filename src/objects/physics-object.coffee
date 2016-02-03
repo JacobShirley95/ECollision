@@ -16,7 +16,7 @@ module.exports = class PhysicsObject
         @x += @xVel
         @y += @yVel
 
-    addEventHandler: (event, handler) ->
+    addEventListener: (event, handler) ->
         @displayObj.addEventListener(event, handler)
     
     getEnergy: -> 

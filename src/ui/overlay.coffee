@@ -1,4 +1,5 @@
 Widget = require("./widget")
+Particle = require("../objects/particle")
 
 module.exports = class Overlay extends Widget
     INDEX_PLACE = 0
@@ -12,8 +13,8 @@ module.exports = class Overlay extends Widget
 
     mode = -1
     
-    mouseX = crossX = @width/2
-    mouseY = crossY = @height/2
+    mouseX = crossX = 0
+    mouseY = crossY = 0
     
     velocityLine = new createjs.Shape()
     infoText = new createjs.Text("", "bold 15px Arial")
@@ -22,7 +23,7 @@ module.exports = class Overlay extends Widget
     showError = false
 
     modeText = new createjs.Text("", "bold 15px Arial")
-    modeText.x = (@width/2)-40
+    modeText.x = 0
     modeText.y = 10
 
     freePlace = false
@@ -33,21 +34,19 @@ module.exports = class Overlay extends Widget
 
     tempObject = null
 
-    gcd = (a, b) ->
-        if (!b) 
-            return a
-        
-        return gcd(b, a % b)
-    
-
-    interval = gcd(@width, @height)
-
-    overlay = @ #so that i can refer to this object inside nesteds - javascript problem solved
+    interval = 0
 
     constructor: (canvasName, @simulation, @settings) ->
         super(canvasName)
+
+        mouseX = crossX = @width/2
+        mouseY = crossY = @height/2
+
+        modeText.x = (@width/2)-40
+
+        interval = gcd(@width, @height)
+
         @hide()
-        @stage.addEventListener("stagemousemove", handleMouseMove)
 
         $(document).keydown((event) -> 
             freePlace = event.ctrlKey
@@ -61,21 +60,22 @@ module.exports = class Overlay extends Widget
         
         @canvas.bind('contextmenu', (e) ->
             return false
-        ) 
+        )
 
-        @canvas.mousedown(handleClick)
+        mouseX = crossX = @width/2
+        mouseY = crossY = @height/2
 
-        handleMouseWheel = (ev) -> 
-            d = ev.deltaY
-            if (d < 0) 
-                if (tempObject.radius > settings.global.minRadius) 
-                    tempObject.radius -= 1
-                
-             else 
-                if (tempObject.radius < settings.global.maxRadius) 
-                    tempObject.radius += 1
+        @stage.addEventListener("stagemousemove", @handleMouseMove)
 
-        @canvas.mousewheel(handleMouseWheel)
+        @canvas.mousedown(@handleClick)
+
+        @canvas.mousewheel(@handleMouseWheel)
+
+    gcd = (a, b) ->
+        if (!b) 
+            return a
+        
+        return gcd(b, a % b)
 
     resize: (width, height) ->
         interval = gcd(@width, @height)
@@ -88,7 +88,17 @@ module.exports = class Overlay extends Widget
 
         @stage.addChild(modeText)
 
-    handleMouseMove = (ev) -> 
+    handleMouseWheel: (ev) => 
+        d = ev.deltaY
+        if (d < 0) 
+            if (tempObject.radius > @settings.global.minRadius) 
+                tempObject.radius -= 1
+            
+         else 
+            if (tempObject.radius < @settings.global.maxRadius) 
+                tempObject.radius += 1
+
+    handleMouseMove: (ev) => 
         mouseX = crossX = ev.stageX
         mouseY = crossY = ev.stageY
         
@@ -98,7 +108,7 @@ module.exports = class Overlay extends Widget
             
             crossX = gridX*interval
             crossY = gridY*interval
-        
+
         switch (index) 
             when INDEX_PLACE
                 velocityLine.x = crossX
@@ -107,7 +117,6 @@ module.exports = class Overlay extends Widget
                 if (tempObject != null) 
                     tempObject.x = crossX
                     tempObject.y = crossY
-                
                 
                 infoText.x = crossX
                 infoText.y = crossY
@@ -123,17 +132,15 @@ module.exports = class Overlay extends Widget
                 infoText.y = velocityLine.y + (dy/2)
                 infoText.text = Math.round(Math.sqrt(dx*dx + dy*dy)) + " px/s"
                 
-                tempObject.xVel = dx/settings.global.updateRate
-                tempObject.yVel = dy/settings.global.updateRate
+                tempObject.xVel = dx/@settings.global.updateRate
+                tempObject.yVel = dy/@settings.global.updateRate
                 
                 g.clear().beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(dx, dy)
 
                 break
 
             when INDEX_MODIFY
-                for i in [0..simulation.engine.numOfParticles()]
-                    p = simulation.engine.getParticle(i)
-                    
+                for p in @simulation.engine.particles
                     dx = p.x-mouseX
                     dy = p.y-mouseY
                     if (dx*dx + dy*dy <= p.radius*p.radius) 
@@ -144,43 +151,43 @@ module.exports = class Overlay extends Widget
                         p.deselect()
                 break
 
-     handleClick = (ev) -> 
+     handleClick: (ev) => 
         if (ev.button == 2 && index != INDEX_MODIFY) 
             switch (index) 
                 when INDEX_PLACE
-                    overlay.end()
+                    @end()
                     break
 
                 when INDEX_VELOCITY
                     break
             
-            reset()
+            @reset()
          else 
             switch(index) 
                 when INDEX_PLACE
                     velocityLine.graphics.clear()
                 
-                    overlay.stage.addChild(velocityLine)
-                    overlay.stage.addChild(infoText)
+                    @stage.addChild(velocityLine)
+                    @stage.addChild(infoText)
 
                     index = INDEX_VELOCITY
 
                     break
                 when INDEX_VELOCITY
-                    p = simulation.addParticle(tempObject.x, tempObject.y, tempObject.mass, tempObject.radius, tempObject.style)
+                    p = @simulation.addParticle(tempObject.x, tempObject.y, tempObject.mass, tempObject.radius, tempObject.style)
                 
                     p.xVel = tempObject.xVel
                     p.yVel = tempObject.yVel
                     p.cOR = tempObject.cOR
                     
-                    overlay.stage.removeChild(velocityLine)
-                    overlay.stage.removeChild(infoText)
+                    @stage.removeChild(velocityLine)
+                    @stage.removeChild(infoText)
 
                     tempObject.xVel = tempObject.yVel = 0
 
                     if (mode == MODE_EDIT && !copyPlace) 
                         index = INDEX_MODIFY
-                        overlay.stage.removeChild(tempObject.displayObj)
+                        @stage.removeChild(tempObject.displayObj)
                      else 
                         index = INDEX_PLACE
 
@@ -188,7 +195,7 @@ module.exports = class Overlay extends Widget
                 when INDEX_MODIFY
                     tempObject.displayObj.dispatchEvent("click")
                     if (ev.button == 2) 
-                        simulation.removeSelected()
+                        @simulation.removeSelected()
                      else 
                         selected = tempObject
 
@@ -197,13 +204,12 @@ module.exports = class Overlay extends Widget
                         lastX = selected.x
                         lastY = selected.y
 
-                        overlay.stage.addChild(tempObject.displayObj)
+                        @stage.addChild(tempObject.displayObj)
 
                         if (!copyPlace)
-                            simulation.removeSelected()
+                            @simulation.removeSelected()
 
                         index = INDEX_PLACE
-                    
 
                     break
             
@@ -217,7 +223,7 @@ module.exports = class Overlay extends Widget
             
 
             if (showError) 
-                errorTimer -= 1000/settings.global.updateRate
+                errorTimer -= 1000/@settings.global.updateRate
                 if (errorTimer <= 0) 
                     showError = false
 
@@ -236,13 +242,13 @@ module.exports = class Overlay extends Widget
             p.xVel = tempObject.xVel
             p.yVel = tempObject.yVel
 
-            overlay.removeChild(tempObject.displayObj)
+            @removeChild(tempObject.displayObj)
             tempObject = null
 
             index = INDEX_MODIFY
          else 
-            overlay.stage.removeChild(velocityLine)
-            overlay.stage.removeChild(infoText)
+            @stage.removeChild(velocityLine)
+            @stage.removeChild(infoText)
             index = INDEX_PLACE
     
     
@@ -250,7 +256,7 @@ module.exports = class Overlay extends Widget
         @show()
         @init()
 
-        tempObject = new Particle(crossX, crossY, 25, style, settings)
+        tempObject = new Particle(crossX, crossY, 25, style, @settings)
         tempObject.mass = mass
         tempObject.cOR = cOR
         

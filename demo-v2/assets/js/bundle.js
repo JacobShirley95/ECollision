@@ -1,4 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var ECollisionSettings = require('../../../src/settings');
+var ECollision = require('../../../src/ecollision');
+
 $.widget("custom.sliderEx", $.ui.slider, {
   _create: function() {
     this.options.title = this.options.title || this.element.attr("title");
@@ -41,13 +44,7 @@ var canvas = $("#ecol-canvas");
 var w = canvas.width();
 var h = canvas.height();
 
-var ECollisionSettings = require('../../../src/settings');
-var ECollision = require('../../../src/ecollision');
-
 var settings = new ECollisionSettings();
-
-console.log(settings);
-
 settings.simulation.simulationCanvas = "ecol-canvas";
 settings.global.maxParticles = 1000;
 
@@ -77,13 +74,13 @@ ecollision.onTick = function() {
 }
 
 ecollision.simulationUI.onSelect = function(particle) {
-    $("#x-slider").slider("value", particle.x);
-    $("#y-slider").slider("value", particle.y);
-    $("#x-vel-slider").slider("value", particle.xVel);
-    $("#y-vel-slider").slider("value", particle.yVel);
-    $("#radius-slider").slider("value", particle.radius);
-    $("#mass-slider").slider("value", particle.mass);
-    $("#cor-slider").slider("value", particle.cOR);
+    $("#x-slider").sliderEx("value", particle.x);
+    $("#y-slider").sliderEx("value", particle.y);
+    $("#x-vel-slider").sliderEx("value", particle.xVel);
+    $("#y-vel-slider").sliderEx("value", particle.yVel);
+    $("#radius-slider").sliderEx("value", particle.radius);
+    $("#mass-slider").sliderEx("value", particle.mass);
+    $("#cor-slider").sliderEx("value", particle.cOR);
 }
 
 ecollision.start();
@@ -140,7 +137,10 @@ $("#sim-speed-slider").sliderEx({
     step:0.01,
     value: 1,
     min:0,
-    max:2
+    max:2,
+    slide: function (event, ui) {
+      settings.global.speedConst = ui.value;
+    }
 });
 
 $("#x-slider").sliderEx({
@@ -365,10 +365,10 @@ $("#cor-slider").sliderEx({
 
     SimulationEngine.prototype.particles = [];
 
-    function SimulationEngine(width, height, settings1) {
+    function SimulationEngine(width, height, settings) {
       this.width = width;
       this.height = height;
-      this.settings = settings1;
+      this.settings = settings;
     }
 
     SimulationEngine.prototype.setBounds = function(width, height) {
@@ -506,10 +506,10 @@ $("#cor-slider").sliderEx({
       var ang, dX, dY, i, overlap, sqr, t, vT, vel1, vel2;
       t = collision.time + (0.001 * collision.time);
       if (t < 1.0) {
-        particle.x -= particle.xVel * settings.global.speedConst * t;
-        particle.y -= particle.yVel * settings.global.speedConst * t;
-        particle2.x -= particle2.xVel * settings.global.speedConst * t;
-        return particle2.y -= particle2.yVel * settings.global.speedConst * t;
+        particle.x -= particle.xVel * this.settings.global.speedConst * t;
+        particle.y -= particle.yVel * this.settings.global.speedConst * t;
+        particle2.x -= particle2.xVel * this.settings.global.speedConst * t;
+        return particle2.y -= particle2.yVel * this.settings.global.speedConst * t;
       } else {
         dX = particle2.x - particle.x;
         dY = particle2.y - particle.y;
@@ -529,7 +529,7 @@ $("#cor-slider").sliderEx({
     };
 
     SimulationEngine.prototype.update = function() {
-      var colObjects, collision, i, i2, j, k, l, len, len1, len2, len3, m, particle, particle2, ref, ref1, ref2, results;
+      var colObjects, collision, i, i2, j, k, l, len, len1, len2, particle, particle2, ref, ref1, results;
       ref = this.particles;
       for (j = 0, len = ref.length; j < len; j++) {
         particle = ref[j];
@@ -540,7 +540,7 @@ $("#cor-slider").sliderEx({
       ref1 = this.particles;
       for (i = k = 0, len1 = ref1.length; k < len1; i = ++k) {
         particle = ref1[i];
-        i2 = i;
+        i2 = i + 1;
         while (i2 < this.particles.length) {
           particle2 = this.particles[i2];
           collision = new Collision();
@@ -555,17 +555,16 @@ $("#cor-slider").sliderEx({
       colObjects.sort(function(a, b) {
         return a.time < b.time;
       });
+      results = [];
       for (l = 0, len2 = colObjects.length; l < len2; l++) {
         collision = colObjects[l];
-        this.handleCollision(collision);
-      }
-      ref2 = this.particles;
-      results = [];
-      for (m = 0, len3 = ref2.length; m < len3; m++) {
-        particle = ref2[m];
-        results.push(this.edgeCollision(particle, false));
+        results.push(this.handleCollision(collision));
       }
       return results;
+
+      /*for particle in @particles
+          @edgeCollision(particle, false)
+       */
     };
 
     return SimulationEngine;
@@ -635,11 +634,13 @@ $("#cor-slider").sliderEx({
 },{}],6:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
-  var Particle, PhysicsObject,
+  var Particle, PhysicsObject, Point2D,
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
   PhysicsObject = require('./physics-object');
+
+  Point2D = require('../math/point-2d');
 
   module.exports = Particle = (function(superClass) {
     var curPos, pastPositions;
@@ -654,34 +655,36 @@ $("#cor-slider").sliderEx({
 
     curPos = 0;
 
-    function Particle(x, y, radius, style, settings1) {
+    function Particle(x, y, radius, style, settings) {
       this.radius = radius;
       this.style = style;
-      this.settings = settings1;
+      this.settings = settings;
       Particle.__super__.constructor.call(this, x, y);
     }
 
     Particle.prototype.draw = function(x, y) {
-      var col, graphics, i, j, len, p, px, py, r_a, ref;
+      var col, graphics, i, len, p, px, py, r_a;
       this.displayObj.x = x;
       this.displayObj.y = y;
       graphics = this.displayObj.graphics;
       graphics.clear();
       if (this.selected) {
         len = pastPositions.length;
-        for (i = j = 1, ref = len; 1 <= ref ? j <= ref : j >= ref; i = 1 <= ref ? ++j : --j) {
+        i = 0;
+        while (i < len) {
           p = pastPositions[(i + curPos) % len];
           px = p.x - x;
           py = p.y - y;
           r_a = i / len;
           col = "rgba(100, 100, 100, " + r_a + ")";
           graphics.beginStroke(col).drawCircle(px, py, this.radius).endStroke();
+          i++;
         }
         graphics.beginStroke("red").setStrokeStyle(3).drawCircle(0, 0, this.radius).endStroke();
       }
       graphics.beginFill(this.style).drawCircle(0, 0, this.radius).endFill();
-      if (this.selected || settings.global.showVelocities) {
-        return graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(this.xVel * settings.global.updateRate, this.yVel * settings.global.updateRate).endStroke();
+      if (this.selected || this.settings.global.showVelocities) {
+        return graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(this.xVel * this.settings.global.updateRate, this.yVel * this.settings.global.updateRate).endStroke();
       }
     };
 
@@ -727,7 +730,7 @@ $("#cor-slider").sliderEx({
 
 }).call(this);
 
-},{"./physics-object":7}],7:[function(require,module,exports){
+},{"../math/point-2d":4,"./physics-object":7}],7:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var PhysicsObject;
@@ -758,7 +761,7 @@ $("#cor-slider").sliderEx({
       return this.y += this.yVel;
     };
 
-    PhysicsObject.prototype.addEventHandler = function(event, handler) {
+    PhysicsObject.prototype.addEventListener = function(event, handler) {
       return this.displayObj.addEventListener(event, handler);
     };
 
@@ -841,6 +844,14 @@ $("#cor-slider").sliderEx({
 
     extend(Graph, superClass);
 
+    Graph.prototype.x = 0;
+
+    Graph.prototype.y = 0;
+
+    Graph.prototype.scaleX = 0;
+
+    Graph.prototype.scaleY = 0;
+
     graph = new createjs.Shape();
 
     offsetX = 0.0;
@@ -880,6 +891,7 @@ $("#cor-slider").sliderEx({
       this.stage.addChild(xAxis);
       this.stage.addChild(yAxis);
       this.stage.addChild(graph);
+      this.stage.update();
       return this.updateData();
     };
 
@@ -1020,14 +1032,17 @@ $("#cor-slider").sliderEx({
 },{"../math/point-2d":4,"../objects/particle":6,"./widget":12}],10:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
-  var Overlay, Widget,
+  var Overlay, Particle, Widget,
+    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
   Widget = require("./widget");
 
+  Particle = require("../objects/particle");
+
   module.exports = Overlay = (function(superClass) {
-    var INDEX_MODIFY, INDEX_PLACE, INDEX_VELOCITY, MODE_ADD, MODE_EDIT, copyPlace, crossX, crossY, errorText, errorTimer, freePlace, gcd, handleClick, handleMouseMove, index, infoText, interval, lastX, lastY, mode, modeText, mouseX, mouseY, overlay, showError, tempObject, velocityLine;
+    var INDEX_MODIFY, INDEX_PLACE, INDEX_VELOCITY, MODE_ADD, MODE_EDIT, copyPlace, crossX, crossY, errorText, errorTimer, freePlace, gcd, index, infoText, interval, lastX, lastY, mode, modeText, mouseX, mouseY, showError, tempObject, velocityLine;
 
     extend(Overlay, superClass);
 
@@ -1045,9 +1060,9 @@ $("#cor-slider").sliderEx({
 
     mode = -1;
 
-    mouseX = crossX = Overlay.width / 2;
+    mouseX = crossX = 0;
 
-    mouseY = crossY = Overlay.height / 2;
+    mouseY = crossY = 0;
 
     velocityLine = new createjs.Shape();
 
@@ -1061,7 +1076,7 @@ $("#cor-slider").sliderEx({
 
     modeText = new createjs.Text("", "bold 15px Arial");
 
-    modeText.x = (Overlay.width / 2) - 40;
+    modeText.x = 0;
 
     modeText.y = 10;
 
@@ -1075,24 +1090,20 @@ $("#cor-slider").sliderEx({
 
     tempObject = null;
 
-    gcd = function(a, b) {
-      if (!b) {
-        return a;
-      }
-      return gcd(b, a % b);
-    };
+    interval = 0;
 
-    interval = gcd(Overlay.width, Overlay.height);
-
-    overlay = Overlay;
-
-    function Overlay(canvasName, simulation1, settings1) {
-      var handleMouseWheel;
+    function Overlay(canvasName, simulation1, settings) {
       this.simulation = simulation1;
-      this.settings = settings1;
+      this.settings = settings;
+      this.handleClick = bind(this.handleClick, this);
+      this.handleMouseMove = bind(this.handleMouseMove, this);
+      this.handleMouseWheel = bind(this.handleMouseWheel, this);
       Overlay.__super__.constructor.call(this, canvasName);
+      mouseX = crossX = this.width / 2;
+      mouseY = crossY = this.height / 2;
+      modeText.x = (this.width / 2) - 40;
+      interval = gcd(this.width, this.height);
       this.hide();
-      this.stage.addEventListener("stagemousemove", handleMouseMove);
       $(document).keydown(function(event) {
         freePlace = event.ctrlKey;
         return copyPlace = event.shiftKey;
@@ -1104,22 +1115,19 @@ $("#cor-slider").sliderEx({
       this.canvas.bind('contextmenu', function(e) {
         return false;
       });
-      this.canvas.mousedown(handleClick);
-      handleMouseWheel = function(ev) {
-        var d;
-        d = ev.deltaY;
-        if (d < 0) {
-          if (tempObject.radius > settings.global.minRadius) {
-            return tempObject.radius -= 1;
-          }
-        } else {
-          if (tempObject.radius < settings.global.maxRadius) {
-            return tempObject.radius += 1;
-          }
-        }
-      };
-      this.canvas.mousewheel(handleMouseWheel);
+      mouseX = crossX = this.width / 2;
+      mouseY = crossY = this.height / 2;
+      this.stage.addEventListener("stagemousemove", this.handleMouseMove);
+      this.canvas.mousedown(this.handleClick);
+      this.canvas.mousewheel(this.handleMouseWheel);
     }
+
+    gcd = function(a, b) {
+      if (!b) {
+        return a;
+      }
+      return gcd(b, a % b);
+    };
 
     Overlay.prototype.resize = function(width, height) {
       return interval = gcd(this.width, this.height);
@@ -1132,8 +1140,22 @@ $("#cor-slider").sliderEx({
       return this.stage.addChild(modeText);
     };
 
-    handleMouseMove = function(ev) {
-      var dx, dy, g, gridX, gridY, i, j, p, ref;
+    Overlay.prototype.handleMouseWheel = function(ev) {
+      var d;
+      d = ev.deltaY;
+      if (d < 0) {
+        if (tempObject.radius > this.settings.global.minRadius) {
+          return tempObject.radius -= 1;
+        }
+      } else {
+        if (tempObject.radius < this.settings.global.maxRadius) {
+          return tempObject.radius += 1;
+        }
+      }
+    };
+
+    Overlay.prototype.handleMouseMove = function(ev) {
+      var dx, dy, g, gridX, gridY, i, len, p, ref;
       mouseX = crossX = ev.stageX;
       mouseY = crossY = ev.stageY;
       if (!freePlace) {
@@ -1160,13 +1182,14 @@ $("#cor-slider").sliderEx({
           infoText.x = velocityLine.x + (dx / 2);
           infoText.y = velocityLine.y + (dy / 2);
           infoText.text = Math.round(Math.sqrt(dx * dx + dy * dy)) + " px/s";
-          tempObject.xVel = dx / settings.global.updateRate;
-          tempObject.yVel = dy / settings.global.updateRate;
+          tempObject.xVel = dx / this.settings.global.updateRate;
+          tempObject.yVel = dy / this.settings.global.updateRate;
           g.clear().beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(dx, dy);
           break;
         case INDEX_MODIFY:
-          for (i = j = 0, ref = simulation.engine.numOfParticles(); 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-            p = simulation.engine.getParticle(i);
+          ref = this.simulation.engine.particles;
+          for (i = 0, len = ref.length; i < len; i++) {
+            p = ref[i];
             dx = p.x - mouseX;
             dy = p.y - mouseY;
             if (dx * dx + dy * dy <= p.radius * p.radius) {
@@ -1180,36 +1203,36 @@ $("#cor-slider").sliderEx({
       }
     };
 
-    handleClick = function(ev) {
+    Overlay.prototype.handleClick = function(ev) {
       var p, selected;
       if (ev.button === 2 && index !== INDEX_MODIFY) {
         switch (index) {
           case INDEX_PLACE:
-            overlay.end();
+            this.end();
             break;
           case INDEX_VELOCITY:
             break;
         }
-        reset();
+        this.reset();
       } else {
         switch (index) {
           case INDEX_PLACE:
             velocityLine.graphics.clear();
-            overlay.stage.addChild(velocityLine);
-            overlay.stage.addChild(infoText);
+            this.stage.addChild(velocityLine);
+            this.stage.addChild(infoText);
             index = INDEX_VELOCITY;
             break;
           case INDEX_VELOCITY:
-            p = simulation.addParticle(tempObject.x, tempObject.y, tempObject.mass, tempObject.radius, tempObject.style);
+            p = this.simulation.addParticle(tempObject.x, tempObject.y, tempObject.mass, tempObject.radius, tempObject.style);
             p.xVel = tempObject.xVel;
             p.yVel = tempObject.yVel;
             p.cOR = tempObject.cOR;
-            overlay.stage.removeChild(velocityLine);
-            overlay.stage.removeChild(infoText);
+            this.stage.removeChild(velocityLine);
+            this.stage.removeChild(infoText);
             tempObject.xVel = tempObject.yVel = 0;
             if (mode === MODE_EDIT && !copyPlace) {
               index = INDEX_MODIFY;
-              overlay.stage.removeChild(tempObject.displayObj);
+              this.stage.removeChild(tempObject.displayObj);
             } else {
               index = INDEX_PLACE;
             }
@@ -1217,15 +1240,15 @@ $("#cor-slider").sliderEx({
           case INDEX_MODIFY:
             tempObject.displayObj.dispatchEvent("click");
             if (ev.button === 2) {
-              simulation.removeSelected();
+              this.simulation.removeSelected();
             } else {
               selected = tempObject;
               tempObject = selected.copy();
               lastX = selected.x;
               lastY = selected.y;
-              overlay.stage.addChild(tempObject.displayObj);
+              this.stage.addChild(tempObject.displayObj);
               if (!copyPlace) {
-                simulation.removeSelected();
+                this.simulation.removeSelected();
               }
               index = INDEX_PLACE;
             }
@@ -1241,7 +1264,7 @@ $("#cor-slider").sliderEx({
           tempObject.draw(tempObject.x, tempObject.y);
         }
         if (showError) {
-          errorTimer -= 1000 / settings.global.updateRate;
+          errorTimer -= 1000 / this.settings.global.updateRate;
           if (errorTimer <= 0) {
             showError = false;
             this.stage.removeChild(errorText);
@@ -1257,12 +1280,12 @@ $("#cor-slider").sliderEx({
         p = simulation.addParticle(lastX, lastY, tempObject.mass, tempObject.radius, tempObject.style);
         p.xVel = tempObject.xVel;
         p.yVel = tempObject.yVel;
-        overlay.removeChild(tempObject.displayObj);
+        this.removeChild(tempObject.displayObj);
         tempObject = null;
         return index = INDEX_MODIFY;
       } else {
-        overlay.stage.removeChild(velocityLine);
-        overlay.stage.removeChild(infoText);
+        this.stage.removeChild(velocityLine);
+        this.stage.removeChild(infoText);
         return index = INDEX_PLACE;
       }
     };
@@ -1270,7 +1293,7 @@ $("#cor-slider").sliderEx({
     Overlay.prototype.beginAdd = function(mass, cOR, style) {
       this.show();
       this.init();
-      tempObject = new Particle(crossX, crossY, 25, style, settings);
+      tempObject = new Particle(crossX, crossY, 25, style, this.settings);
       tempObject.mass = mass;
       tempObject.cOR = cOR;
       infoText.x = mouseX;
@@ -1314,7 +1337,7 @@ $("#cor-slider").sliderEx({
 
 }).call(this);
 
-},{"./widget":12}],11:[function(require,module,exports){
+},{"../objects/particle":6,"./widget":12}],11:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var Particle, Simulation, Widget,
@@ -1332,8 +1355,8 @@ $("#cor-slider").sliderEx({
 
     selected = -1;
 
-    function Simulation(canvasName, engine1, settings) {
-      this.engine = engine1;
+    function Simulation(canvasName, engine, settings) {
+      this.engine = engine;
       this.settings = settings;
       Simulation.__super__.constructor.call(this, canvasName);
       this.engine.width = this.width;
@@ -1345,56 +1368,56 @@ $("#cor-slider").sliderEx({
     };
 
     Simulation.prototype.addParticle = function(x, y, mass, radius, style) {
-      var engine, particle, t;
+      var particle;
       particle = new Particle(x, y, radius, style, this.settings);
       particle.mass = mass;
-      engine = this.engine;
-      t = this;
-      particle.addEventHandler("click", function(ev) {
-        var i, j, p, ref, results;
-        p = engine.getParticle(selected);
-        if (selected !== -1) {
-          p.deselect();
-          t.onDeselect(p);
-        }
-        results = [];
-        for (i = j = 0, ref = this.engine.numOfParticles(); 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-          p = engine.getParticle(i);
-          if (p.displayObj === ev.target) {
-            if (i !== selected) {
-              t.onSelect(p);
-              selected = i;
-              p.selected = true;
-            } else {
-              selected = -1;
-            }
-            break;
-          } else {
-            results.push(void 0);
+      particle.addEventListener("click", (function(_this) {
+        return function(ev) {
+          var i, p, results;
+          if (selected !== -1) {
+            p = _this.engine.particles[selected];
+            p.deselect();
+            _this.onDeselect(p);
           }
-        }
-        return results;
-      });
+          i = 0;
+          results = [];
+          while (i < _this.engine.particles.length) {
+            p = _this.engine.particles[i];
+            if (p.displayObj === ev.target) {
+              if (i !== selected) {
+                _this.onSelect(p);
+                selected = i;
+                p.select();
+              } else {
+                selected = -1;
+              }
+              break;
+            }
+            results.push(i++);
+          }
+          return results;
+        };
+      })(this));
       this.stage.addChild(particle.displayObj);
       this.engine.particles.push(particle);
       return particle;
     };
 
-    Simulation.onSelect = function(particle) {};
+    Simulation.prototype.onSelect = function(particle) {};
 
-    Simulation.onDeselect = function(particle) {};
+    Simulation.prototype.onDeselect = function(particle) {};
 
-    Simulation.removeParticle = function(index) {
-      this.stage.removeChild(this.engine.getParticle(index).displayObj);
-      return this.engine.removeParticle(index);
+    Simulation.prototype.removeParticle = function(index) {
+      this.stage.removeChild(this.engine.particles[index].displayObj);
+      return this.engine.particles.splice(index, 1);
     };
 
-    Simulation.loadParticles = function(toBeLoaded) {
-      var i, j, obj, particle, ref, results;
+    Simulation.prototype.loadParticles = function(toBeLoaded) {
+      var j, len, obj, particle, results;
       this.restart();
       results = [];
-      for (i = j = 0, ref = this.engine.numOfParticles(); 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-        obj = toBeLoaded[i];
+      for (j = 0, len = toBeLoaded.length; j < len; j++) {
+        obj = toBeLoaded[j];
         particle = this.addParticle(obj.x, obj.y, obj.mass, obj.radius, obj.style);
         particle.xVel = obj.xVel;
         particle.yVel = obj.yVel;
@@ -1403,55 +1426,57 @@ $("#cor-slider").sliderEx({
       return results;
     };
 
-    Simulation.saveParticles = function(saved) {
-      var i, j, obj, ref, results;
+    Simulation.prototype.saveParticles = function(saved) {
+      var j, len, particle, ref, results;
+      ref = this.engine.particles;
       results = [];
-      for (i = j = 0, ref = engine.numOfParticles(); 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-        obj = this.engine.getParticle(i);
-        results.push(saved.push(obj.copy()));
+      for (j = 0, len = ref.length; j < len; j++) {
+        particle = ref[j];
+        results.push(saved.push(particle.copy()));
       }
       return results;
     };
 
-    Simulation.removeSelected = function() {
+    Simulation.prototype.removeSelected = function() {
       if (selected !== -1) {
         this.removeParticle(selected);
         return selected = -1;
       }
     };
 
-    Simulation.getSelected = function() {
+    Simulation.prototype.getSelected = function() {
       var sel;
       sel = null;
       if (selected !== -1) {
-        sel = this.engine.getParticle(selected);
+        sel = this.engine.particles[selected];
       }
       return sel;
     };
 
-    Simulation.getSelectedID = function() {
+    Simulation.prototype.getSelectedID = function() {
       return selected;
     };
 
-    Simulation.restart = function() {
+    Simulation.prototype.restart = function() {
       this.stage.removeAllChildren();
       selected = -1;
       return this.engine.reset();
     };
 
-    Simulation.draw = function(interpolation) {
-      var diffX, diffY, i, j, newX, newY, obj, ref;
-      for (i = j = 0, ref = this.engine.numOfParticles(); 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-        obj = this.engine.getParticle(i);
-        newX = obj.x;
-        newY = obj.y;
+    Simulation.prototype.draw = function(interpolation) {
+      var diffX, diffY, j, len, newX, newY, particle, ref;
+      ref = this.engine.particles;
+      for (j = 0, len = ref.length; j < len; j++) {
+        particle = ref[j];
+        newX = particle.x;
+        newY = particle.y;
         if (this.settings.global.enableInterpolation) {
-          diffX = obj.x - obj.lastX;
-          diffY = obj.y - obj.lastY;
-          newX = obj.lastX + (interpolation * diffX);
-          newY = obj.lastY + (interpolation * diffY);
+          diffX = particle.x - particle.lastX;
+          diffY = particle.y - particle.lastY;
+          newX = particle.lastX + (interpolation * diffX);
+          newY = particle.lastY + (interpolation * diffY);
         }
-        obj.draw(newX, newY);
+        particle.draw(newX, newY);
       }
       return this.stage.update();
     };

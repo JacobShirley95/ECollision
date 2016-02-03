@@ -3,6 +3,7 @@ module.exports = class Widget
 
     constructor: (@canvasName) ->
         @canvas = $("#"+@canvasName)
+        
         @width = @canvas.width()
         @height = @canvas.height()
 

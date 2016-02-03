@@ -17,27 +17,26 @@ module.exports = class Simulation extends Widget
         particle = new Particle(x, y, radius, style, @settings)
         
         particle.mass = mass
-        
-        engine = @engine
-        t = this
-        particle.addEventHandler("click", (ev) ->
-            p = engine.getParticle(selected)
 
-            if (selected != -1) 
+        particle.addEventListener("click", (ev) =>
+            if (selected != -1)
+                p = @engine.particles[selected]
                 p.deselect()
-                t.onDeselect(p)
+                @onDeselect(p)
                 
-            for i in [0..@engine.numOfParticles()]
-                p = engine.getParticle(i)
+            i = 0
+            while i < @engine.particles.length
+                p = @engine.particles[i]
                 if (p.displayObj == ev.target) 
                     if (i != selected) 
-                        t.onSelect(p)
+                        @onSelect(p)
                         selected = i
-                        p.selected = true
+                        p.select()
                      else 
                         selected = -1
                     
                     break
+                i++
         )
                 
         @stage.addChild(particle.displayObj)
@@ -46,72 +45,66 @@ module.exports = class Simulation extends Widget
         return particle
     
     
-    @onSelect: (particle) ->
+    onSelect: (particle) ->
         
     
     
-    @onDeselect: (particle) ->
+    onDeselect: (particle) ->
         
     
     
-    @removeParticle: (index) ->
-        @stage.removeChild(@engine.getParticle(index).displayObj)
-        @engine.removeParticle(index)
+    removeParticle: (index) ->
+        @stage.removeChild(@engine.particles[index].displayObj)
+        @engine.particles.splice(index, 1)
     
 
-    @loadParticles: (toBeLoaded) ->
+    loadParticles: (toBeLoaded) ->
         @restart()
 
-        for i in [0..@engine.numOfParticles()]
-            obj = toBeLoaded[i]
+        for obj in toBeLoaded
             particle = @addParticle(obj.x, obj.y, obj.mass, obj.radius, obj.style)
 
             particle.xVel = obj.xVel
             particle.yVel = obj.yVel
             particle.cOR = obj.cOR
 
-    @saveParticles: (saved) ->
-        for i in [0..engine.numOfParticles()]
-            obj = @engine.getParticle(i)
-    
-            saved.push(obj.copy())
+    saveParticles: (saved) ->
+        for particle in @engine.particles
+            saved.push(particle.copy())
 
-    @removeSelected: ->
+    removeSelected: ->
         if (selected != -1) 
             @removeParticle(selected)
             selected = -1
 
-    @getSelected: ->
+    getSelected: ->
         sel = null
 
         if (selected != -1) 
-            sel = @engine.getParticle(selected)
+            sel = @engine.particles[selected]
         
         return sel
 
-    @getSelectedID: ->
+    getSelectedID: ->
         return selected
     
-    @restart: ->
+    restart: ->
         @stage.removeAllChildren()
         selected = -1
         @engine.reset()
     
-    @draw: (interpolation) ->
-        for i in [0..@engine.numOfParticles()]
-            obj = @engine.getParticle(i)
-
-            newX = obj.x
-            newY = obj.y
+    draw: (interpolation) ->
+        for particle in @engine.particles
+            newX = particle.x
+            newY = particle.y
     
             if (@settings.global.enableInterpolation) 
-                diffX = obj.x - obj.lastX
-                diffY = obj.y - obj.lastY
+                diffX = particle.x - particle.lastX
+                diffY = particle.y - particle.lastY
     
-                newX = obj.lastX + (interpolation * diffX)
-                newY = obj.lastY + (interpolation * diffY)
-            
+                newX = particle.lastX + (interpolation * diffX)
+                newY = particle.lastY + (interpolation * diffY)
      
-            obj.draw(newX, newY)
+            particle.draw(newX, newY)
 
         @stage.update()

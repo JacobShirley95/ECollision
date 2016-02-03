@@ -1,4 +1,5 @@
 PhysicsObject = require('./physics-object')
+Point2D = require('../math/point-2d')
 
 module.exports = class Particle extends PhysicsObject
     selected: false
@@ -11,64 +12,63 @@ module.exports = class Particle extends PhysicsObject
         super(x, y)
     
     draw: (x, y) ->
-        @displayObj.x = x;
-        @displayObj.y = y;
+        @displayObj.x = x
+        @displayObj.y = y
         
-        graphics = @displayObj.graphics;
+        graphics = @displayObj.graphics
         
-        graphics.clear();
+        graphics.clear()
 
         if (@selected) 
-            len = pastPositions.length;
-            for i in [1..len]
-                p = pastPositions[(i + curPos) % len];
-                px = p.x-x;
-                py = p.y-y;
+            len = pastPositions.length
+            i = 0
+            while i < len
+                p = pastPositions[(i + curPos) % len]
+                px = p.x-x
+                py = p.y-y
 
-                r_a = i / len;
+                r_a = i / len
 
-                col = "rgba(100, 100, 100, "+r_a+")";
-                graphics.beginStroke(col).drawCircle(px, py, @radius).endStroke();
+                col = "rgba(100, 100, 100, "+r_a+")"
+                graphics.beginStroke(col).drawCircle(px, py, @radius).endStroke()
+                i++
 
-            graphics.beginStroke("red").setStrokeStyle(3).drawCircle(0, 0, @radius).endStroke();
+            graphics.beginStroke("red").setStrokeStyle(3).drawCircle(0, 0, @radius).endStroke()
 
-        graphics.beginFill(@style).drawCircle(0, 0, @radius).endFill();
+        graphics.beginFill(@style).drawCircle(0, 0, @radius).endFill()
 
-        if (@selected || settings.global.showVelocities) 
-            graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(@xVel*settings.global.updateRate, @yVel*settings.global.updateRate).endStroke();
+        if (@selected || @settings.global.showVelocities) 
+            graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(@xVel*@settings.global.updateRate, @yVel*@settings.global.updateRate).endStroke()
 
     select: ->
-        @selected = true;
+        @selected = true
     
     
     deselect: ->
-        @selected = false;
-        pastPositions = [];
+        @selected = false
+        pastPositions = []
     
     
     update: ->
-        @x += @xVel*@settings.global.speedConst;
-        @y += @yVel*@settings.global.speedConst;
+        @x += @xVel*@settings.global.speedConst
+        @y += @yVel*@settings.global.speedConst
 
-        len = pastPositions.length;
+        len = pastPositions.length
         if (@selected) 
-            curPos++;
-            curPos %= @settings.global.maxTraceLength;
+            curPos++
+            curPos %= @settings.global.maxTraceLength
             if (len < @settings.global.maxTraceLength) 
-                pastPositions.push(new Point2D(@x, @y));
+                pastPositions.push(new Point2D(@x, @y))
              else 
-                pastPositions[curPos] = new Point2D(@x, @y);
-            
-        
-    ;
+                pastPositions[curPos] = new Point2D(@x, @y)
 
     copy: ->
-       p = new Particle(@x, @y, @radius, @style, @settings);
+       p = new Particle(@x, @y, @radius, @style, @settings)
 
-       p.index = @index;
-       p.cOR = @cOR;
-       p.mass = @mass;
-       p.xVel = @xVel;
-       p.yVel = @yVel;
+       p.index = @index
+       p.cOR = @cOR
+       p.mass = @mass
+       p.xVel = @xVel
+       p.yVel = @yVel
 
-       return p;
+       return p

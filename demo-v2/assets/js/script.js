@@ -1,3 +1,6 @@
+var ECollisionSettings = require('../../../src/settings');
+var ECollision = require('../../../src/ecollision');
+
 $.widget("custom.sliderEx", $.ui.slider, {
   _create: function() {
     this.options.title = this.options.title || this.element.attr("title");
@@ -40,13 +43,7 @@ var canvas = $("#ecol-canvas");
 var w = canvas.width();
 var h = canvas.height();
 
-var ECollisionSettings = require('../../../src/settings');
-var ECollision = require('../../../src/ecollision');
-
 var settings = new ECollisionSettings();
-
-console.log(settings);
-
 settings.simulation.simulationCanvas = "ecol-canvas";
 settings.global.maxParticles = 1000;
 
@@ -76,13 +73,13 @@ ecollision.onTick = function() {
 }
 
 ecollision.simulationUI.onSelect = function(particle) {
-    $("#x-slider").slider("value", particle.x);
-    $("#y-slider").slider("value", particle.y);
-    $("#x-vel-slider").slider("value", particle.xVel);
-    $("#y-vel-slider").slider("value", particle.yVel);
-    $("#radius-slider").slider("value", particle.radius);
-    $("#mass-slider").slider("value", particle.mass);
-    $("#cor-slider").slider("value", particle.cOR);
+    $("#x-slider").sliderEx("value", particle.x);
+    $("#y-slider").sliderEx("value", particle.y);
+    $("#x-vel-slider").sliderEx("value", particle.xVel);
+    $("#y-vel-slider").sliderEx("value", particle.yVel);
+    $("#radius-slider").sliderEx("value", particle.radius);
+    $("#mass-slider").sliderEx("value", particle.mass);
+    $("#cor-slider").sliderEx("value", particle.cOR);
 }
 
 ecollision.start();
@@ -139,7 +136,10 @@ $("#sim-speed-slider").sliderEx({
     step:0.01,
     value: 1,
     min:0,
-    max:2
+    max:2,
+    slide: function (event, ui) {
+      settings.global.speedConst = ui.value;
+    }
 });
 
 $("#x-slider").sliderEx({

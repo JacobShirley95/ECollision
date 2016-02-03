@@ -1,3 +1,6 @@
+var ECollisionSettings = require('../../../src/settings');
+var ECollision = require('../../../src/ecollision');
+
 var eCollisionSettings = new ECollisionSettings();
 var ecollision = new ECollision(eCollisionSettings);
 

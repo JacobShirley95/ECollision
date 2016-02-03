@@ -28,7 +28,7 @@
       return this.y += this.yVel;
     };
 
-    PhysicsObject.prototype.addEventHandler = function(event, handler) {
+    PhysicsObject.prototype.addEventListener = function(event, handler) {
       return this.displayObj.addEventListener(event, handler);
     };
 

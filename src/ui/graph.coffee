@@ -2,7 +2,12 @@ Widget = require("./widget")
 Particle = require('../objects/particle')
 Point2D = require('../math/point-2d')
 
-module.exports = class Graph extends Widget   
+module.exports = class Graph extends Widget
+    x:0
+    y:0
+    scaleX: 0
+    scaleY: 0
+
     graph = new createjs.Shape()
 
     offsetX = 0.0
@@ -27,7 +32,7 @@ module.exports = class Graph extends Widget
     init: ->
         xAxis = new createjs.Shape()
         yAxis = new createjs.Shape()
-    
+
         xAxis.graphics.beginStroke("red").moveTo(@x, @height).lineTo(@width, @height)
         yAxis.graphics.beginStroke("red").moveTo(@x, @y).lineTo(@x, @height)
         
@@ -35,6 +40,7 @@ module.exports = class Graph extends Widget
         @stage.addChild(yAxis)
         
         @stage.addChild(graph)
+        @stage.update()
         
         @updateData()
     

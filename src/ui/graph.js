@@ -15,6 +15,14 @@
 
     extend(Graph, superClass);
 
+    Graph.prototype.x = 0;
+
+    Graph.prototype.y = 0;
+
+    Graph.prototype.scaleX = 0;
+
+    Graph.prototype.scaleY = 0;
+
     graph = new createjs.Shape();
 
     offsetX = 0.0;
@@ -54,6 +62,7 @@
       this.stage.addChild(xAxis);
       this.stage.addChild(yAxis);
       this.stage.addChild(graph);
+      this.stage.update();
       return this.updateData();
     };
 

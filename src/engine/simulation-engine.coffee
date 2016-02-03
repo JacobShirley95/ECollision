@@ -221,11 +221,11 @@ module.exports = class SimulationEngine
 
         if (t < 1.0) 
             #Pull both particles back by the perfect collision time. See "collide" function
-            particle.x -= particle.xVel * settings.global.speedConst * t
-            particle.y -= particle.yVel * settings.global.speedConst * t
+            particle.x -= particle.xVel * @settings.global.speedConst * t
+            particle.y -= particle.yVel * @settings.global.speedConst * t
     
-            particle2.x -= particle2.xVel * settings.global.speedConst * t
-            particle2.y -= particle2.yVel * settings.global.speedConst * t
+            particle2.x -= particle2.xVel * @settings.global.speedConst * t
+            particle2.y -= particle2.yVel * @settings.global.speedConst * t
          else 
             #Failsafe method of seperating particles
 
@@ -272,7 +272,7 @@ module.exports = class SimulationEngine
         #Loop through the particles, check for collisions once between pairs of particles. 
         #If colliding, add them to a collision array
         for particle, i in @particles
-            i2 = i
+            i2 = i+1
             while i2 < @particles.length
                 particle2 = @particles[i2]
     
@@ -294,5 +294,6 @@ module.exports = class SimulationEngine
             @handleCollision(collision)
 
         #Finally check for an edge collision again but do not rebound the particle
-        for particle in @particles
+        ###for particle in @particles
             @edgeCollision(particle, false)
+            ###

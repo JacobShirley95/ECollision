@@ -11,10 +11,10 @@
 
     SimulationEngine.prototype.particles = [];
 
-    function SimulationEngine(width, height, settings1) {
+    function SimulationEngine(width, height, settings) {
       this.width = width;
       this.height = height;
-      this.settings = settings1;
+      this.settings = settings;
     }
 
     SimulationEngine.prototype.setBounds = function(width, height) {
@@ -152,10 +152,10 @@
       var ang, dX, dY, i, overlap, sqr, t, vT, vel1, vel2;
       t = collision.time + (0.001 * collision.time);
       if (t < 1.0) {
-        particle.x -= particle.xVel * settings.global.speedConst * t;
-        particle.y -= particle.yVel * settings.global.speedConst * t;
-        particle2.x -= particle2.xVel * settings.global.speedConst * t;
-        return particle2.y -= particle2.yVel * settings.global.speedConst * t;
+        particle.x -= particle.xVel * this.settings.global.speedConst * t;
+        particle.y -= particle.yVel * this.settings.global.speedConst * t;
+        particle2.x -= particle2.xVel * this.settings.global.speedConst * t;
+        return particle2.y -= particle2.yVel * this.settings.global.speedConst * t;
       } else {
         dX = particle2.x - particle.x;
         dY = particle2.y - particle.y;
@@ -175,7 +175,7 @@
     };
 
     SimulationEngine.prototype.update = function() {
-      var colObjects, collision, i, i2, j, k, l, len, len1, len2, len3, m, particle, particle2, ref, ref1, ref2, results;
+      var colObjects, collision, i, i2, j, k, l, len, len1, len2, particle, particle2, ref, ref1, results;
       ref = this.particles;
       for (j = 0, len = ref.length; j < len; j++) {
         particle = ref[j];
@@ -186,7 +186,7 @@
       ref1 = this.particles;
       for (i = k = 0, len1 = ref1.length; k < len1; i = ++k) {
         particle = ref1[i];
-        i2 = i;
+        i2 = i + 1;
         while (i2 < this.particles.length) {
           particle2 = this.particles[i2];
           collision = new Collision();
@@ -201,17 +201,16 @@
       colObjects.sort(function(a, b) {
         return a.time < b.time;
       });
+      results = [];
       for (l = 0, len2 = colObjects.length; l < len2; l++) {
         collision = colObjects[l];
-        this.handleCollision(collision);
-      }
-      ref2 = this.particles;
-      results = [];
-      for (m = 0, len3 = ref2.length; m < len3; m++) {
-        particle = ref2[m];
-        results.push(this.edgeCollision(particle, false));
+        results.push(this.handleCollision(collision));
       }
       return results;
+
+      /*for particle in @particles
+          @edgeCollision(particle, false)
+       */
     };
 
     return SimulationEngine;

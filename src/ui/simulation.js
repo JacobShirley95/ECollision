@@ -15,8 +15,8 @@
 
     selected = -1;
 
-    function Simulation(canvasName, engine1, settings) {
-      this.engine = engine1;
+    function Simulation(canvasName, engine, settings) {
+      this.engine = engine;
       this.settings = settings;
       Simulation.__super__.constructor.call(this, canvasName);
       this.engine.width = this.width;
@@ -28,56 +28,56 @@
     };
 
     Simulation.prototype.addParticle = function(x, y, mass, radius, style) {
-      var engine, particle, t;
+      var particle;
       particle = new Particle(x, y, radius, style, this.settings);
       particle.mass = mass;
-      engine = this.engine;
-      t = this;
-      particle.addEventHandler("click", function(ev) {
-        var i, j, p, ref, results;
-        p = engine.getParticle(selected);
-        if (selected !== -1) {
-          p.deselect();
-          t.onDeselect(p);
-        }
-        results = [];
-        for (i = j = 0, ref = this.engine.numOfParticles(); 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-          p = engine.getParticle(i);
-          if (p.displayObj === ev.target) {
-            if (i !== selected) {
-              t.onSelect(p);
-              selected = i;
-              p.selected = true;
-            } else {
-              selected = -1;
-            }
-            break;
-          } else {
-            results.push(void 0);
+      particle.addEventListener("click", (function(_this) {
+        return function(ev) {
+          var i, p, results;
+          if (selected !== -1) {
+            p = _this.engine.particles[selected];
+            p.deselect();
+            _this.onDeselect(p);
           }
-        }
-        return results;
-      });
+          i = 0;
+          results = [];
+          while (i < _this.engine.particles.length) {
+            p = _this.engine.particles[i];
+            if (p.displayObj === ev.target) {
+              if (i !== selected) {
+                _this.onSelect(p);
+                selected = i;
+                p.select();
+              } else {
+                selected = -1;
+              }
+              break;
+            }
+            results.push(i++);
+          }
+          return results;
+        };
+      })(this));
       this.stage.addChild(particle.displayObj);
       this.engine.particles.push(particle);
       return particle;
     };
 
-    Simulation.onSelect = function(particle) {};
+    Simulation.prototype.onSelect = function(particle) {};
 
-    Simulation.onDeselect = function(particle) {};
+    Simulation.prototype.onDeselect = function(particle) {};
 
-    Simulation.removeParticle = function(index) {
-      this.stage.removeChild(this.engine.getParticle(index).displayObj);
-      return this.engine.removeParticle(index);
+    Simulation.prototype.removeParticle = function(index) {
+      this.stage.removeChild(this.engine.particles[index].displayObj);
+      return this.engine.particles.splice(index, 1);
     };
 
-    Simulation.loadParticles = function(toBeLoaded) {
-      var i, j, obj, particle, ref, results;
+    Simulation.prototype.loadParticles = function(toBeLoaded) {
+      var j, len, obj, particle, results;
       this.restart();
       results = [];
-      for (i = j = 0, ref = this.engine.numOfParticles(); 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-        obj = toBeLoaded[i];
+      for (j = 0, len = toBeLoaded.length; j < len; j++) {
+        obj = toBeLoaded[j];
         particle = this.addParticle(obj.x, obj.y, obj.mass, obj.radius, obj.style);
         particle.xVel = obj.xVel;
         particle.yVel = obj.yVel;
@@ -86,55 +86,57 @@
       return results;
     };
 
-    Simulation.saveParticles = function(saved) {
-      var i, j, obj, ref, results;
+    Simulation.prototype.saveParticles = function(saved) {
+      var j, len, particle, ref, results;
+      ref = this.engine.particles;
       results = [];
-      for (i = j = 0, ref = engine.numOfParticles(); 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-        obj = this.engine.getParticle(i);
-        results.push(saved.push(obj.copy()));
+      for (j = 0, len = ref.length; j < len; j++) {
+        particle = ref[j];
+        results.push(saved.push(particle.copy()));
       }
       return results;
     };
 
-    Simulation.removeSelected = function() {
+    Simulation.prototype.removeSelected = function() {
       if (selected !== -1) {
         this.removeParticle(selected);
         return selected = -1;
       }
     };
 
-    Simulation.getSelected = function() {
+    Simulation.prototype.getSelected = function() {
       var sel;
       sel = null;
       if (selected !== -1) {
-        sel = this.engine.getParticle(selected);
+        sel = this.engine.particles[selected];
       }
       return sel;
     };
 
-    Simulation.getSelectedID = function() {
+    Simulation.prototype.getSelectedID = function() {
       return selected;
     };
 
-    Simulation.restart = function() {
+    Simulation.prototype.restart = function() {
       this.stage.removeAllChildren();
       selected = -1;
       return this.engine.reset();
     };
 
-    Simulation.draw = function(interpolation) {
-      var diffX, diffY, i, j, newX, newY, obj, ref;
-      for (i = j = 0, ref = this.engine.numOfParticles(); 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-        obj = this.engine.getParticle(i);
-        newX = obj.x;
-        newY = obj.y;
+    Simulation.prototype.draw = function(interpolation) {
+      var diffX, diffY, j, len, newX, newY, particle, ref;
+      ref = this.engine.particles;
+      for (j = 0, len = ref.length; j < len; j++) {
+        particle = ref[j];
+        newX = particle.x;
+        newY = particle.y;
         if (this.settings.global.enableInterpolation) {
-          diffX = obj.x - obj.lastX;
-          diffY = obj.y - obj.lastY;
-          newX = obj.lastX + (interpolation * diffX);
-          newY = obj.lastY + (interpolation * diffY);
+          diffX = particle.x - particle.lastX;
+          diffY = particle.y - particle.lastY;
+          newX = particle.lastX + (interpolation * diffX);
+          newY = particle.lastY + (interpolation * diffY);
         }
-        obj.draw(newX, newY);
+        particle.draw(newX, newY);
       }
       return this.stage.update();
     };
