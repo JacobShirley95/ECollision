@@ -1,0 +1,27 @@
+{
+  "name": "ecollision",
+  "version": "1.0.0",
+  "description": "This project is designed to simulate to a high degree of accuracy the basics of elastic and inelastic collisions.\r It is currently part of my A2 Computing Project, the documentation of which can be seen in docs/.",
+  "main": "src/ecollision.coffee",
+  "bin": {
+    "ecollision": "ecollision.js"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "transpile":"coffee -o bin/out -c src/.",
+    "build": "browserify --standalone ecollision bin/out/ecollision.js > bin/ecollision.js",
+    "watch": "coffee -o bin/out --watch -c src/."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://Auriferous@bitbucket.org/Auriferous/ecollision.git"
+  },
+  "keywords": [
+    "collision"
+  ],
+  "author": "Jacob Shirley",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/Auriferous/ecollision#readme"
+}

@@ -3,23 +3,18 @@ Simulation = require("./ui/simulation")
 Graph = require("./ui/graph")
 Overlay = require("./ui/overlay")
 ECollisionSettings = require("./settings")
+EventManager = require("./events/event-manager")
 
-module.exports = class ECollision
+class ECollision
     widgets = []
 
-    fpsCount = 0
-    fps = 0
-    fpsTime = 0
-
-    newTime = timeStamp = curTime = 0
+    fpsCount = fps = fpsTime = newTime = timeStamp = curTime = 0
 
     interpolation = 0.0
 
     thread = -1
 
-    updateRate = 0
-    updateTime = 0
-    refreshTime = 0
+    updateRate = updateTime = refreshTime = 0
 
     constructor: (@settings) ->
         @engine = new SimulationEngine(@settings.simulation.simulationWidth, @settings.simulation.simulationHeight, @settings)
@@ -37,7 +32,9 @@ module.exports = class ECollision
         updateRate = @settings.global.updateRate
         updateTime = 1000.0 / updateRate
 
-        refreshTime = 1000/@settings.global.refreshRate
+        refreshTime = 1000 / @settings.global.refreshRate
+
+        EventManager.eventify(@)
 
     start: ->
         for widget in widgets
@@ -70,22 +67,16 @@ module.exports = class ECollision
     getUpdateRate: ->
         return updateRate
     
-    
     getUpdateTime: ->
         return updateTime
-    
     
     setUpdateRate = (rate) ->
         updateRate = rate
         updateTime = 1000.0 / updateRate
-    
 
     setSpeedConst = (speedConst) ->
         @engine.speedConst = speedConst
     
-
-    onTick: ->
-
     update: ->
         curTime += refreshTime
     
@@ -119,4 +110,8 @@ module.exports = class ECollision
         for widget in widgets
             widget.draw(interpolation)
 
-        @onTick()
+        @fire('tick', [interpolation])
+
+module.exports.ECollision = ECollision
+module.exports.ECollisionSettings = ECollisionSettings
+module.exports.SimulationEngine = SimulationEngine

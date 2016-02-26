@@ -1,5 +1,8 @@
-var ECollisionSettings = require('../../../src/settings');
-var ECollision = require('../../../src/ecollision');
+//var ECollisionSettings = require('../../../src/settings');
+//var ECollision = require('../../../src/ecollision');
+
+var ECollisionSettings = ecollision.ECollisionSettings;
+var ECollision = ecollision.ECollision;
 
 $.widget("custom.sliderEx", $.ui.slider, {
   _create: function() {
@@ -60,7 +63,7 @@ function setCol(text, col) {
     return ("" + text).fontcolor(col);
 }
 
-ecollision.onTick = function() {
+ecollision.addListener("tick", function(interpolation) {
   var fps = "";
   if (ecollision.fps < 24) {
     fps = setCol(ecollision.fps, "red");
@@ -70,7 +73,7 @@ ecollision.onTick = function() {
 
   $("#fps-counter").html("FPS: " + fps + " Hz");
   $("#num-particles").html("Number of particles: " + setCol(ecollision.engine.particles.length, "green"));
-}
+});
 
 ecollision.simulationUI.onSelect = function(particle) {
     $("#x-slider").sliderEx("value", particle.x);

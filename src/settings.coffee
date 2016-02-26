@@ -7,7 +7,7 @@ module.exports = class ECollisionSettings
 		enableInterpolation: true
 		maxTraceLength: 30
 		speedConst: 1.0
-		maxParticles: 20
+		maxParticles: 10000
 		minRadius: 5
 		maxRadius: 30
 		errorTime: 5000

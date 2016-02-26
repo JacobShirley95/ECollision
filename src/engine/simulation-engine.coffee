@@ -51,7 +51,6 @@ module.exports = class SimulationEngine
                 particle.yVel *= -cOR
             else
                 particle.y = particle.radius
-             
     
     #This functions checks for a collision and returns true or false if yes. It also calculates the required amount of time to seperate the particles.
     collide: (particle, particle2, collision) ->
@@ -257,8 +256,6 @@ module.exports = class SimulationEngine
     
             particle2.x -= overlap * Math.cos(ang) * i
             particle2.y -= overlap * Math.sin(ang) * i
-        
-    
 
     #This function causes the particles to update and react to each other. It is the heart of the system.
     update: ->
@@ -266,14 +263,13 @@ module.exports = class SimulationEngine
         for particle in @particles
             @edgeCollision(particle, true)
             particle.update()
-    
-        colObjects = []
 
         #Loop through the particles, check for collisions once between pairs of particles. 
         #If colliding, add them to a collision array
+        colObjects = []
+
         for particle, i in @particles
-            i2 = i+1
-            while i2 < @particles.length
+            for i2 in [i+1..@particles.length-1] by 1
                 particle2 = @particles[i2]
     
                 collision = new Collision()
@@ -281,19 +277,15 @@ module.exports = class SimulationEngine
                     collision.particle = particle
                     collision.particle2 = particle2
                     colObjects.push(collision)
-
-                i2++
-        
+    
         #Loop through the collision array and sort out which one happened first
-        colObjects.sort((a, b) ->
+        colObjects.sort (a, b) ->
             return a.time < b.time
-        )
         
         #Handle the collisions stored in the collision array. See "handleCollision" above
         for collision in colObjects
             @handleCollision(collision)
 
         #Finally check for an edge collision again but do not rebound the particle
-        ###for particle in @particles
+        for particle in @particles 
             @edgeCollision(particle, false)
-            ###

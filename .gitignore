@@ -3,3 +3,5 @@ objs/
 *.sublime-workspace
 docs/*.tmp
 docs/~$*.docx
+bower_components/
+node_modules/

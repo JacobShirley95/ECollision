@@ -21,8 +21,7 @@ module.exports = class Particle extends PhysicsObject
 
         if (@selected) 
             len = pastPositions.length
-            i = 0
-            while i < len
+            for i in [0..len-1] by 1
                 p = pastPositions[(i + curPos) % len]
                 px = p.x-x
                 py = p.y-y
@@ -31,7 +30,6 @@ module.exports = class Particle extends PhysicsObject
 
                 col = "rgba(100, 100, 100, "+r_a+")"
                 graphics.beginStroke(col).drawCircle(px, py, @radius).endStroke()
-                i++
 
             graphics.beginStroke("red").setStrokeStyle(3).drawCircle(0, 0, @radius).endStroke()
 
@@ -43,11 +41,9 @@ module.exports = class Particle extends PhysicsObject
     select: ->
         @selected = true
     
-    
     deselect: ->
         @selected = false
         pastPositions = []
-    
     
     update: ->
         @x += @xVel*@settings.global.speedConst

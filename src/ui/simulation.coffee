@@ -1,42 +1,35 @@
 Widget = require("./widget")
 Particle = require('../objects/particle')
+EventManager = require("../events/event-manager")
 
 module.exports = class Simulation extends Widget
-    selected = -1
+    selected = null
 
     constructor: (canvasName, @engine, @settings) ->
         super(canvasName)
         @engine.width = @width
-        @engine.height = @height;
+        @engine.height = @height
+        EventManager.eventify(@)
 
     resize: (newWidth, newHeight) ->
         @engine.setBounds(newWidth, newHeight)
-    
     
     addParticle: (x, y, mass, radius, style) ->
         particle = new Particle(x, y, radius, style, @settings)
         
         particle.mass = mass
 
-        particle.addEventListener("click", (ev) =>
-            if (selected != -1)
-                p = @engine.particles[selected]
-                p.deselect()
-                @onDeselect(p)
-                
-            i = 0
-            while i < @engine.particles.length
-                p = @engine.particles[i]
-                if (p.displayObj == ev.target) 
-                    if (i != selected) 
-                        @onSelect(p)
-                        selected = i
-                        p.select()
-                     else 
-                        selected = -1
-                    
-                    break
-                i++
+        particle.addListener("click", (ev, particle) =>
+            if (selected != null)
+                selected.deselect()
+                @fire("deselect", [selected])
+            
+            if (particle != selected)
+                @fire("select", [particle])
+                selected = particle
+                particle.select()
+            else 
+                selected = null
         )
                 
         @stage.addChild(particle.displayObj)
@@ -44,19 +37,9 @@ module.exports = class Simulation extends Widget
         
         return particle
     
-    
-    onSelect: (particle) ->
-        
-    
-    
-    onDeselect: (particle) ->
-        
-    
-    
     removeParticle: (index) ->
         @stage.removeChild(@engine.particles[index].displayObj)
         @engine.particles.splice(index, 1)
-    
 
     loadParticles: (toBeLoaded) ->
         @restart()
@@ -73,25 +56,21 @@ module.exports = class Simulation extends Widget
             saved.push(particle.copy())
 
     removeSelected: ->
-        if (selected != -1) 
-            @removeParticle(selected)
-            selected = -1
+        if (selected != null)
+            for particle,i in @particles
+                if (particle == selected)
+                    @removeParticle(i)
+
+            selected = null
 
     getSelected: ->
-        sel = null
-
-        if (selected != -1) 
-            sel = @engine.particles[selected]
-        
-        return sel
-
-    getSelectedID: ->
         return selected
     
     restart: ->
         @stage.removeAllChildren()
-        selected = -1
+        selected = null
         @engine.reset()
+        @fire("restart")
     
     draw: (interpolation) ->
         for particle in @engine.particles
@@ -108,3 +87,4 @@ module.exports = class Simulation extends Widget
             particle.draw(newX, newY)
 
         @stage.update()
+        @fire("draw")
