@@ -15,7 +15,7 @@
 
   EventManager = require("./events/event-manager");
 
-  ECollision = (function() {
+  module.exports = ECollision = (function() {
     var curTime, fps, fpsCount, fpsTime, interpolation, newTime, refreshTime, setSpeedConst, setUpdateRate, thread, timeStamp, updateRate, updateTime, widgets;
 
     widgets = [];
@@ -151,11 +151,5 @@
     return ECollision;
 
   })();
-
-  module.exports.ECollision = ECollision;
-
-  module.exports.ECollisionSettings = ECollisionSettings;
-
-  module.exports.SimulationEngine = SimulationEngine;
 
 }).call(this);

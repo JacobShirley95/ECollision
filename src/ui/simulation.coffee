@@ -1,6 +1,7 @@
 Widget = require("./widget")
 Particle = require('../objects/particle')
 EventManager = require("../events/event-manager")
+EaselJSRenderer = require("./renderer/easeljs/easeljs-renderer")
 
 module.exports = class Simulation extends Widget
     selected = null
@@ -9,6 +10,9 @@ module.exports = class Simulation extends Widget
         super(canvasName)
         @engine.width = @width
         @engine.height = @height
+
+        @renderer = new EaselJSRenderer(@canvasName, @engine)
+
         EventManager.eventify(@)
 
     resize: (newWidth, newHeight) ->
@@ -16,23 +20,18 @@ module.exports = class Simulation extends Widget
     
     addParticle: (x, y, mass, radius, style) ->
         particle = new Particle(x, y, radius, style, @settings)
-        
         particle.mass = mass
 
-        particle.addListener("click", (ev, particle) =>
-            if (selected != null)
-                selected.deselect()
-                @fire("deselect", [selected])
-            
-            if (particle != selected)
-                @fire("select", [particle])
-                selected = particle
-                particle.select()
-            else 
-                selected = null
+        console.log(@renderer)
+
+        @renderer.addParticle(particle)
+
+        particle.addListener("select", (ev, particle) =>
+            @selected = particle
+        ).addListener("deselect", (ev, particle) =>
+            @selected = null
         )
-                
-        @stage.addChild(particle.displayObj)
+
         @engine.particles.push(particle)
         
         return particle
@@ -73,7 +72,7 @@ module.exports = class Simulation extends Widget
         @fire("restart")
     
     draw: (interpolation) ->
-        for particle in @engine.particles
+        ###for particle in @engine.particles
             newX = particle.x
             newY = particle.y
     
@@ -87,4 +86,9 @@ module.exports = class Simulation extends Widget
             particle.draw(newX, newY)
 
         @stage.update()
+
+        ###
+
+        @renderer.draw(interpolation)
+
         @fire("draw")

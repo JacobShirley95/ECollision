@@ -3,13 +3,12 @@
   var Widget;
 
   module.exports = Widget = (function() {
-    Widget.prototype.hidden = false;
-
     function Widget(canvasName) {
       this.canvasName = canvasName;
       this.canvas = $("#" + this.canvasName);
       this.width = this.canvas.width();
       this.height = this.canvas.height();
+      this.hidden = false;
       this.stage = new createjs.Stage(this.canvasName);
       this.canvas.attr("width", this.width);
       this.canvas.attr("height", this.height);

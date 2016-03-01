@@ -68,7 +68,6 @@ module.exports = class Overlay extends Widget
         @stage.addEventListener("stagemousemove", @handleMouseMove)
 
         @canvas.mousedown(@handleClick)
-
         @canvas.mousewheel(@handleMouseWheel)
 
     gcd = (a, b) ->
@@ -147,7 +146,7 @@ module.exports = class Overlay extends Widget
                         p.select()
                         
                         tempObject = p
-                     else 
+                    else 
                         p.deselect()
                 break
 
@@ -162,7 +161,7 @@ module.exports = class Overlay extends Widget
                     break
             
             @reset()
-         else 
+        else 
             switch(index) 
                 when INDEX_PLACE
                     velocityLine.graphics.clear()
@@ -188,7 +187,7 @@ module.exports = class Overlay extends Widget
                     if (mode == MODE_EDIT && !copyPlace) 
                         index = INDEX_MODIFY
                         @stage.removeChild(tempObject.displayObj)
-                     else 
+                    else 
                         index = INDEX_PLACE
 
                     break
@@ -196,7 +195,7 @@ module.exports = class Overlay extends Widget
                     tempObject.displayObj.dispatchEvent("click")
                     if (ev.button == 2) 
                         @simulation.removeSelected()
-                     else 
+                    else 
                         selected = tempObject
 
                         tempObject = selected.copy()
@@ -212,7 +211,6 @@ module.exports = class Overlay extends Widget
                         index = INDEX_PLACE
 
                     break
-            
         
         ev.stopPropagation()
     
@@ -220,7 +218,6 @@ module.exports = class Overlay extends Widget
         if (!@hidden) 
             if (tempObject != null) 
                 tempObject.draw(tempObject.x, tempObject.y)
-            
 
             if (showError) 
                 errorTimer -= 1000/@settings.global.updateRate
@@ -229,11 +226,7 @@ module.exports = class Overlay extends Widget
 
                     @stage.removeChild(errorText)
                 
-            
-                
             @stage.update()
-        
-    
     
      reset: ->
         if (mode == MODE_EDIT) 
@@ -270,7 +263,6 @@ module.exports = class Overlay extends Widget
         index = INDEX_PLACE
         mode = MODE_ADD
     
-    
     beginEdit: ->
         @show()
         @init()
@@ -279,7 +271,6 @@ module.exports = class Overlay extends Widget
 
         index = INDEX_MODIFY
         mode = MODE_EDIT
-    
 
     end: ->
         @hide()
@@ -291,11 +282,9 @@ module.exports = class Overlay extends Widget
 
         freePlace = false
         copyPlace = false
-    
 
     getCurrentParticle: ->
         return tempObject
-    
 
     getMode: ->
         return mode

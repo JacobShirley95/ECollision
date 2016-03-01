@@ -1,282 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var ECollisionSettings = require('../../../src/settings');
-var ECollision = require('../../../src/ecollision');
-
-var eCollisionSettings = new ECollisionSettings();
-var ecollision = new ECollision(eCollisionSettings);
-
-$.widget("custom.sliderEx", $.ui.slider, {
-    _unit:"",
-    _amount: null,
-    _formatVal: function(val) {
-        if (val > 0.09 && val < 1) {
-            val = val.toPrecision(2);
-        }
-        return val+" "+this._unit;
-    },
-    _slide: function () {
-        this._superApply(arguments);
-
-        this._amount.text(this._formatVal(this.options.value));
-
-        var pos = this.handle.position();
-        var width = this._amount.width()/2;
-        
-        var newLeft = pos.left;
-        
-        this._amount.css("left", newLeft+"px");
-    },
-    
-    _start: function() {
-        this._superApply(arguments);
-        var left = this.handle.css("left");
-        
-        this._amount.css('visibility','visible').hide().fadeIn("fast").css("left", left);
-    },
-    
-    _stop: function() {
-        this._superApply(arguments);
-
-        this._amount.fadeOut("fast");
-    },
-    
-    _create: function() {
-        var min = parseFloat(this.element.attr("min"));
-        var max = parseFloat(this.element.attr("max"));
-        
-        this.options.min = min;
-        this.options.max = max;
-
-        this.options.step = parseFloat(this.element.attr("step")) || 1.0;
-        
-        this.options.value = parseFloat(this.element.attr("value")) || (min+max/2);
-        
-        var unit = this.element.attr("unit");
-        this._unit = unit || "";
-        
-        this._amount = $('<div class="slider-amount">'+this._formatVal(this.options.value)+'</div>');
-        
-        this.element.append(this._amount).mousedown(function(event) {
-            event.stopPropagation();
-        });
-        
-        this._super();
-    }
-});
-
-function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
-function toDegrees(ang) {
-    var a = ((ang / Math.PI) * 180)+90;
-    if (a < 0)
-        a += 360;
-    else if (a > 360) {
-        a -= 360;
-    }
-    return a;
-}
-
-function setCol(text, col) {
-    return ("" + text).fontcolor(col);
-}
-
-function setColGreen(text) {
-    return setCol(text, "green");
-}
-
-function dbgBool(bool) {
-    if (bool)
-        return setCol(""+bool, "green");
-    else
-        return setCol(""+bool, "red");
-}
-
-function log(s) {
-    console.log(s);
-}
-
-$("#slider-mass").sliderEx({
-    slide: function(event, ui) {
-        var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
-        if (cp != null)
-            cp.mass = ui.value;
-    }
-});
-    
-$("#slider-cor").sliderEx({
-    slide: function(event, ui) {
-        var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
-        if (cp != null)
-            cp.cOR = ui.value;
-    }
-});
-
-function openAdd() {
-    var mode = ecollision.overlayUI.getMode();
-    if (mode == 0) {
-        ecollision.overlayUI.end();
-    } else {
-        var mass = $("#slider-mass").sliderEx("value");
-        var cOR = $("#slider-cor").sliderEx("value");
-
-        ecollision.overlayUI.beginAdd(mass, cOR, currentColor);
-    }
-}
-
-function openEdit() {
-    var mode = ecollision.overlayUI.getMode();
-    if (mode == 1) {
-        ecollision.overlayUI.end();
-    } else {
-        ecollision.overlayUI.beginEdit();
-    }
-}
-
-$(document).keypress(function(ev) {
-    if (ev.charCode == 97) {
-        openAdd();
-    } else if (ev.charCode == 101) {
-        openEdit();
-    }
-});
-
-$("#add-particle").click(function() {
-    openAdd();
-});
-
-$("#remove-particle").click(function() {
-    openEdit();
-});
-
-var currentColor = getRandomColor();
-
-$("#generate-colour").click(function() {
-    var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
-    if (cp != null) {
-        currentColor = getRandomColor();
-        cp.style = currentColor;
-    }
-})
-
-$("#calibrate").click(function() {
-    ecollision.graphUI.calibrate();
-});
-
-$("#zoom-in").click(function() {
-    ecollision.graphUI.zoomIn();
-});
-
-$("#zoom-out").click(function() {
-    ecollision.graphUI.zoomOut();
-});
-
-$("#move-up").click(function() {
-    ecollision.graphUI.moveUp();
-});
-
-$("#move-down").click(function() {
-    ecollision.graphUI.moveDown();
-});
-
-$("#btn-sim-data").click(function() {
-    eCollisionSettings.global.showVelocities = !eCollisionSettings.global.showVelocities;  
-});
-
-$("#btn-run-pause").click(function() {
-    if (ecollision.paused)
-        ecollision.resume();
-    else
-        ecollision.pause();
-
-    changeRunPauseBtn();
-});
-
-function changeRunPauseBtn() {
-    if (!ecollision.paused) {
-        $("#btn-run-pause").removeClass('icon-playback-play').addClass('icon-pause').text("PAUSE");
-    } else {
-        $("#btn-run-pause").removeClass('icon-pause').addClass('icon-playback-play').text("RUN");
-    }
-}
-
-$("#btn-next").click(function() {
-    ecollision.update();
-});
-
-var savedState = [];
-
-$("#btn-save").click(function() {
-    savedState = [];
-    ecollision.simulationUI.saveParticles(savedState);
-});
-
-$("#btn-load").click(function() {
-    ecollision.simulationUI.loadParticles(savedState);
-});
-
-$("#btn-reset").click(function() {
-    ecollision.restart();
-});
-
-$("#sim-speed-slider").sliderEx({
-    slide: function(event, ui) {
-        eCollisionSettings.global.speedConst = parseFloat(ui.value);
-    }
-});
-
-var fpsDiv = $("#fps-div");
-var particleInfo = $("#particle-info-box");
-
-ecollision.simulationUI.onSelect = function(particle) {
-    $("#slider-mass").sliderEx("value", particle.mass);
-    $("#slider-cor").sliderEx("value", particle.cOR);
-}
-
-ecollision.onTick = function() {
-    if (eCollisionSettings.global.showVelocities) {
-        var fps = "";
-        if (ecollision.fps < 24) {
-            fps = setCol(ecollision.fps, "red");
-        } else {
-            fps = setCol(ecollision.fps, "green");
-
-        }
-        debugStr = "Frame rate: " + fps + " Hz" +
-                   "<br /> Update rate: " + setColGreen(ecollision.getUpdateRate()) + " Hz" +
-                   "<br /> Energy in system: " + setColGreen(ecollision.graphUI.getEnergy()) + " kJ" +
-                   "<br /> Number of particles: " + setColGreen(ecollision.engine.numOfParticles());
-                   
-        fpsDiv.html(debugStr);
-    } else fpsDiv.html("");
-
-    var selected = ecollision.simulationUI.getSelected();
-    if (selected != null) {
-        var str = "<b>XVel:</b> " + Math.round(selected.xVel*eCollisionSettings.global.updateRate) + " px/s" + 
-                  "<br /> <b>YVel:</b> " + Math.round(selected.yVel*eCollisionSettings.global.updateRate) + " px/s" +
-                  "<br /> <b>Direction:</b> " + Math.round(toDegrees(Math.atan2(selected.yVel, selected.xVel))) + " degrees" +
-                  "<br /> <b>Mass:</b> " + selected.mass + " kg" +
-                  "<br /> <b>CoR:</b> " + selected.cOR +
-                  "<br /> <b>Radius:</b> " + selected.radius + " px"
-                  "<br /> <b>Energy:</b> " + Math.round(selected.getEnergy()) + " J";
-        
-        particleInfo.html(str);
-    } else {
-        particleInfo.html("");
-    }
-}
-
-ecollision.start();
-},{"../../../src/ecollision":2,"../../../src/settings":8}],2:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
-  var ECollision, ECollisionSettings, Graph, Overlay, Simulation, SimulationEngine,
+  var ECollision, ECollisionSettings, EventManager, Graph, Overlay, Simulation, SimulationEngine,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   SimulationEngine = require("./engine/simulation-engine");
@@ -289,28 +14,20 @@ ecollision.start();
 
   ECollisionSettings = require("./settings");
 
-  ECollision = (function() {
+  EventManager = require("./events/event-manager");
+
+  module.exports = ECollision = (function() {
     var curTime, fps, fpsCount, fpsTime, interpolation, newTime, refreshTime, setSpeedConst, setUpdateRate, thread, timeStamp, updateRate, updateTime, widgets;
 
     widgets = [];
 
-    fpsCount = 0;
-
-    fps = 0;
-
-    fpsTime = 0;
-
-    newTime = timeStamp = curTime = 0;
+    fpsCount = fps = fpsTime = newTime = timeStamp = curTime = 0;
 
     interpolation = 0.0;
 
     thread = -1;
 
-    updateRate = 0;
-
-    updateTime = 0;
-
-    refreshTime = 0;
+    updateRate = updateTime = refreshTime = 0;
 
     function ECollision(settings) {
       this.settings = settings;
@@ -325,6 +42,7 @@ ecollision.start();
       updateRate = this.settings.global.updateRate;
       updateTime = 1000.0 / updateRate;
       refreshTime = 1000 / this.settings.global.refreshRate;
+      EventManager.eventify(this);
     }
 
     ECollision.prototype.start = function() {
@@ -392,8 +110,6 @@ ecollision.start();
       return this.engine.speedConst = speedConst;
     };
 
-    ECollision.prototype.onTick = function() {};
-
     ECollision.prototype.update = function() {
       var i, len, particle, ref;
       curTime += refreshTime;
@@ -430,29 +146,25 @@ ecollision.start();
         widget = widgets[i];
         widget.draw(interpolation);
       }
-      return this.onTick();
+      return this.fire('tick', [interpolation]);
     };
 
     return ECollision;
 
   })();
 
-  module.exports.ECollision = ECollision;
-
-  module.exports.ECollisionSettings = ECollisionSettings;
-
-  module.exports.SimulationEngine = SimulationEngine;
-
 }).call(this);
 
-},{"./engine/simulation-engine":3,"./settings":8,"./ui/graph":9,"./ui/overlay":10,"./ui/simulation":11}],3:[function(require,module,exports){
+},{"./engine/simulation-engine":2,"./events/event-manager":3,"./settings":8,"./ui/graph":9,"./ui/overlay":10,"./ui/simulation":15}],2:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
-  var PVector, Particle, SimulationEngine;
+  var EventManager, PVector, Particle, SimulationEngine;
 
   Particle = require('../objects/particle');
 
   PVector = require('../math/pvector');
+
+  EventManager = require('../events/event-manager');
 
   module.exports = SimulationEngine = (function() {
     var Collision, splitVelocity;
@@ -463,6 +175,7 @@ ecollision.start();
       this.width = width;
       this.height = height;
       this.settings = settings;
+      EventManager.eventify(this);
     }
 
     SimulationEngine.prototype.setBounds = function(width, height) {
@@ -623,7 +336,7 @@ ecollision.start();
     };
 
     SimulationEngine.prototype.update = function() {
-      var colObjects, collision, i, i2, j, k, l, len, len1, len2, particle, particle2, ref, ref1, results;
+      var colObjects, collision, i, i2, j, k, l, len, len1, len2, len3, m, n, particle, particle2, ref, ref1, ref2, ref3, ref4;
       ref = this.particles;
       for (j = 0, len = ref.length; j < len; j++) {
         particle = ref[j];
@@ -634,8 +347,7 @@ ecollision.start();
       ref1 = this.particles;
       for (i = k = 0, len1 = ref1.length; k < len1; i = ++k) {
         particle = ref1[i];
-        i2 = i + 1;
-        while (i2 < this.particles.length) {
+        for (i2 = l = ref2 = i + 1, ref3 = this.particles.length - 1; l <= ref3; i2 = l += 1) {
           particle2 = this.particles[i2];
           collision = new Collision();
           if (this.collide(particle, particle2, collision)) {
@@ -643,22 +355,21 @@ ecollision.start();
             collision.particle2 = particle2;
             colObjects.push(collision);
           }
-          i2++;
         }
       }
       colObjects.sort(function(a, b) {
         return a.time < b.time;
       });
-      results = [];
-      for (l = 0, len2 = colObjects.length; l < len2; l++) {
-        collision = colObjects[l];
-        results.push(this.handleCollision(collision));
+      for (m = 0, len2 = colObjects.length; m < len2; m++) {
+        collision = colObjects[m];
+        this.handleCollision(collision);
       }
-      return results;
-
-      /*for particle in @particles
-          @edgeCollision(particle, false)
-       */
+      ref4 = this.particles;
+      for (n = 0, len3 = ref4.length; n < len3; n++) {
+        particle = ref4[n];
+        this.edgeCollision(particle, false);
+      }
+      return this.fire("update");
     };
 
     return SimulationEngine;
@@ -667,7 +378,129 @@ ecollision.start();
 
 }).call(this);
 
-},{"../math/pvector":5,"../objects/particle":6}],4:[function(require,module,exports){
+},{"../events/event-manager":3,"../math/pvector":5,"../objects/particle":6}],3:[function(require,module,exports){
+// Generated by CoffeeScript 1.10.0
+
+/* EventManager, v1.0.1
+*
+* Copyright (c) 2009, Howard Rauscher
+* Licensed under the MIT License
+ */
+
+(function() {
+  var EventManager;
+
+  module.exports = EventManager = (function() {
+    var EventArg, _listeners;
+
+    EventArg = (function() {
+      function EventArg(name1, data1) {
+        this.name = name1;
+        this.data = data1;
+        this.cancelled = false;
+        this.removed = false;
+      }
+
+      EventArg.prototype.cancel = function() {
+        return this.cancelled = true;
+      };
+
+      EventArg.prototype.remove = function() {
+        return this.removed = true;
+      };
+
+      return EventArg;
+
+    })();
+
+    _listeners = [];
+
+    function EventManager() {}
+
+    EventManager.prototype.addListener = function(name, fn) {
+      (_listeners[name] = _listeners[name] || []).push(fn);
+      return this;
+    };
+
+    EventManager.prototype.removeListener = function(name, fn) {
+      var foundAt, i, j, len1, listener, listeners;
+      if (arguments.length === 1) {
+        _listeners[name] = [];
+      } else if (typeof fn === 'function') {
+        listeners = _listeners[name];
+        if (listeners !== void 0) {
+          foundAt = -1;
+          for (i = j = 0, len1 = listeners.length; j < len1; i = ++j) {
+            listener = listeners[i];
+            if (listener === fn) {
+              foundAt = i;
+              break;
+            }
+          }
+          if (foundAt >= 0) {
+            listeners.splice(foundAt, 1);
+          }
+        }
+      }
+      return this;
+    };
+
+    EventManager.prototype.fire = function(name, args) {
+      var data, evt, i, j, len, len1, listener, listeners;
+      listeners = _listeners[name];
+      args = args || [];
+      if (listeners !== void 0) {
+        data = {};
+        evt = null;
+        for (i = j = 0, len1 = listeners.length; j < len1; i = ++j) {
+          listener = listeners[i];
+          evt = new EventArg(name, data);
+          listener.apply(window, args.concat(evt));
+          data = evt.data;
+          if (evt.removed) {
+            listeners.splice(i, 1);
+            len = listeners.length;
+            --i;
+          }
+          if (evt.cancelled) {
+            break;
+          }
+        }
+      }
+      return this;
+    };
+
+    EventManager.prototype.hasListeners = function(name) {
+      var ref;
+      return ((ref = _listeners[name] === void 0) != null ? ref : {
+        0: _listeners[name].length
+      }) > 0;
+    };
+
+    EventManager.eventify = function(object, manager) {
+      var func, j, len1, method, methods, results;
+      methods = ['addListener', 'removeListener', 'fire'];
+      manager = manager || new EventManager();
+      func = function(method) {
+        return object[method] = function() {
+          return manager[method].apply(manager, arguments);
+        };
+      };
+      results = [];
+      for (j = 0, len1 = methods.length; j < len1; j++) {
+        method = methods[j];
+        results.push(func(method));
+      }
+      return results;
+    };
+
+    return EventManager;
+
+  })();
+
+}).call(this);
+
+},{}],4:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var Point2D;
@@ -737,74 +570,26 @@ ecollision.start();
   Point2D = require('../math/point-2d');
 
   module.exports = Particle = (function(superClass) {
-    var curPos, pastPositions;
-
     extend(Particle, superClass);
 
     Particle.prototype.selected = false;
 
     Particle.prototype.cOR = 1.0;
 
-    pastPositions = [];
+    Particle.prototype.pastPositions = [];
 
-    curPos = 0;
+    Particle.prototype.curPos = 0;
 
     function Particle(x, y, radius, style, settings) {
       this.radius = radius;
       this.style = style;
       this.settings = settings;
-      Particle.__super__.constructor.call(this, x, y);
+      Particle.__super__.constructor.call(this, x, y, 0);
     }
 
-    Particle.prototype.draw = function(x, y) {
-      var col, graphics, i, len, p, px, py, r_a;
-      this.displayObj.x = x;
-      this.displayObj.y = y;
-      graphics = this.displayObj.graphics;
-      graphics.clear();
-      if (this.selected) {
-        len = pastPositions.length;
-        i = 0;
-        while (i < len) {
-          p = pastPositions[(i + curPos) % len];
-          px = p.x - x;
-          py = p.y - y;
-          r_a = i / len;
-          col = "rgba(100, 100, 100, " + r_a + ")";
-          graphics.beginStroke(col).drawCircle(px, py, this.radius).endStroke();
-          i++;
-        }
-        graphics.beginStroke("red").setStrokeStyle(3).drawCircle(0, 0, this.radius).endStroke();
-      }
-      graphics.beginFill(this.style).drawCircle(0, 0, this.radius).endFill();
-      if (this.selected || this.settings.global.showVelocities) {
-        return graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(this.xVel * this.settings.global.updateRate, this.yVel * this.settings.global.updateRate).endStroke();
-      }
-    };
-
-    Particle.prototype.select = function() {
-      return this.selected = true;
-    };
-
-    Particle.prototype.deselect = function() {
-      this.selected = false;
-      return pastPositions = [];
-    };
-
     Particle.prototype.update = function() {
-      var len;
       this.x += this.xVel * this.settings.global.speedConst;
-      this.y += this.yVel * this.settings.global.speedConst;
-      len = pastPositions.length;
-      if (this.selected) {
-        curPos++;
-        curPos %= this.settings.global.maxTraceLength;
-        if (len < this.settings.global.maxTraceLength) {
-          return pastPositions.push(new Point2D(this.x, this.y));
-        } else {
-          return pastPositions[curPos] = new Point2D(this.x, this.y);
-        }
-      }
+      return this.y += this.yVel * this.settings.global.speedConst;
     };
 
     Particle.prototype.copy = function() {
@@ -827,22 +612,22 @@ ecollision.start();
 },{"../math/point-2d":4,"./physics-object":7}],7:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
-  var PhysicsObject;
+  var EventManager, PhysicsObject;
+
+  EventManager = require("../events/event-manager");
 
   module.exports = PhysicsObject = (function() {
     PhysicsObject.prototype.xVel = 0;
 
     PhysicsObject.prototype.yVel = 0;
 
-    function PhysicsObject(x1, y1, mass) {
-      this.x = x1;
-      this.y = y1;
+    function PhysicsObject(x, y, mass) {
+      this.x = x;
+      this.y = y;
       this.mass = mass;
       this.lastX = this.x;
       this.lastY = this.y;
-      this.displayObj = new createjs.Shape();
-      this.displayObj.x = this.x;
-      this.displayObj.y = this.y;
+      EventManager.eventify(this);
     }
 
     PhysicsObject.prototype.capture = function() {
@@ -855,17 +640,8 @@ ecollision.start();
       return this.y += this.yVel;
     };
 
-    PhysicsObject.prototype.addEventListener = function(event, handler) {
-      return this.displayObj.addEventListener(event, handler);
-    };
-
     PhysicsObject.prototype.getEnergy = function() {
       return 0.5 * this.mass * ((this.xVel * this.xVel) + (this.yVel * this.yVel));
-    };
-
-    PhysicsObject.prototype.draw = function(x, y) {
-      this.displayObj.x = x;
-      return this.displayObj.y = y;
     };
 
     return PhysicsObject;
@@ -874,7 +650,7 @@ ecollision.start();
 
 }).call(this);
 
-},{}],8:[function(require,module,exports){
+},{"../events/event-manager":3}],8:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var ECollisionSettings;
@@ -889,7 +665,7 @@ ecollision.start();
       enableInterpolation: true,
       maxTraceLength: 30,
       speedConst: 1.0,
-      maxParticles: 20,
+      maxParticles: 10000,
       minRadius: 5,
       maxRadius: 30,
       errorTime: 5000
@@ -1075,6 +851,10 @@ ecollision.start();
       return userY += 5;
     };
 
+    Graph.prototype.getZoomIndex = function() {
+      return zoomIndex;
+    };
+
     Graph.prototype.addData = function(x, y) {
       var s;
       if (data.length > maxLen) {
@@ -1087,7 +867,7 @@ ecollision.start();
     };
 
     Graph.prototype.updateData = function() {
-      var aLen, data2, diff, i, j;
+      var aLen, data2, diff, i, j, k, ref, ref1;
       data2 = [];
       maxLen = Math.round(this.width / ((1000 / this.settings.global.updateRate) * this.scaleX)) + 5;
       aLen = data.length - 1;
@@ -1095,11 +875,9 @@ ecollision.start();
       if (aLen > maxLen) {
         diff = aLen - maxLen;
       }
-      j = diff;
-      while (j < aLen) {
+      for (j = k = ref = diff, ref1 = aLen - 1; k <= ref1; j = k += 1) {
         i = (start + j) % aLen;
         data2.push(data[i]);
-        j++;
       }
       updated = true;
       start = 0;
@@ -1123,7 +901,7 @@ ecollision.start();
 
 }).call(this);
 
-},{"../math/point-2d":4,"../objects/particle":6,"./widget":12}],10:[function(require,module,exports){
+},{"../math/point-2d":4,"../objects/particle":6,"./widget":16}],10:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var Overlay, Particle, Widget,
@@ -1431,10 +1209,221 @@ ecollision.start();
 
 }).call(this);
 
-},{"../objects/particle":6,"./widget":12}],11:[function(require,module,exports){
+},{"../objects/particle":6,"./widget":16}],11:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
-  var Particle, Simulation, Widget,
+  var EaselJSRenderer, ParticleRenderer, SimulationRenderer,
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
+
+  ParticleRenderer = require('./particle-renderer');
+
+  SimulationRenderer = require('../simulation-renderer');
+
+  module.exports = EaselJSRenderer = (function(superClass) {
+    var renderObjs;
+
+    extend(EaselJSRenderer, superClass);
+
+    renderObjs = [];
+
+    function EaselJSRenderer(canvasName, engine) {
+      this.canvasName = canvasName;
+      this.engine = engine;
+      EaselJSRenderer.__super__.constructor.call(this, this.canvasName, this.engine);
+      this.stage = new createjs.Stage(this.canvasName);
+      this.engine.addListener("update", function() {
+        var i, len, particle, results;
+        results = [];
+        for (i = 0, len = renderObjs.length; i < len; i++) {
+          particle = renderObjs[i];
+          results.push(particle.capture());
+        }
+        return results;
+      });
+    }
+
+    EaselJSRenderer.prototype.addParticle = function(particle) {
+      var pr;
+      pr = new ParticleRenderer(particle);
+      this.stage.addChild(pr.displayObj);
+      return renderObjs.push(pr);
+    };
+
+    EaselJSRenderer.prototype.removeParticle = function(particle) {};
+
+    EaselJSRenderer.prototype.draw = function(interpolation) {
+      var i, len, particle;
+      for (i = 0, len = renderObjs.length; i < len; i++) {
+        particle = renderObjs[i];
+        particle.draw(interpolation);
+      }
+      return this.stage.update();
+    };
+
+    return EaselJSRenderer;
+
+  })(SimulationRenderer);
+
+}).call(this);
+
+},{"../simulation-renderer":14,"./particle-renderer":12}],12:[function(require,module,exports){
+// Generated by CoffeeScript 1.10.0
+(function() {
+  var EventManager, ParticleRenderer, Point2D, Renderer,
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
+
+  Renderer = require("../renderer");
+
+  Point2D = require("../../../math/point-2d");
+
+  EventManager = require("../../../events/event-manager");
+
+  module.exports = ParticleRenderer = (function(superClass) {
+    var curPos, lastX, lastY, pastPositions;
+
+    extend(ParticleRenderer, superClass);
+
+    pastPositions = [];
+
+    curPos = 0;
+
+    lastX = 0;
+
+    lastY = 0;
+
+    function ParticleRenderer(particle) {
+      this.particle = particle;
+      this.displayObj = new createjs.Shape();
+      lastX = this.particle.x;
+      lastY = this.particle.y;
+      this.displayObj.x = this.particle.x;
+      this.displayObj.y = this.particle.y;
+      this.displayObj.addEventListener("click", (function(_this) {
+        return function(ev) {
+          if (_this.selected) {
+            _this.fire("deselect", [ev, _this]);
+          } else {
+            _this.fire("select", [ev, _this]);
+          }
+          return _this.selected = !_this.selected;
+        };
+      })(this));
+      this.particle.addListener("update", (function(_this) {
+        return function(ev) {
+          var len;
+          _this.capture();
+          len = pastPositions.length;
+          if (_this.selected) {
+            curPos++;
+            curPos %= 20;
+            if (len < 20) {
+              return pastPositions.push(new Point2D(_this.x, _this.y));
+            } else {
+              return pastPositions[curPos] = new Point2D(_this.x, _this.y);
+            }
+          }
+        };
+      })(this));
+      this.selected = false;
+      EventManager.eventify(this);
+    }
+
+    ParticleRenderer.prototype.capture = function() {
+      lastX = this.particle.x;
+      return lastY = this.particle.y;
+    };
+
+    ParticleRenderer.prototype.select = function() {
+      return this.selected = true;
+    };
+
+    ParticleRenderer.prototype.deselect = function() {
+      this.selected = false;
+      return this.particle.pastPositions = [];
+    };
+
+    ParticleRenderer.prototype.draw = function(interpolation) {
+      var col, graphics, i, j, len, newX, newY, p, px, py, r_a, ref;
+      newX = this.particle.x;
+      newY = this.particle.y;
+      newX = lastX + (interpolation * (newX - lastX));
+      newY = lastY + (interpolation * (newY - lastY));
+      this.displayObj.x = newX;
+      this.displayObj.y = newY;
+      graphics = this.displayObj.graphics;
+      graphics.clear();
+      if (this.selected) {
+        len = pastPositions.length;
+        for (i = j = 0, ref = len - 1; j <= ref; i = j += 1) {
+          p = pastPositions[(i + this.particle.curPos) % len];
+          px = p.x - this.particle.x;
+          py = p.y - this.particle.y;
+          r_a = i / len;
+          col = "rgba(100, 100, 100, " + r_a + ")";
+          graphics.beginStroke(col).drawCircle(px, py, this.particle.radius).endStroke();
+        }
+        graphics.beginStroke("blue").setStrokeStyle(3).drawCircle(0, 0, this.particle.radius).endStroke();
+      }
+      return graphics.beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
+    };
+
+    return ParticleRenderer;
+
+  })(Renderer);
+
+}).call(this);
+
+},{"../../../events/event-manager":3,"../../../math/point-2d":4,"../renderer":13}],13:[function(require,module,exports){
+// Generated by CoffeeScript 1.10.0
+(function() {
+  var Renderer;
+
+  module.exports = Renderer = (function() {
+    function Renderer() {}
+
+    Renderer.prototype.draw = function(interpolation) {};
+
+    return Renderer;
+
+  })();
+
+}).call(this);
+
+},{}],14:[function(require,module,exports){
+// Generated by CoffeeScript 1.10.0
+(function() {
+  var Renderer, SimulationRenderer,
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
+
+  Renderer = require("./renderer");
+
+  module.exports = SimulationRenderer = (function(superClass) {
+    extend(SimulationRenderer, superClass);
+
+    function SimulationRenderer(canvas, engine) {
+      this.canvas = canvas;
+      this.engine = engine;
+    }
+
+    SimulationRenderer.prototype.addParticle = function(particle) {};
+
+    SimulationRenderer.prototype.removeParticle = function(particle) {};
+
+    SimulationRenderer.prototype.draw = function(interpolation) {};
+
+    return SimulationRenderer;
+
+  })(Renderer);
+
+}).call(this);
+
+},{"./renderer":13}],15:[function(require,module,exports){
+// Generated by CoffeeScript 1.10.0
+(function() {
+  var EaselJSRenderer, EventManager, Particle, Simulation, Widget,
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
@@ -1442,12 +1431,16 @@ ecollision.start();
 
   Particle = require('../objects/particle');
 
+  EventManager = require("../events/event-manager");
+
+  EaselJSRenderer = require("./renderer/easeljs/easeljs-renderer");
+
   module.exports = Simulation = (function(superClass) {
     var selected;
 
     extend(Simulation, superClass);
 
-    selected = -1;
+    selected = null;
 
     function Simulation(canvasName, engine, settings) {
       this.engine = engine;
@@ -1455,6 +1448,8 @@ ecollision.start();
       Simulation.__super__.constructor.call(this, canvasName);
       this.engine.width = this.width;
       this.engine.height = this.height;
+      this.renderer = new EaselJSRenderer(this.canvasName, this.engine);
+      EventManager.eventify(this);
     }
 
     Simulation.prototype.resize = function(newWidth, newHeight) {
@@ -1465,41 +1460,20 @@ ecollision.start();
       var particle;
       particle = new Particle(x, y, radius, style, this.settings);
       particle.mass = mass;
-      particle.addEventListener("click", (function(_this) {
-        return function(ev) {
-          var i, p, results;
-          if (selected !== -1) {
-            p = _this.engine.particles[selected];
-            p.deselect();
-            _this.onDeselect(p);
-          }
-          i = 0;
-          results = [];
-          while (i < _this.engine.particles.length) {
-            p = _this.engine.particles[i];
-            if (p.displayObj === ev.target) {
-              if (i !== selected) {
-                _this.onSelect(p);
-                selected = i;
-                p.select();
-              } else {
-                selected = -1;
-              }
-              break;
-            }
-            results.push(i++);
-          }
-          return results;
+      console.log(this.renderer);
+      this.renderer.addParticle(particle);
+      particle.addListener("select", (function(_this) {
+        return function(ev, particle) {
+          return _this.selected = particle;
+        };
+      })(this)).addListener("deselect", (function(_this) {
+        return function(ev, particle) {
+          return _this.selected = null;
         };
       })(this));
-      this.stage.addChild(particle.displayObj);
       this.engine.particles.push(particle);
       return particle;
     };
-
-    Simulation.prototype.onSelect = function(particle) {};
-
-    Simulation.prototype.onDeselect = function(particle) {};
 
     Simulation.prototype.removeParticle = function(index) {
       this.stage.removeChild(this.engine.particles[index].displayObj);
@@ -1532,47 +1506,49 @@ ecollision.start();
     };
 
     Simulation.prototype.removeSelected = function() {
-      if (selected !== -1) {
-        this.removeParticle(selected);
-        return selected = -1;
+      var i, j, len, particle, ref;
+      if (selected !== null) {
+        ref = this.particles;
+        for (i = j = 0, len = ref.length; j < len; i = ++j) {
+          particle = ref[i];
+          if (particle === selected) {
+            this.removeParticle(i);
+          }
+        }
+        return selected = null;
       }
     };
 
     Simulation.prototype.getSelected = function() {
-      var sel;
-      sel = null;
-      if (selected !== -1) {
-        sel = this.engine.particles[selected];
-      }
-      return sel;
-    };
-
-    Simulation.prototype.getSelectedID = function() {
       return selected;
     };
 
     Simulation.prototype.restart = function() {
       this.stage.removeAllChildren();
-      selected = -1;
-      return this.engine.reset();
+      selected = null;
+      this.engine.reset();
+      return this.fire("restart");
     };
 
     Simulation.prototype.draw = function(interpolation) {
-      var diffX, diffY, j, len, newX, newY, particle, ref;
-      ref = this.engine.particles;
-      for (j = 0, len = ref.length; j < len; j++) {
-        particle = ref[j];
-        newX = particle.x;
-        newY = particle.y;
-        if (this.settings.global.enableInterpolation) {
-          diffX = particle.x - particle.lastX;
-          diffY = particle.y - particle.lastY;
-          newX = particle.lastX + (interpolation * diffX);
-          newY = particle.lastY + (interpolation * diffY);
-        }
-        particle.draw(newX, newY);
-      }
-      return this.stage.update();
+
+      /*for particle in @engine.particles
+          newX = particle.x
+          newY = particle.y
+          
+          if (@settings.global.enableInterpolation) 
+              diffX = particle.x - particle.lastX
+              diffY = particle.y - particle.lastY
+          
+              newX = particle.lastX + (interpolation * diffX)
+              newY = particle.lastY + (interpolation * diffY)
+           
+          particle.draw(newX, newY)
+      
+      @stage.update()
+       */
+      this.renderer.draw(interpolation);
+      return this.fire("draw");
     };
 
     return Simulation;
@@ -1581,19 +1557,18 @@ ecollision.start();
 
 }).call(this);
 
-},{"../objects/particle":6,"./widget":12}],12:[function(require,module,exports){
+},{"../events/event-manager":3,"../objects/particle":6,"./renderer/easeljs/easeljs-renderer":11,"./widget":16}],16:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var Widget;
 
   module.exports = Widget = (function() {
-    Widget.prototype.hidden = false;
-
     function Widget(canvasName) {
       this.canvasName = canvasName;
       this.canvas = $("#" + this.canvasName);
       this.width = this.canvas.width();
       this.height = this.canvas.height();
+      this.hidden = false;
       this.stage = new createjs.Stage(this.canvasName);
       this.canvas.attr("width", this.width);
       this.canvas.attr("height", this.height);
@@ -1640,4 +1615,279 @@ ecollision.start();
 
 }).call(this);
 
-},{}]},{},[1,2]);
+},{}],17:[function(require,module,exports){
+var ECollisionSettings = require('../../../bin/out/settings');
+var ECollision = require('../../../bin/out/ecollision');
+
+var eCollisionSettings = new ECollisionSettings();
+var ecollision = new ECollision(eCollisionSettings);
+
+$.widget("custom.sliderEx", $.ui.slider, {
+    _unit:"",
+    _amount: null,
+    _formatVal: function(val) {
+        if (val > 0.09 && val < 1) {
+            val = val.toPrecision(2);
+        }
+        return val+" "+this._unit;
+    },
+    _slide: function () {
+        this._superApply(arguments);
+
+        this._amount.text(this._formatVal(this.options.value));
+
+        var pos = this.handle.position();
+        var width = this._amount.width()/2;
+        
+        var newLeft = pos.left;
+        
+        this._amount.css("left", newLeft+"px");
+    },
+    
+    _start: function() {
+        this._superApply(arguments);
+        var left = this.handle.css("left");
+        
+        this._amount.css('visibility','visible').hide().fadeIn("fast").css("left", left);
+    },
+    
+    _stop: function() {
+        this._superApply(arguments);
+
+        this._amount.fadeOut("fast");
+    },
+    
+    _create: function() {
+        var min = parseFloat(this.element.attr("min"));
+        var max = parseFloat(this.element.attr("max"));
+        
+        this.options.min = min;
+        this.options.max = max;
+
+        this.options.step = parseFloat(this.element.attr("step")) || 1.0;
+        
+        this.options.value = parseFloat(this.element.attr("value")) || (min+max/2);
+        
+        var unit = this.element.attr("unit");
+        this._unit = unit || "";
+        
+        this._amount = $('<div class="slider-amount">'+this._formatVal(this.options.value)+'</div>');
+        
+        this.element.append(this._amount).mousedown(function(event) {
+            event.stopPropagation();
+        });
+        
+        this._super();
+    }
+});
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function toDegrees(ang) {
+    var a = ((ang / Math.PI) * 180)+90;
+    if (a < 0)
+        a += 360;
+    else if (a > 360) {
+        a -= 360;
+    }
+    return a;
+}
+
+function setCol(text, col) {
+    return ("" + text).fontcolor(col);
+}
+
+function setColGreen(text) {
+    return setCol(text, "green");
+}
+
+function dbgBool(bool) {
+    if (bool)
+        return setCol(""+bool, "green");
+    else
+        return setCol(""+bool, "red");
+}
+
+function log(s) {
+    console.log(s);
+}
+
+$("#slider-mass").sliderEx({
+    slide: function(event, ui) {
+        var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
+        if (cp != null)
+            cp.mass = ui.value;
+    }
+});
+    
+$("#slider-cor").sliderEx({
+    slide: function(event, ui) {
+        var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
+        if (cp != null)
+            cp.cOR = ui.value;
+    }
+});
+
+function openAdd() {
+    var mode = ecollision.overlayUI.getMode();
+    if (mode == 0) {
+        ecollision.overlayUI.end();
+    } else {
+        var mass = $("#slider-mass").sliderEx("value");
+        var cOR = $("#slider-cor").sliderEx("value");
+
+        ecollision.overlayUI.beginAdd(mass, cOR, currentColor);
+    }
+}
+
+function openEdit() {
+    var mode = ecollision.overlayUI.getMode();
+    if (mode == 1) {
+        ecollision.overlayUI.end();
+    } else {
+        ecollision.overlayUI.beginEdit();
+    }
+}
+
+$(document).keypress(function(ev) {
+    if (ev.charCode == 97) {
+        openAdd();
+    } else if (ev.charCode == 101) {
+        openEdit();
+    }
+});
+
+$("#add-particle").click(function() {
+    openAdd();
+});
+
+$("#remove-particle").click(function() {
+    openEdit();
+});
+
+var currentColor = getRandomColor();
+
+$("#generate-colour").click(function() {
+    var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
+    if (cp != null) {
+        currentColor = getRandomColor();
+        cp.style = currentColor;
+    }
+})
+
+$("#calibrate").click(function() {
+    ecollision.graphUI.calibrate();
+});
+
+$("#zoom-in").click(function() {
+    ecollision.graphUI.zoomIn();
+});
+
+$("#zoom-out").click(function() {
+    ecollision.graphUI.zoomOut();
+});
+
+$("#move-up").click(function() {
+    ecollision.graphUI.moveUp();
+});
+
+$("#move-down").click(function() {
+    ecollision.graphUI.moveDown();
+});
+
+$("#btn-sim-data").click(function() {
+    eCollisionSettings.global.showVelocities = !eCollisionSettings.global.showVelocities;  
+});
+
+$("#btn-run-pause").click(function() {
+    if (ecollision.paused)
+        ecollision.resume();
+    else
+        ecollision.pause();
+
+    changeRunPauseBtn();
+});
+
+function changeRunPauseBtn() {
+    if (!ecollision.paused) {
+        $("#btn-run-pause").removeClass('icon-playback-play').addClass('icon-pause').text("PAUSE");
+    } else {
+        $("#btn-run-pause").removeClass('icon-pause').addClass('icon-playback-play').text("RUN");
+    }
+}
+
+$("#btn-next").click(function() {
+    ecollision.update();
+});
+
+var savedState = [];
+
+$("#btn-save").click(function() {
+    savedState = [];
+    ecollision.simulationUI.saveParticles(savedState);
+});
+
+$("#btn-load").click(function() {
+    ecollision.simulationUI.loadParticles(savedState);
+});
+
+$("#btn-reset").click(function() {
+    ecollision.restart();
+});
+
+$("#sim-speed-slider").sliderEx({
+    slide: function(event, ui) {
+        eCollisionSettings.global.speedConst = parseFloat(ui.value);
+    }
+});
+
+var fpsDiv = $("#fps-div");
+var particleInfo = $("#particle-info-box");
+
+ecollision.simulationUI.onSelect = function(particle) {
+    $("#slider-mass").sliderEx("value", particle.mass);
+    $("#slider-cor").sliderEx("value", particle.cOR);
+}
+
+ecollision.onTick = function() {
+    if (eCollisionSettings.global.showVelocities) {
+        var fps = "";
+        if (ecollision.fps < 24) {
+            fps = setCol(ecollision.fps, "red");
+        } else {
+            fps = setCol(ecollision.fps, "green");
+
+        }
+        debugStr = "Frame rate: " + fps + " Hz" +
+                   "<br /> Update rate: " + setColGreen(ecollision.getUpdateRate()) + " Hz" +
+                   "<br /> Energy in system: " + setColGreen(ecollision.graphUI.getEnergy()) + " kJ" +
+                   "<br /> Number of particles: " + setColGreen(ecollision.engine.numOfParticles());
+                   
+        fpsDiv.html(debugStr);
+    } else fpsDiv.html("");
+
+    var selected = ecollision.simulationUI.getSelected();
+    if (selected != null) {
+        var str = "<b>XVel:</b> " + Math.round(selected.xVel*eCollisionSettings.global.updateRate) + " px/s" + 
+                  "<br /> <b>YVel:</b> " + Math.round(selected.yVel*eCollisionSettings.global.updateRate) + " px/s" +
+                  "<br /> <b>Direction:</b> " + Math.round(toDegrees(Math.atan2(selected.yVel, selected.xVel))) + " degrees" +
+                  "<br /> <b>Mass:</b> " + selected.mass + " kg" +
+                  "<br /> <b>CoR:</b> " + selected.cOR +
+                  "<br /> <b>Radius:</b> " + selected.radius + " px"
+                  "<br /> <b>Energy:</b> " + Math.round(selected.getEnergy()) + " J";
+        
+        particleInfo.html(str);
+    } else {
+        particleInfo.html("");
+    }
+}
+
+ecollision.start();
+},{"../../../bin/out/ecollision":1,"../../../bin/out/settings":8}]},{},[17]);

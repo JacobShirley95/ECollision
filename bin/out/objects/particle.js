@@ -9,72 +9,26 @@
   Point2D = require('../math/point-2d');
 
   module.exports = Particle = (function(superClass) {
-    var curPos, pastPositions;
-
     extend(Particle, superClass);
 
     Particle.prototype.selected = false;
 
     Particle.prototype.cOR = 1.0;
 
-    pastPositions = [];
+    Particle.prototype.pastPositions = [];
 
-    curPos = 0;
+    Particle.prototype.curPos = 0;
 
     function Particle(x, y, radius, style, settings) {
       this.radius = radius;
       this.style = style;
       this.settings = settings;
-      Particle.__super__.constructor.call(this, x, y);
+      Particle.__super__.constructor.call(this, x, y, 0);
     }
 
-    Particle.prototype.draw = function(x, y) {
-      var col, graphics, i, j, len, p, px, py, r_a, ref;
-      this.displayObj.x = x;
-      this.displayObj.y = y;
-      graphics = this.displayObj.graphics;
-      graphics.clear();
-      if (this.selected) {
-        len = pastPositions.length;
-        for (i = j = 0, ref = len - 1; j <= ref; i = j += 1) {
-          p = pastPositions[(i + curPos) % len];
-          px = p.x - x;
-          py = p.y - y;
-          r_a = i / len;
-          col = "rgba(100, 100, 100, " + r_a + ")";
-          graphics.beginStroke(col).drawCircle(px, py, this.radius).endStroke();
-        }
-        graphics.beginStroke("red").setStrokeStyle(3).drawCircle(0, 0, this.radius).endStroke();
-      }
-      graphics.beginFill(this.style).drawCircle(0, 0, this.radius).endFill();
-      if (this.selected || this.settings.global.showVelocities) {
-        return graphics.beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(this.xVel * this.settings.global.updateRate, this.yVel * this.settings.global.updateRate).endStroke();
-      }
-    };
-
-    Particle.prototype.select = function() {
-      return this.selected = true;
-    };
-
-    Particle.prototype.deselect = function() {
-      this.selected = false;
-      return pastPositions = [];
-    };
-
     Particle.prototype.update = function() {
-      var len;
       this.x += this.xVel * this.settings.global.speedConst;
-      this.y += this.yVel * this.settings.global.speedConst;
-      len = pastPositions.length;
-      if (this.selected) {
-        curPos++;
-        curPos %= this.settings.global.maxTraceLength;
-        if (len < this.settings.global.maxTraceLength) {
-          return pastPositions.push(new Point2D(this.x, this.y));
-        } else {
-          return pastPositions[curPos] = new Point2D(this.x, this.y);
-        }
-      }
+      return this.y += this.yVel * this.settings.global.speedConst;
     };
 
     Particle.prototype.copy = function() {

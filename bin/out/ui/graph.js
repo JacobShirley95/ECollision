@@ -152,6 +152,10 @@
       return userY += 5;
     };
 
+    Graph.prototype.getZoomIndex = function() {
+      return zoomIndex;
+    };
+
     Graph.prototype.addData = function(x, y) {
       var s;
       if (data.length > maxLen) {
@@ -164,7 +168,7 @@
     };
 
     Graph.prototype.updateData = function() {
-      var aLen, data2, diff, i, j;
+      var aLen, data2, diff, i, j, k, ref, ref1;
       data2 = [];
       maxLen = Math.round(this.width / ((1000 / this.settings.global.updateRate) * this.scaleX)) + 5;
       aLen = data.length - 1;
@@ -172,11 +176,9 @@
       if (aLen > maxLen) {
         diff = aLen - maxLen;
       }
-      j = diff;
-      while (j < aLen) {
+      for (j = k = ref = diff, ref1 = aLen - 1; k <= ref1; j = k += 1) {
         i = (start + j) % aLen;
         data2.push(data[i]);
-        j++;
       }
       updated = true;
       start = 0;

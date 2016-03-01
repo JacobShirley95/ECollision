@@ -101,10 +101,8 @@ module.exports = class Graph extends Widget
         offsetX = offsetY = 0
         updated = true
     
-    
     calibrate: ->
         userY = 0
-    
     
     zoomIn: ->
         if (zoomIndex < @settings.graph.graphMaxZoomIndex)
@@ -132,14 +130,14 @@ module.exports = class Graph extends Widget
             zoomIndex--
         else throw("ERROR: Minimum zoom reached")
     
-    
     moveUp: ->
         userY -= 5
     
-    
     moveDown: ->
         userY += 5
-    
+
+    getZoomIndex: ->
+        return zoomIndex
     
     addData: (x, y) ->
         if (data.length > maxLen)
@@ -161,19 +159,15 @@ module.exports = class Graph extends Widget
         
         if (aLen > maxLen)
             diff = aLen-maxLen
-        
-        j = diff
-        while j < aLen
+
+        for j in [diff..aLen-1] by 1
             i = (start+j)%aLen
             data2.push(data[i])
-            j++
-        
         
         updated = true
         start = 0
         
         data = data2
-    
     
     getEnergy: ->
         energy = 0.0
@@ -182,4 +176,3 @@ module.exports = class Graph extends Widget
             energy += particle.getEnergy()
         
         return Math.round(energy/1000)
-    

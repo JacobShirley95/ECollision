@@ -8,13 +8,6 @@ module.exports = class PhysicsObject
         @lastX = @x
         @lastY = @y
 
-        @displayObj = new createjs.Shape()
-        @displayObj.x = @x
-        @displayObj.y = @y
-        @displayObj.addEventListener("click", (ev) => 
-            @fire("click", [ev, @])
-        )
-
         EventManager.eventify(@)
 
     capture: ->
@@ -27,7 +20,3 @@ module.exports = class PhysicsObject
     
     getEnergy: -> 
         return 0.5 * @mass * ((@xVel*@xVel) + (@yVel*@yVel))
-    
-    draw: (x, y) ->
-        @displayObj.x = x
-        @displayObj.y = y

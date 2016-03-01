@@ -9,20 +9,12 @@
 
     PhysicsObject.prototype.yVel = 0;
 
-    function PhysicsObject(x1, y1, mass) {
-      this.x = x1;
-      this.y = y1;
+    function PhysicsObject(x, y, mass) {
+      this.x = x;
+      this.y = y;
       this.mass = mass;
       this.lastX = this.x;
       this.lastY = this.y;
-      this.displayObj = new createjs.Shape();
-      this.displayObj.x = this.x;
-      this.displayObj.y = this.y;
-      this.displayObj.addEventListener("click", (function(_this) {
-        return function(ev) {
-          return _this.fire("click", [ev, _this]);
-        };
-      })(this));
       EventManager.eventify(this);
     }
 
@@ -38,11 +30,6 @@
 
     PhysicsObject.prototype.getEnergy = function() {
       return 0.5 * this.mass * ((this.xVel * this.xVel) + (this.yVel * this.yVel));
-    };
-
-    PhysicsObject.prototype.draw = function(x, y) {
-      this.displayObj.x = x;
-      return this.displayObj.y = y;
     };
 
     return PhysicsObject;

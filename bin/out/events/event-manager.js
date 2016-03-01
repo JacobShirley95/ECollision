@@ -37,13 +37,14 @@
     function EventManager() {}
 
     EventManager.prototype.addListener = function(name, fn) {
-      return (_listeners[name] = _listeners[name] || []).push(fn);
+      (_listeners[name] = _listeners[name] || []).push(fn);
+      return this;
     };
 
     EventManager.prototype.removeListener = function(name, fn) {
       var foundAt, i, j, len1, listener, listeners;
       if (arguments.length === 1) {
-        return _listeners[name] = [];
+        _listeners[name] = [];
       } else if (typeof fn === 'function') {
         listeners = _listeners[name];
         if (listeners !== void 0) {
@@ -56,20 +57,20 @@
             }
           }
           if (foundAt >= 0) {
-            return listeners.splice(foundAt, 1);
+            listeners.splice(foundAt, 1);
           }
         }
       }
+      return this;
     };
 
     EventManager.prototype.fire = function(name, args) {
-      var data, evt, i, j, len, len1, listener, listeners, results;
+      var data, evt, i, j, len, len1, listener, listeners;
       listeners = _listeners[name];
       args = args || [];
       if (listeners !== void 0) {
         data = {};
         evt = null;
-        results = [];
         for (i = j = 0, len1 = listeners.length; j < len1; i = ++j) {
           listener = listeners[i];
           evt = new EventArg(name, data);
@@ -82,12 +83,10 @@
           }
           if (evt.cancelled) {
             break;
-          } else {
-            results.push(void 0);
           }
         }
-        return results;
       }
+      return this;
     };
 
     EventManager.prototype.hasListeners = function(name) {

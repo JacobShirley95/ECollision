@@ -1,10 +1,12 @@
 Particle = require('../objects/particle')
 PVector = require('../math/pvector')
+EventManager = require('../events/event-manager')
 
 module.exports = class SimulationEngine
     particles: []
     
     constructor: (@width, @height, @settings) ->
+        EventManager.eventify(@)
 
     setBounds: (@width, @height) ->
 
@@ -289,3 +291,5 @@ module.exports = class SimulationEngine
         #Finally check for an edge collision again but do not rebound the particle
         for particle in @particles 
             @edgeCollision(particle, false)
+
+        @fire("update")

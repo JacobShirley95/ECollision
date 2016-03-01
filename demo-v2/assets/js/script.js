@@ -1,8 +1,5 @@
-//var ECollisionSettings = require('../../../src/settings');
-//var ECollision = require('../../../src/ecollision');
-
-var ECollisionSettings = ecollision.ECollisionSettings;
-var ECollision = ecollision.ECollision;
+var ECollisionSettings = require('../../../bin/out/settings');
+var ECollision = require('../../../bin/out/ecollision');
 
 $.widget("custom.sliderEx", $.ui.slider, {
   _create: function() {

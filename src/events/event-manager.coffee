@@ -24,6 +24,7 @@ module.exports = class EventManager
 
     addListener: (name, fn) ->
         (_listeners[name] = _listeners[name] || []).push(fn)
+        return @
 
     removeListener: (name, fn) ->
         if(arguments.length == 1)
@@ -40,6 +41,8 @@ module.exports = class EventManager
                 
                 if(foundAt >= 0)
                     listeners.splice(foundAt, 1);
+
+        return @
 
     fire: (name, args) ->
         listeners = _listeners[name]
@@ -60,6 +63,7 @@ module.exports = class EventManager
                 
                 if(evt.cancelled) 
                     break
+        return @
 
     hasListeners: (name) ->
         return (_listeners[name] == undefined ? 0 : _listeners[name].length) > 0

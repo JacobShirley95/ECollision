@@ -5,7 +5,7 @@ Overlay = require("./ui/overlay")
 ECollisionSettings = require("./settings")
 EventManager = require("./events/event-manager")
 
-class ECollision
+module.exports = class ECollision
     widgets = []
 
     fpsCount = fps = fpsTime = newTime = timeStamp = curTime = 0
@@ -85,7 +85,6 @@ class ECollision
             if (@settings.global.enableInterpolation)
                 for particle in @engine.particles
                    particle.capture()
-                
             
             while (newTime + updateTime < curTime)
                 @engine.update()
@@ -111,7 +110,3 @@ class ECollision
             widget.draw(interpolation)
 
         @fire('tick', [interpolation])
-
-module.exports.ECollision = ECollision
-module.exports.ECollisionSettings = ECollisionSettings
-module.exports.SimulationEngine = SimulationEngine

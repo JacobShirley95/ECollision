@@ -1,11 +1,11 @@
 module.exports = class Widget
-    hidden:false
-
     constructor: (@canvasName) ->
         @canvas = $("#"+@canvasName)
         
         @width = @canvas.width()
         @height = @canvas.height()
+
+        @hidden = false
 
         @stage = new createjs.Stage(@canvasName)
 
@@ -25,11 +25,9 @@ module.exports = class Widget
 
     resume: -> 
         @paused = false
-    
 
     pause: -> 
         @paused = true
-    
     
     resize: (newWidth, newHeight) ->
         @width = newWidth;
