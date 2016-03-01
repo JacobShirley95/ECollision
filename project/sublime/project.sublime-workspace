@@ -1,0 +1,552 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"EC",
+				"ECollision"
+			],
+			[
+				"ECo",
+				"ECollisionSettings"
+			],
+			[
+				"Ec",
+				"ECollisionSettings"
+			],
+			[
+				"getUpdate",
+				"getUpdateTime"
+			],
+			[
+				"background",
+				"background-color"
+			],
+			[
+				"portfolio",
+				"portfolio-el"
+			],
+			[
+				"backgroun",
+				"background-color"
+			],
+			[
+				"backgrou",
+				"background-color"
+			],
+			[
+				"faceboo",
+				"facebookLink"
+			],
+			[
+				"tas",
+				"curTaskData"
+			],
+			[
+				"get",
+				"getActualURL"
+			],
+			[
+				"MODE_",
+				"MODE_AD"
+			],
+			[
+				"go",
+				"google_ads_frame1"
+			],
+			[
+				"C",
+				"content::WebContents"
+			],
+			[
+				"COMMENT",
+				"COMMENT_CLICK_COLOUR"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/easeljs/particle-renderer.coffee",
+			"settings":
+			{
+				"buffer_size": 1947,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 196.0,
+		"last_filter": "glue",
+		"selected_items":
+		[
+			[
+				"glue",
+				"Glue - Launch"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"",
+				"Changelog"
+			]
+		],
+		"width": 400.0
+	},
+	"console":
+	{
+		"height": 153.0,
+		"history":
+		[
+			"call call coffee -c \"bower_components/jquery.shapeshift/core/jquery.shapeshift.coffee\"",
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"'chrome'"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/wamp/www/website2/portfolio/ecollision",
+		"/C/wamp/www/website2/portfolio/ecollision/bin",
+		"/C/wamp/www/website2/portfolio/ecollision/src",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/easeljs"
+	],
+	"file_history":
+	[
+		"/C/wamp/www/website2/portfolio/ecollision/src/standalone.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/easeljs/easeljs-renderer.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/simulation-renderer.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/simulation.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/objects/physics-object.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ecollision.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/engine/simulation-engine.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/objects/particle.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/easeljs-renderer.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/particle-renderer.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/events/event-manager.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/graph.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/project/sublime/project.sublime-project",
+		"/C/wamp/www/website2/portfolio/ecollision/package.json",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/renderer.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/overlay.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/widget.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/README.md",
+		"/C/wamp/www/website2/portfolio/ecollision/demo-v2/assets/js/script.js",
+		"/C/wamp/www/website2/portfolio/ecollision/demo-v2/index.html",
+		"/C/wamp/www/website2/portfolio/ecollision/demo-v2/assets/stylesheets/style.css",
+		"/C/wamp/www/website2/portfolio/ecollision/demo/assets/js/script.js",
+		"/C/wamp/www/website2/portfolio/ecollision/.gitignore",
+		"/C/wamp/www/website2/portfolio/ecollision/bin/out/standalone.js",
+		"/C/wamp/www/website2/portfolio/ecollision/bin/ecollision.js",
+		"/C/wamp/www/website2/portfolio/ecollision/src/settings.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/bin/ecollision2.js",
+		"/C/wamp/www/website2/portfolio/ecollision/bower.json",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ecollision.js",
+		"/C/wamp/www/website2/portfolio/ecollision/Gruntfile.js",
+		"/C/wamp/www/website2/portfolio/ecollision/minify.js",
+		"/C/wamp/www/website2/build.bat",
+		"/C/wamp/www/website2/portfolio/ecollision/lib/module.js",
+		"/C/wamp/www/website2/minify.js",
+		"/C/wamp/www/website2/portfolio/ecollision/demo/index.html",
+		"/C/wamp/www/website2/node_modules/node-minify/lib/node-minify.js",
+		"/C/wamp/www/website2/node_modules/node-minify/node_modules/uglify-js/bin/extract-props.js",
+		"/C/wamp/www/website2/portfolio/ecollision/src/objects/particle.js",
+		"/C/wamp/www/website2/portfolio/ecollision/src/math/point-2d.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/demo-v2/assets/js/script2.js",
+		"/C/wamp/www/website2/portfolio/ecollision/bin/ecollision.standalone.min.js",
+		"/C/wamp/www/website2/portfolio/ecollision/bundle.js",
+		"/C/wamp/www/website2/portfolio/ecollision/src/math/pvector.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/objects/physics-object.js",
+		"/C/wamp/www/website2/bower_components/jquery.shapeshift/core/jquery.shapeshift.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/Gruntfile.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/engine/simulation-engine.js",
+		"/C/wamp/www/website2/index.html",
+		"/C/wamp/www/website2/portfolio/tree-generator/assets/js/script.js",
+		"/C/wamp/www/website2/portfolio/tree-generator/index.html",
+		"/C/wamp/www/website2/portfolio/tree-generator/assets/stylesheets/styles.css",
+		"/C/wamp/www/website2/styles/stylesheet.scss",
+		"/C/wamp/www/website2/portfolio/ecollision/demo-v2/assets/styles/style.css",
+		"/C/Users/Jacob/Desktop/iplaylist/extension/popup.js",
+		"/C/Users/Jacob/Desktop/iplaylist/extension/popup.html",
+		"/C/Users/Jacob/Desktop/iplaylist/extension/styles/style.css",
+		"/C/wamp/www/website2/portfolio/ecollision/index.html",
+		"/C/wamp/www/website2/portfolio/ecollision/src/settings.js",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/widget.js",
+		"/C/wamp/www/website2/portfolio/ecollision/assets/js/script.js",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/graph.js",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/simulation.js",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui/overlay.js",
+		"/C/wamp/www/website2/styles/macos-scrollbar.css",
+		"/C/Users/Jacob/Desktop/iPlaylist/extension/manifest.json",
+		"/C/Users/Jacob/Desktop/iPlaylist/extension/src/content/playlist-controls.js",
+		"/C/Users/Jacob/Desktop/iPlaylist/extension/src/content/handler-hack.js",
+		"/C/wamp/www/website2/sublime/project.sublime-project",
+		"/C/Users/Jacob/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/C/wamp/www/website2/sublime/build.sublime-build",
+		"/C/wamp/www/website2/bower_components/bourbon/eyeglass-exports.js",
+		"/C/wamp/www/website2/bower_components/bourbon/index.js",
+		"/C/wamp/www/website2/bower_components/bourbon/bower.json",
+		"/C/wamp/www/website2/node_modules/compass/lib/compass.js",
+		"/C/wamp/www/website2/styles/stylesheet.css",
+		"/C/wamp/www/website2/bower_components/jquery.shapeshift/.bower.json",
+		"/C/wamp/www/website2/bower.json",
+		"/C/Users/Jacob/Desktop/jquery.shapeshift/bower.json",
+		"/C/wamp/www/website2/bower_components/Shapeshift/core/jquery.shapeshift.coffee",
+		"/C/Users/Jacob/Desktop/jquery.shapeshift/Shapeshift.jquery.json",
+		"/C/wamp/www/website2/bower_components/jquery.shapeshift/Shapeshift.jquery.json",
+		"/C/Users/Jacob/Desktop/jquery.shapeshift/jquery.shapeshift/core/jquery.shapeshift.coffee",
+		"/C/wamp/www/website2/.git/refs/remotes/origin/master",
+		"/C/wamp/www/website2/.git/config",
+		"/C/wamp/www/website2/bower_components/jquery.shapeshift/build.bat",
+		"/C/wamp/www/website2/bower_components/jquery.shapeshift/minify.js",
+		"/C/wamp/www/website2/bower_components/jquery.shapeshift/README.md",
+		"/C/wamp/www/website2/bower_components/jquery.shapeshift/core/jquery.shapeshift.js",
+		"/C/wamp/www/website2/js/jquery.shapeshift/bower.json",
+		"/C/wamp/www/website2/js/jquery.shapeshift/core/jquery.shapeshift.coffee",
+		"/C/wamp/www/website2/js/jquery.shapeshift/Shapeshift.jquery.json",
+		"/C/wamp/www/website2/js/jquery.shapeshift/core/jquery.shapeshift.js",
+		"/C/wamp/www/website2/ecollision/index.html",
+		"/C/wamp/www/website2/ecollision/style.css",
+		"/C/wamp/www/website2/leafable.js",
+		"/C/wamp/www/website2/fractal-tree.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/assets/task-manager/tm.html",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/background/background.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/background/main.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/background/utils.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/popup.html",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/popup.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/background/simba.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/content/detectors/script-ad-url.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/content/detectors/href-ad-url.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/shared/ad-url-utils.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/background/net.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/content/facebook-tm.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/content/blog.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/content/highlighters/ad-highlighters.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/manifest.json",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/content/facebook.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/content/highlighters/link-highlighters.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/background/shufflr.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/content/highlighters/ad-highlighter.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/ad/ad-highlighter",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/background/background.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/blog.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/detectors/href-ad-url.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/manifest.json",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/shared/ad-url-utils.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/background/utils.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/detectors/script-ad-url.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/detectors/ad-url-utils.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/href-ad-url.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/script-ad-url.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/links.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/background/simba.js"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"C:\\wamp\\www\\website2\\portfolio\\ecollision"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"selected",
+			"this.",
+			"@",
+			"stage.addC",
+			"overlay",
+			"settings",
+			"settings@",
+			"settings",
+			";",
+			"settings",
+			"data.push",
+			";",
+			"particles",
+			"this.",
+			"settings",
+			"this.",
+			" = function ()",
+			"}",
+			"} ",
+			"function",
+			"//",
+			" {",
+			" = function()",
+			";",
+			"var ",
+			"this.",
+			"}",
+			"} ",
+			" {",
+			"= function()",
+			"this.",
+			" then",
+			"//",
+			"}",
+			"} ",
+			" {",
+			" = function()",
+			"var ",
+			"}",
+			"{",
+			";",
+			"function",
+			" = function",
+			"this.",
+			"var ",
+			"this.",
+			"var ",
+			";",
+			"() ",
+			"function",
+			"}",
+			"{",
+			" = function",
+			";",
+			"}",
+			"{",
+			"{}",
+			" = function()",
+			"this.",
+			" = function",
+			"}",
+			"{",
+			"var ",
+			"this.",
+			"}",
+			"{",
+			"var",
+			";",
+			"//",
+			"fpsCurTime",
+			"eCollisionSettings",
+			"settings",
+			"desc",
+			"  \n",
+			"build",
+			"tabID",
+			"this.",
+			"request",
+			"chrome_locale_pak",
+			"'chrome'",
+			"webContents",
+			"type",
+			"'chrome'",
+			"chrome",
+			"$this",
+			"%",
+			"px",
+			"%"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"@",
+			"this.",
+			"",
+			"@",
+			": ->",
+			"",
+			"#",
+			"",
+			": ->",
+			"",
+			"@",
+			"",
+			": ->",
+			"@",
+			"",
+			"#",
+			"",
+			": ->",
+			"",
+			": ",
+			"@",
+			"",
+			"@",
+			"",
+			"->",
+			"",
+			": ",
+			"",
+			": ->",
+			"@",
+			": ",
+			"",
+			"@",
+			"",
+			"#",
+			"botTabID",
+			"",
+			"task"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/easeljs/particle-renderer.coffee",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1947,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1483,
+								1483
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Better CoffeeScript/CoffeeScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 918.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 35.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 140.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Project Build",
+	"project": "project.sublime-project",
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"portfolio\\ecollision\\src\\ecollision.coffee"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 320.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

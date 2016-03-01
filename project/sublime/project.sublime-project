@@ -1,0 +1,17 @@
+{
+	"build_systems":
+	[
+		{
+			"name": "Project Build",
+			"cmd": "npm run build-demos",
+			"shell": true
+		}
+	],
+
+	"folders":
+	[
+		{
+			"path": "../.."
+		}
+	]
+}

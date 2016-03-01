@@ -1,6 +1,4 @@
 objs/
-*.sublime-project
-*.sublime-workspace
 docs/*.tmp
 docs/~$*.docx
 bower_components/
