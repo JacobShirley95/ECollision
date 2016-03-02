@@ -6,7 +6,7 @@
     function ECollisionSettings() {}
 
     ECollisionSettings.prototype.global = {
-      refreshRate: 60,
+      refreshRate: 24,
       updateRate: 60,
       showVelocities: false,
       enableInterpolation: true,
@@ -21,7 +21,8 @@
     ECollisionSettings.prototype.simulation = {
       simulationWidth: 1000,
       simulationHeight: 1000,
-      simulationCanvas: "simulation-canvas"
+      simulationCanvas: "simulation-canvas",
+      enableSelection: false
     };
 
     ECollisionSettings.prototype.graph = {

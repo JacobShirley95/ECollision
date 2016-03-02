@@ -31,11 +31,31 @@ new compressor.minify({
 });
 
 new compressor.minify({
-  type: 'no-compress',
+  type: 'gcc',
   fileIn: ['bower_components/EaselJS/lib/easeljs-0.8.2.min.js', 'bower_components/jquery-mousewheel/jquery.mousewheel.min.js', 'bin/ecollision.min.js'],
   fileOut: 'bin/ecollision.standalone.min.js',
   callback: function(err, min){
   	if (err != null)
   		console.log(err);
+  }
+});
+
+new compressor.minify({
+  type: 'gcc',
+  fileIn: 'demo/assets/js/bundle.js',
+  fileOut: 'demo/assets/js/bundle.min.js',
+  callback: function(err, min){
+    if (err != null)
+      console.log(err);
+  }
+});
+
+new compressor.minify({
+  type: 'gcc',
+  fileIn: 'demo-v2/assets/js/bundle.js',
+  fileOut: 'demo-v2/assets/js/bundle.min.js',
+  callback: function(err, min){
+    if (err != null)
+      console.log(err);
   }
 });

@@ -1,4 +1,3 @@
-objs/
 docs/*.tmp
 docs/~$*.docx
 bower_components/

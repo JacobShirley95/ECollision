@@ -1,7 +1,7 @@
 module.exports = class ECollisionSettings
 	constructor: ->
 	global:
-		refreshRate: 60
+		refreshRate: 24
 		updateRate: 60
 		showVelocities: false
 		enableInterpolation: true
@@ -16,6 +16,7 @@ module.exports = class ECollisionSettings
 		simulationWidth: 1000
 		simulationHeight: 1000
 		simulationCanvas: "simulation-canvas"
+		enableSelection: false
 
 	graph:
 		graphCanvas: "graph-canvas"

@@ -19,13 +19,14 @@
 
     selected = null;
 
-    function Simulation(canvasName, engine, settings) {
+    function Simulation(canvasName, engine, interpolator, settings) {
       this.engine = engine;
+      this.interpolator = interpolator;
       this.settings = settings;
       Simulation.__super__.constructor.call(this, canvasName);
       this.engine.width = this.width;
       this.engine.height = this.height;
-      this.renderer = new EaselJSRenderer(this.canvasName, this.engine);
+      this.renderer = new EaselJSRenderer(this.canvasName, this.interpolator, this.settings);
       EventManager.eventify(this);
     }
 
@@ -37,7 +38,6 @@
       var particle;
       particle = new Particle(x, y, radius, style, this.settings);
       particle.mass = mass;
-      console.log(this.renderer);
       this.renderer.addParticle(particle);
       particle.addListener("select", (function(_this) {
         return function(ev, particle) {
@@ -108,22 +108,6 @@
     };
 
     Simulation.prototype.draw = function(interpolation) {
-
-      /*for particle in @engine.particles
-          newX = particle.x
-          newY = particle.y
-          
-          if (@settings.global.enableInterpolation) 
-              diffX = particle.x - particle.lastX
-              diffY = particle.y - particle.lastY
-          
-              newX = particle.lastX + (interpolation * diffX)
-              newY = particle.lastY + (interpolation * diffY)
-           
-          particle.draw(newX, newY)
-      
-      @stage.update()
-       */
       this.renderer.draw(interpolation);
       return this.fire("draw");
     };

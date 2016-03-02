@@ -1,10 +1,8 @@
 Renderer = require("./renderer")
 
 module.exports = class SimulationRenderer extends Renderer
-	constructor: (@canvas, @engine) ->
+	constructor: (@canvas, @interpolator) ->
 
 	addParticle: (particle) ->
 
 	removeParticle: (particle) ->
-
-	draw: (interpolation) ->

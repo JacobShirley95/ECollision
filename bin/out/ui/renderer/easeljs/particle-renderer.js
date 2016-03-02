@@ -11,7 +11,7 @@
   EventManager = require("../../../events/event-manager");
 
   module.exports = ParticleRenderer = (function(superClass) {
-    var curPos, lastX, lastY, pastPositions;
+    var curPos, enableSelection, len, pastPositions;
 
     extend(ParticleRenderer, superClass);
 
@@ -19,51 +19,49 @@
 
     curPos = 0;
 
-    lastX = 0;
+    enableSelection = false;
 
-    lastY = 0;
-
-    function ParticleRenderer(particle) {
+    function ParticleRenderer(particle, enableSelect) {
+      var graphics;
       this.particle = particle;
       this.displayObj = new createjs.Shape();
-      lastX = this.particle.x;
-      lastY = this.particle.y;
+      enableSelection = enableSelect;
+      this.lastX = this.particle.x;
+      this.lastY = this.particle.y;
+      this.selected = false;
       this.displayObj.x = this.particle.x;
       this.displayObj.y = this.particle.y;
       this.displayObj.addEventListener("click", (function(_this) {
         return function(ev) {
           if (_this.selected) {
             _this.fire("deselect", [ev, _this]);
+            return _this.deselect();
           } else {
             _this.fire("select", [ev, _this]);
-          }
-          return _this.selected = !_this.selected;
-        };
-      })(this));
-      this.particle.addListener("update", (function(_this) {
-        return function(ev) {
-          var len;
-          _this.capture();
-          len = pastPositions.length;
-          if (_this.selected) {
-            curPos++;
-            curPos %= 20;
-            if (len < 20) {
-              return pastPositions.push(new Point2D(_this.x, _this.y));
-            } else {
-              return pastPositions[curPos] = new Point2D(_this.x, _this.y);
-            }
+            return _this.select();
           }
         };
       })(this));
-      this.selected = false;
+      graphics = this.displayObj.graphics;
+      graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
       EventManager.eventify(this);
     }
 
     ParticleRenderer.prototype.capture = function() {
-      lastX = this.particle.x;
-      return lastY = this.particle.y;
+      this.lastX = this.particle.x;
+      return this.lastY = this.particle.y;
     };
+
+    if (enableSelection && ParticleRenderer.selected) {
+      curPos++;
+      curPos %= 20;
+      len = pastPositions.length;
+      if (len < 20) {
+        pastPositions.push(new Point2D(ParticleRenderer.x, ParticleRenderer.y));
+      } else {
+        pastPositions[curPos] = new Point2D(ParticleRenderer.x, ParticleRenderer.y);
+      }
+    }
 
     ParticleRenderer.prototype.select = function() {
       return this.selected = true;
@@ -71,20 +69,18 @@
 
     ParticleRenderer.prototype.deselect = function() {
       this.selected = false;
-      return this.particle.pastPositions = [];
+      return pastPositions = [];
     };
 
     ParticleRenderer.prototype.draw = function(interpolation) {
-      var col, graphics, i, j, len, newX, newY, p, px, py, r_a, ref;
+      var col, i, j, newX, newY, p, px, py, r_a, ref;
       newX = this.particle.x;
       newY = this.particle.y;
-      newX = lastX + (interpolation * (newX - lastX));
-      newY = lastY + (interpolation * (newY - lastY));
+      newX = this.lastX + (interpolation * (newX - this.lastX));
+      newY = this.lastY + (interpolation * (newY - this.lastY));
       this.displayObj.x = newX;
       this.displayObj.y = newY;
-      graphics = this.displayObj.graphics;
-      graphics.clear();
-      if (this.selected) {
+      if (enableSelection && this.selected) {
         len = pastPositions.length;
         for (i = j = 0, ref = len - 1; j <= ref; i = j += 1) {
           p = pastPositions[(i + this.particle.curPos) % len];
@@ -94,9 +90,8 @@
           col = "rgba(100, 100, 100, " + r_a + ")";
           graphics.beginStroke(col).drawCircle(px, py, this.particle.radius).endStroke();
         }
-        graphics.beginStroke("blue").setStrokeStyle(3).drawCircle(0, 0, this.particle.radius).endStroke();
+        return graphics.beginStroke("blue").setStrokeStyle(3).drawCircle(0, 0, this.particle.radius).endStroke();
       }
-      return graphics.beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
     };
 
     return ParticleRenderer;

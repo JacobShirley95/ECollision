@@ -15,12 +15,14 @@
 
     renderObjs = [];
 
-    function EaselJSRenderer(canvasName, engine) {
+    function EaselJSRenderer(canvasName, interpolator, settings) {
       this.canvasName = canvasName;
-      this.engine = engine;
-      EaselJSRenderer.__super__.constructor.call(this, this.canvasName, this.engine);
+      this.interpolator = interpolator;
+      this.settings = settings;
+      EaselJSRenderer.__super__.constructor.call(this, this.canvasName, this.interpolator);
       this.stage = new createjs.Stage(this.canvasName);
-      this.engine.addListener("update", function() {
+      console.log(this.interpolator);
+      this.interpolator.addListener("before-update", function() {
         var i, len, particle, results;
         results = [];
         for (i = 0, len = renderObjs.length; i < len; i++) {
@@ -33,7 +35,7 @@
 
     EaselJSRenderer.prototype.addParticle = function(particle) {
       var pr;
-      pr = new ParticleRenderer(particle);
+      pr = new ParticleRenderer(particle, this.settings.simulation.enableSelection);
       this.stage.addChild(pr.displayObj);
       return renderObjs.push(pr);
     };

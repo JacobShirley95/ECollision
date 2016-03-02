@@ -6,12 +6,12 @@ EaselJSRenderer = require("./renderer/easeljs/easeljs-renderer")
 module.exports = class Simulation extends Widget
     selected = null
 
-    constructor: (canvasName, @engine, @settings) ->
+    constructor: (canvasName, @engine, @interpolator, @settings) ->
         super(canvasName)
         @engine.width = @width
         @engine.height = @height
 
-        @renderer = new EaselJSRenderer(@canvasName, @engine)
+        @renderer = new EaselJSRenderer(@canvasName, @interpolator, @settings)
 
         EventManager.eventify(@)
 
@@ -21,8 +21,6 @@ module.exports = class Simulation extends Widget
     addParticle: (x, y, mass, radius, style) ->
         particle = new Particle(x, y, radius, style, @settings)
         particle.mass = mass
-
-        console.log(@renderer)
 
         @renderer.addParticle(particle)
 
@@ -72,23 +70,6 @@ module.exports = class Simulation extends Widget
         @fire("restart")
     
     draw: (interpolation) ->
-        ###for particle in @engine.particles
-            newX = particle.x
-            newY = particle.y
-    
-            if (@settings.global.enableInterpolation) 
-                diffX = particle.x - particle.lastX
-                diffY = particle.y - particle.lastY
-    
-                newX = particle.lastX + (interpolation * diffX)
-                newY = particle.lastY + (interpolation * diffY)
-     
-            particle.draw(newX, newY)
-
-        @stage.update()
-
-        ###
-
         @renderer.draw(interpolation)
 
         @fire("draw")

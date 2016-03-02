@@ -111,17 +111,9 @@
     };
 
     ECollision.prototype.update = function() {
-      var i, len, particle, ref;
       curTime += refreshTime;
       if (newTime + updateTime < curTime) {
         timeStamp = curTime;
-        if (this.settings.global.enableInterpolation) {
-          ref = this.engine.particles;
-          for (i = 0, len = ref.length; i < len; i++) {
-            particle = ref[i];
-            particle.capture();
-          }
-        }
         while (newTime + updateTime < curTime) {
           this.engine.update();
           newTime += updateTime;
@@ -1262,7 +1254,8 @@
       var pr;
       pr = new ParticleRenderer(particle);
       this.stage.addChild(pr.displayObj);
-      return renderObjs.push(pr);
+      renderObjs.push(pr);
+      return console.log(renderObjs.length);
     };
 
     EaselJSRenderer.prototype.removeParticle = function(particle) {};
@@ -1427,8 +1420,6 @@
 
     SimulationRenderer.prototype.removeParticle = function(particle) {};
 
-    SimulationRenderer.prototype.draw = function(interpolation) {};
-
     return SimulationRenderer;
 
   })(Renderer);
@@ -1475,7 +1466,6 @@
       var particle;
       particle = new Particle(x, y, radius, style, this.settings);
       particle.mass = mass;
-      console.log(this.renderer);
       this.renderer.addParticle(particle);
       particle.addListener("select", (function(_this) {
         return function(ev, particle) {

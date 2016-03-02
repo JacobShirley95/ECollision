@@ -9,16 +9,14 @@
   module.exports = SimulationRenderer = (function(superClass) {
     extend(SimulationRenderer, superClass);
 
-    function SimulationRenderer(canvas, engine) {
+    function SimulationRenderer(canvas, interpolator) {
       this.canvas = canvas;
-      this.engine = engine;
+      this.interpolator = interpolator;
     }
 
     SimulationRenderer.prototype.addParticle = function(particle) {};
 
     SimulationRenderer.prototype.removeParticle = function(particle) {};
-
-    SimulationRenderer.prototype.draw = function(interpolation) {};
 
     return SimulationRenderer;
 

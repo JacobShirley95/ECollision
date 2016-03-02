@@ -4,6 +4,7 @@ Graph = require("./ui/graph")
 Overlay = require("./ui/overlay")
 ECollisionSettings = require("./settings")
 EventManager = require("./events/event-manager")
+Interpolator = require("./interpolator")
 
 module.exports = class ECollision
     widgets = []
@@ -19,7 +20,10 @@ module.exports = class ECollision
     constructor: (@settings) ->
         @engine = new SimulationEngine(@settings.simulation.simulationWidth, @settings.simulation.simulationHeight, @settings)
 
-        @simulationUI = new Simulation(@settings.simulation.simulationCanvas, @engine, @settings)
+        @interpol = new Interpolator(@settings.global.refreshRate, @settings.global.updateRate, @engine)
+        @interpol.lockFPS = true
+
+        @simulationUI = new Simulation(@settings.simulation.simulationCanvas, @engine, @interpol, @settings)
         @graphUI = new Graph(@settings.graph.graphCanvas, @engine, 1/50, 5, @settings)
         @overlayUI = new Overlay(@settings.overlay.overlayCanvas, @simulationUI, @settings)
 
@@ -31,7 +35,6 @@ module.exports = class ECollision
 
         updateRate = @settings.global.updateRate
         updateTime = 1000.0 / updateRate
-
         refreshTime = 1000 / @settings.global.refreshRate
 
         EventManager.eventify(@)
@@ -78,20 +81,9 @@ module.exports = class ECollision
         @engine.speedConst = speedConst
     
     update: ->
-        curTime += refreshTime
-    
-        if (newTime + updateTime < curTime)
-            timeStamp = curTime
-            if (@settings.global.enableInterpolation)
-                for particle in @engine.particles
-                   particle.capture()
-            
-            while (newTime + updateTime < curTime)
-                @engine.update()
-                
-                newTime += updateTime
-        
-        interpolation = Math.min(1.0, (curTime - timeStamp) / updateTime)
+        @interpol.update()
+
+        interpolation = @interpol.interpolation
     
     tick: =>
         if (!@paused)
