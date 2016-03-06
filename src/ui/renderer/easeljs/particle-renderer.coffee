@@ -1,6 +1,7 @@
 Renderer = require("../renderer")
 Point2D = require("../../../math/point-2d")
 EventManager = require("../../../events/event-manager")
+Interpolator = require("../../../interpolator")
 
 module.exports = class ParticleRenderer extends Renderer
 	pastPositions = []
@@ -33,7 +34,9 @@ module.exports = class ParticleRenderer extends Renderer
 		@tail.y = @particle.y
 
 		graphics = @displayObj.graphics
-		graphics.clear().beginFill(@particle.style).drawCircle(0, 0, @particle.radius).endFill()
+		graphics.beginFill(@particle.style).drawCircle(0, 0, @particle.radius).endFill()
+
+		#@displayObj.addChild(@tail)
 
 		EventManager.eventify(@)
 
@@ -63,8 +66,9 @@ module.exports = class ParticleRenderer extends Renderer
 		newX = @particle.x
 		newY = @particle.y
 
-		newX = @lastX + (interpolation * (newX - @lastX))
-		newY = @lastY + (interpolation * (newY - @lastY))
+		if (interpolation > 0.0)
+			newX = Interpolator.interpolate(@lastX, newX, interpolation)
+			newY = Interpolator.interpolate(@lastY, newY, interpolation)
 
 		@displayObj.x = newX
 		@displayObj.y = newY
@@ -72,13 +76,13 @@ module.exports = class ParticleRenderer extends Renderer
 		if (enableSelection && @selected)
 			graphics = @tail.graphics
 			graphics.clear()
-		    len = pastPositions.length
-		    for i in [0..len-1] by 1
-		        p = pastPositions[(i + @particle.curPos) % len]
-		        px = p.x-@particle.x
-		        py = p.y-@particle.y
+			len = pastPositions.length
+			for i in [0..len-1] by 1
+			    p = pastPositions[(i + @particle.curPos) % len]
+			    px = p.x-@particle.x
+			    py = p.y-@particle.y
 
-		        r_a = i / len
+			    r_a = i / len
 
-		        col = "rgba(100, 100, 100, "+r_a+")"
-		        graphics.beginStroke(col).drawCircle(px, py, @particle.radius).endStroke()
+			    col = "rgba(100, 100, 100, "+r_a+")"
+			    graphics.beginStroke(col).drawCircle(px, py, @particle.radius).endStroke()

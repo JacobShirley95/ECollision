@@ -11,8 +11,6 @@ module.exports = class ECollision
 
     fpsCount = fps = fpsTime = newTime = timeStamp = curTime = 0
 
-    interpolation = 0.0
-
     thread = -1
 
     updateRate = updateTime = refreshTime = 0
@@ -20,7 +18,7 @@ module.exports = class ECollision
     constructor: (@settings) ->
         @engine = new SimulationEngine(@settings.simulation.simulationWidth, @settings.simulation.simulationHeight, @settings)
 
-        @interpol = new Interpolator(@settings.global.refreshRate, @settings.global.updateRate, @engine)
+        @interpol = new Interpolator(@settings.global.refreshRate, @settings.global.updateRate)
         @interpol.lockFPS = true
 
         @simulationUI = new Simulation(@settings.simulation.simulationCanvas, @engine, @interpol, @settings)
@@ -33,6 +31,11 @@ module.exports = class ECollision
 
         widgets = [@simulationUI, @graphUI, @overlayUI]
 
+        @interpol.addListener("update", () =>
+            if (!@paused)
+                @update()
+        ).addListener("render", @tick)
+
         updateRate = @settings.global.updateRate
         updateTime = 1000.0 / updateRate
         refreshTime = 1000 / @settings.global.refreshRate
@@ -43,7 +46,7 @@ module.exports = class ECollision
         for widget in widgets
             widget.init()
         
-        thread = setInterval(@tick, 1000.0 / @settings.global.refreshRate)
+        @interpol.start()
 
     restart: ->
         for widget in widgets
@@ -79,16 +82,11 @@ module.exports = class ECollision
 
     setSpeedConst = (speedConst) ->
         @engine.speedConst = speedConst
-    
-    update: ->
-        @interpol.update()
 
-        interpolation = @interpol.interpolation
+    update: =>
+        @engine.update()
     
-    tick: =>
-        if (!@paused)
-            @update()
-
+    tick: (interpolation) =>
         fpsCurTime = new Date().getTime()
         fpsCount++
 

@@ -1,39 +1,43 @@
 EventManager = require("./events/event-manager")
 
 module.exports = class Interpolator
-	rate1 = 0
-	rate2 = 0
-
-	curTime = lastTime = timeStamp = 0
-
 	interpolation: 0.0
 	lockFPS: false
 
-	constructor: (@renderRate, @updateRate, @engine) ->
-		@start = new Date().getTime()
+	constructor: (@renderRate, @updateRate) ->
+		@startTime = new Date().getTime()
+		@updateTime = 1000.0 / @updateRate
+		@renderTime = 1000.0 / @renderRate
+
+		@curTime = @lastTime = @timeStamp = 0
+		@thread = 0
+
 		EventManager.eventify(@)
 
-	update: ->
-		updateTime = 1000.0 / @updateRate
-		renderTime = 1000.0 / @renderRate
+	start: ->
+		@thread = setInterval(@update, @updateTime)
 
+	@interpolate: (startVal, endVal, fraction) ->
+		return startVal + (fraction*(endVal-startVal))
+
+	update: =>
 		if (@lockFPS)
-			curTime = new Date().getTime() - @start
+			@curTime = new Date().getTime() - @startTime
 		else
-			curTime += renderTime
+			@curTime += @renderTime
 
-		if (curTime - lastTime >= updateTime)
+		if (@curTime - @lastTime >= @updateTime)
 			@fire("before-update")
-			timeStamp = curTime
+			@timeStamp = @curTime
 
-			while (curTime - lastTime >= updateTime)
-				@engine.update()
+			while (@curTime - @lastTime >= @updateTime)
 				@fire("update")
-				lastTime += updateTime
+				@lastTime += @updateTime
 
 			@fire("after-update")
 
-		@interpolation = Math.min(1.0, (curTime - timeStamp) / updateTime)
+		@interpolation = Math.min(1.0, (@curTime - @timeStamp) / @updateTime)
+		@fire("render", [@interpolation])
 
 		
 

@@ -9,11 +9,7 @@
   SimulationRenderer = require('../simulation-renderer');
 
   module.exports = EaselJSRenderer = (function(superClass) {
-    var renderObjs;
-
     extend(EaselJSRenderer, superClass);
-
-    renderObjs = [];
 
     function EaselJSRenderer(canvasName, interpolator, settings) {
       this.canvasName = canvasName;
@@ -21,31 +17,35 @@
       this.settings = settings;
       EaselJSRenderer.__super__.constructor.call(this, this.canvasName, this.interpolator);
       this.stage = new createjs.Stage(this.canvasName);
-      console.log(this.interpolator);
-      this.interpolator.addListener("before-update", function() {
-        var i, len, particle, results;
-        results = [];
-        for (i = 0, len = renderObjs.length; i < len; i++) {
-          particle = renderObjs[i];
-          results.push(particle.capture());
-        }
-        return results;
-      });
+      this.renderObjs = [];
+      this.interpolator.addListener("before-update", (function(_this) {
+        return function() {
+          var i, len, particle, ref, results;
+          ref = _this.renderObjs;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            particle = ref[i];
+            results.push(particle.capture());
+          }
+          return results;
+        };
+      })(this));
     }
 
     EaselJSRenderer.prototype.addParticle = function(particle) {
       var pr;
       pr = new ParticleRenderer(particle, this.settings.simulation.enableSelection);
       this.stage.addChild(pr.displayObj);
-      return renderObjs.push(pr);
+      return this.renderObjs.push(pr);
     };
 
     EaselJSRenderer.prototype.removeParticle = function(particle) {};
 
     EaselJSRenderer.prototype.draw = function(interpolation) {
-      var i, len, particle;
-      for (i = 0, len = renderObjs.length; i < len; i++) {
-        particle = renderObjs[i];
+      var i, len, particle, ref;
+      ref = this.renderObjs;
+      for (i = 0, len = ref.length; i < len; i++) {
+        particle = ref[i];
         particle.draw(interpolation);
       }
       return this.stage.update();

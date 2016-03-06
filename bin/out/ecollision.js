@@ -18,13 +18,11 @@
   Interpolator = require("./interpolator");
 
   module.exports = ECollision = (function() {
-    var curTime, fps, fpsCount, fpsTime, interpolation, newTime, refreshTime, setSpeedConst, setUpdateRate, thread, timeStamp, updateRate, updateTime, widgets;
+    var curTime, fps, fpsCount, fpsTime, newTime, refreshTime, setSpeedConst, setUpdateRate, thread, timeStamp, updateRate, updateTime, widgets;
 
     widgets = [];
 
     fpsCount = fps = fpsTime = newTime = timeStamp = curTime = 0;
-
-    interpolation = 0.0;
 
     thread = -1;
 
@@ -33,8 +31,9 @@
     function ECollision(settings) {
       this.settings = settings;
       this.tick = bind(this.tick, this);
+      this.update = bind(this.update, this);
       this.engine = new SimulationEngine(this.settings.simulation.simulationWidth, this.settings.simulation.simulationHeight, this.settings);
-      this.interpol = new Interpolator(this.settings.global.refreshRate, this.settings.global.updateRate, this.engine);
+      this.interpol = new Interpolator(this.settings.global.refreshRate, this.settings.global.updateRate);
       this.interpol.lockFPS = true;
       this.simulationUI = new Simulation(this.settings.simulation.simulationCanvas, this.engine, this.interpol, this.settings);
       this.graphUI = new Graph(this.settings.graph.graphCanvas, this.engine, 1 / 50, 5, this.settings);
@@ -42,6 +41,13 @@
       this.paused = false;
       this.fps = 0;
       widgets = [this.simulationUI, this.graphUI, this.overlayUI];
+      this.interpol.addListener("update", (function(_this) {
+        return function() {
+          if (!_this.paused) {
+            return _this.update();
+          }
+        };
+      })(this)).addListener("render", this.tick);
       updateRate = this.settings.global.updateRate;
       updateTime = 1000.0 / updateRate;
       refreshTime = 1000 / this.settings.global.refreshRate;
@@ -54,7 +60,7 @@
         widget = widgets[i];
         widget.init();
       }
-      return thread = setInterval(this.tick, 1000.0 / this.settings.global.refreshRate);
+      return this.interpol.start();
     };
 
     ECollision.prototype.restart = function() {
@@ -114,15 +120,11 @@
     };
 
     ECollision.prototype.update = function() {
-      this.interpol.update();
-      return interpolation = this.interpol.interpolation;
+      return this.engine.update();
     };
 
-    ECollision.prototype.tick = function() {
+    ECollision.prototype.tick = function(interpolation) {
       var fpsCurTime, i, len, widget;
-      if (!this.paused) {
-        this.update();
-      }
       fpsCurTime = new Date().getTime();
       fpsCount++;
       if (fpsCurTime - fpsTime >= 1000) {

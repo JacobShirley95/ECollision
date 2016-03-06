@@ -18,19 +18,18 @@ module.exports = class EventManager
         remove: ->
             @removed = true;
 
-    _listeners = []
-
     constructor: ->
+        @_listeners = []
 
     addListener: (name, fn) ->
-        (_listeners[name] = _listeners[name] || []).push(fn)
+        (@_listeners[name] = @_listeners[name] || []).push(fn)
         return @
 
     removeListener: (name, fn) ->
         if(arguments.length == 1)
-            _listeners[name] = []
+            @_listeners[name] = []
         else if(typeof(fn) == 'function')
-            listeners = _listeners[name]
+            listeners = @_listeners[name]
 
             if(listeners != undefined)
                 foundAt = -1
@@ -45,7 +44,7 @@ module.exports = class EventManager
         return @
 
     fire: (name, args) ->
-        listeners = _listeners[name]
+        listeners = @_listeners[name]
         args = args || []
         if(listeners != undefined)
             data = {}
@@ -66,7 +65,7 @@ module.exports = class EventManager
         return @
 
     hasListeners: (name) ->
-        return (_listeners[name] == undefined ? 0 : _listeners[name].length) > 0
+        return (@_listeners[name] == undefined ? 0 : @_listeners[name].length) > 0
 
     @eventify: (object, manager) ->
         methods = ['addListener', 'removeListener', 'fire']

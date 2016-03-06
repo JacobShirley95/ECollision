@@ -83,6 +83,7 @@
       dY = particle2.y - particle.y;
       sqr = (dX * dX) + (dY * dY);
       r = particle2.radius + particle.radius;
+      this.fire("check-collision", [particle, particle2, sqr]);
       if (sqr < r * r) {
         pDiff = new PVector(particle.x - particle2.x, particle.y - particle2.y);
         vDiff = new PVector(particle.xVel - particle2.xVel, particle.yVel - particle2.yVel);

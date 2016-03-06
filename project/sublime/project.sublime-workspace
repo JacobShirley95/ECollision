@@ -67,22 +67,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "/C/wamp/www/ecollision/demo-v2/index.html",
-			"settings":
-			{
-				"buffer_size": 2701,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/C/wamp/www/ecollision/src/ecollision.coffee",
-			"settings":
-			{
-				"buffer_size": 2645,
-				"line_ending": "Windows"
-			}
-		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -91,13 +75,17 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 288.0,
-		"last_filter": "package ins",
+		"height": 127.0,
+		"last_filter": "install",
 		"selected_items":
 		[
 			[
-				"package ins",
+				"install",
 				"Package Control: Install Package"
+			],
+			[
+				"git pull",
+				"Git: Pull Current Branch"
 			],
 			[
 				"glue",
@@ -106,10 +94,6 @@
 			[
 				"remo",
 				"Package Control: Remove Package"
-			],
-			[
-				"install",
-				"Package Control: Install Package"
 			],
 			[
 				"",
@@ -139,40 +123,27 @@
 	},
 	"expanded_folders":
 	[
-		"/C/wamp/www/ecollision",
-		"/C/wamp/www/ecollision/build",
-		"/C/wamp/www/ecollision/demo-v2/assets",
-		"/C/wamp/www/ecollision/demo-v2/assets/js",
-		"/C/wamp/www/ecollision/src/ui/renderer",
-		"/C/wamp/www/ecollision/src/ui/renderer/easeljs"
+		"/C/wamp/www/website2/portfolio/ecollision",
+		"/C/wamp/www/website2/portfolio/ecollision/src",
+		"/C/wamp/www/website2/portfolio/ecollision/src/engine",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ui"
 	],
 	"file_history":
 	[
-		"/C/wamp/www/ecollision/src/interpolator.coffee",
-		"/C/wamp/www/ecollision/src/settings.coffee",
-		"/C/wamp/www/ecollision/build/minify.js",
-		"/C/wamp/www/ecollision/src/ui/renderer/easeljs/particle-renderer.coffee",
-		"/C/wamp/www/ecollision/package.json",
-		"/C/wamp/www/ecollision/demo-v2/assets/js/script.js",
-		"/C/wamp/www/ecollision/src/ui/simulation.coffee",
-		"/C/wamp/www/ecollision/src/ui/renderer/easeljs/easeljs-renderer.coffee",
-		"/C/wamp/www/ecollision/project/sublime/project.sublime-project",
-		"/C/wamp/www/ecollision/src/ui/renderer/simulation-renderer.coffee",
-		"/C/wamp/www/ecollision/src/ecollision.coffee",
-		"/C/Documents and Settings/Administrator/Desktop/Sublime Text Build 3065/Data/Packages/User/CoffeeScript.sublime-settings",
-		"/C/Documents and Settings/Administrator/Desktop/Sublime Text Build 3065/Data/Packages/Better CoffeeScript/CoffeeScript.sublime-settings",
+		"/C/wamp/www/website2/portfolio/ecollision/src/interpolator.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/events/event-manager.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/engine/simulation-engine.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/src/ecollision.coffee",
+		"/C/wamp/www/website2/portfolio/ecollision/demo-v2/index.html",
 		"/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/easeljs/particle-renderer.coffee",
 		"/C/wamp/www/website2/portfolio/ecollision/src/standalone.coffee",
 		"/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/easeljs/easeljs-renderer.coffee",
 		"/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/simulation-renderer.coffee",
 		"/C/wamp/www/website2/portfolio/ecollision/src/ui/simulation.coffee",
 		"/C/wamp/www/website2/portfolio/ecollision/src/objects/physics-object.coffee",
-		"/C/wamp/www/website2/portfolio/ecollision/src/ecollision.coffee",
-		"/C/wamp/www/website2/portfolio/ecollision/src/engine/simulation-engine.coffee",
 		"/C/wamp/www/website2/portfolio/ecollision/src/objects/particle.coffee",
 		"/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/easeljs-renderer.coffee",
 		"/C/wamp/www/website2/portfolio/ecollision/src/ui/renderer/particle-renderer.coffee",
-		"/C/wamp/www/website2/portfolio/ecollision/src/events/event-manager.coffee",
 		"/C/wamp/www/website2/portfolio/ecollision/src/ui/graph.coffee",
 		"/C/wamp/www/website2/portfolio/ecollision/project/sublime/project.sublime-project",
 		"/C/wamp/www/website2/portfolio/ecollision/package.json",
@@ -181,7 +152,6 @@
 		"/C/wamp/www/website2/portfolio/ecollision/src/ui/widget.coffee",
 		"/C/wamp/www/website2/portfolio/ecollision/README.md",
 		"/C/wamp/www/website2/portfolio/ecollision/demo-v2/assets/js/script.js",
-		"/C/wamp/www/website2/portfolio/ecollision/demo-v2/index.html",
 		"/C/wamp/www/website2/portfolio/ecollision/demo-v2/assets/stylesheets/style.css",
 		"/C/wamp/www/website2/portfolio/ecollision/demo/assets/js/script.js",
 		"/C/wamp/www/website2/portfolio/ecollision/.gitignore",
@@ -275,11 +245,23 @@
 		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/manifest.json",
 		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/content/facebook.js",
 		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/content/highlighters/link-highlighters.js",
-		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/background/shufflr.js"
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/background/shufflr.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/bot-highlighter/src/content/highlighters/ad-highlighter.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/ad/ad-highlighter",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/background/background.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/blog.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/detectors/href-ad-url.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/manifest.json",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/shared/ad-url-utils.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/background/utils.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/detectors/script-ad-url.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/detectors/ad-url-utils.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/href-ad-url.js",
+		"/C/Users/Jacob/Desktop/ad-clicker-colour/page-highlighter/src/content/script-ad-url.js"
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 34.0
 	},
 	"find_in_files":
 	{
@@ -437,75 +419,14 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "/C/wamp/www/ecollision/demo-v2/index.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2701,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2668,
-								2668
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 653.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "/C/wamp/www/ecollision/src/ecollision.coffee",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2645,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								799,
-								799
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Better CoffeeScript/CoffeeScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 217.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 23.0
+		"height": 34.0
 	},
 	"input":
 	{
@@ -542,11 +463,15 @@
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "ECollision Build",
+	"output.git":
+	{
+		"height": 118.0
+	},
+	"pinned_build_system": "Project Build",
 	"project": "project.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 62.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -588,7 +513,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 247.0,
+	"side_bar_width": 320.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

@@ -10,7 +10,7 @@
   var EventManager;
 
   module.exports = EventManager = (function() {
-    var EventArg, _listeners;
+    var EventArg;
 
     EventArg = (function() {
       function EventArg(name1, data1) {
@@ -32,21 +32,21 @@
 
     })();
 
-    _listeners = [];
-
-    function EventManager() {}
+    function EventManager() {
+      this._listeners = [];
+    }
 
     EventManager.prototype.addListener = function(name, fn) {
-      (_listeners[name] = _listeners[name] || []).push(fn);
+      (this._listeners[name] = this._listeners[name] || []).push(fn);
       return this;
     };
 
     EventManager.prototype.removeListener = function(name, fn) {
       var foundAt, i, j, len1, listener, listeners;
       if (arguments.length === 1) {
-        _listeners[name] = [];
+        this._listeners[name] = [];
       } else if (typeof fn === 'function') {
-        listeners = _listeners[name];
+        listeners = this._listeners[name];
         if (listeners !== void 0) {
           foundAt = -1;
           for (i = j = 0, len1 = listeners.length; j < len1; i = ++j) {
@@ -66,7 +66,7 @@
 
     EventManager.prototype.fire = function(name, args) {
       var data, evt, i, j, len, len1, listener, listeners;
-      listeners = _listeners[name];
+      listeners = this._listeners[name];
       args = args || [];
       if (listeners !== void 0) {
         data = {};
@@ -91,8 +91,8 @@
 
     EventManager.prototype.hasListeners = function(name) {
       var ref;
-      return ((ref = _listeners[name] === void 0) != null ? ref : {
-        0: _listeners[name].length
+      return ((ref = this._listeners[name] === void 0) != null ? ref : {
+        0: this._listeners[name].length
       }) > 0;
     };
 

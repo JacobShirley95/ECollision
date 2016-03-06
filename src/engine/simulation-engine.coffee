@@ -64,6 +64,8 @@ module.exports = class SimulationEngine
         sqr = (dX * dX) + (dY * dY)
         r = particle2.radius + particle.radius
         
+        @fire("check-collision", [particle, particle2, sqr])
+
         #Could sqrt to get the distance, but there's no need because the otherside would also have to be sqrted
         if (sqr < r * r)
             #Now to get the time constant between the last update and this update at which the particles would have collided perfectly
@@ -177,7 +179,6 @@ module.exports = class SimulationEngine
     
         return velocity
     
-    
     #This function actually handles the collision between two particles.
     handleCollision: (collision) ->
         particle = collision.particle
@@ -213,7 +214,6 @@ module.exports = class SimulationEngine
     
         particle2.xVel = x2
         particle2.yVel = y2
-    
 
     #This function seperates the particles after collision.
     seperateObjects: (collision, particle, particle2) ->
