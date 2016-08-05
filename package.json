@@ -10,9 +10,10 @@
     "doc": "docs"
   },
   "scripts": {
-    "transpile": "coffee -o bin/out -c src/.",
-    "build": "browserify --standalone ecollision bin/out/standalone.js > bin/ecollision.js",
-    "watch": "coffee -o bin/out --watch -c src/.",
+    "transpile": "coffee -o src-js -c src/.",
+    "build": "browserify --standalone ecollision src-js/standalone.js > bin/ecollision.js",
+    "transbuild": "npm run transpile && npm run build",
+    "watch": "coffee -o src-js --watch -c src/.",
     "minify": "node build/minify.js",
     "build-demos": "npm run transpile && browserify demo-v2/assets/js/script.js > demo-v2/assets/js/bundle.js && browserify demo/assets/js/script.js > demo/assets/js/bundle.js"
   },
