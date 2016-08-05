@@ -13,7 +13,7 @@
   Interpolator = require("../../../interpolator");
 
   module.exports = ParticleRenderer = (function(superClass) {
-    var curPos, enableSelection, len, pastPositions;
+    var curPos, len, pastPositions;
 
     extend(ParticleRenderer, superClass);
 
@@ -21,13 +21,10 @@
 
     curPos = 0;
 
-    enableSelection = false;
-
-    function ParticleRenderer(particle, enableSelect) {
-      var graphics;
+    function ParticleRenderer(particle, enableSelection) {
       this.particle = particle;
+      this.enableSelection = enableSelection;
       this.displayObj = new createjs.Shape();
-      enableSelection = enableSelect;
       this.lastX = this.particle.x;
       this.lastY = this.particle.y;
       this.selected = false;
@@ -47,8 +44,6 @@
       this.tail = new createjs.Shape();
       this.tail.x = this.particle.x;
       this.tail.y = this.particle.y;
-      graphics = this.displayObj.graphics;
-      graphics.beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
       EventManager.eventify(this);
     }
 
@@ -57,7 +52,7 @@
       return this.lastY = this.particle.y;
     };
 
-    if (enableSelection && ParticleRenderer.selected) {
+    if (ParticleRenderer.enableSelection && ParticleRenderer.selected) {
       curPos++;
       curPos %= 20;
       len = pastPositions.length;
@@ -69,8 +64,7 @@
     }
 
     ParticleRenderer.prototype.select = function() {
-      this.selected = true;
-      return graphics.beginStroke("blue").setStrokeStyle(3).drawCircle(0, 0, this.particle.radius).endStroke();
+      return this.selected = true;
     };
 
     ParticleRenderer.prototype.deselect = function() {
@@ -79,7 +73,7 @@
     };
 
     ParticleRenderer.prototype.draw = function(interpolation) {
-      var col, graphics, i, j, newX, newY, p, px, py, r_a, ref, results;
+      var col, graphics, i, j, newX, newY, p, px, py, r_a, ref;
       newX = this.particle.x;
       newY = this.particle.y;
       if (interpolation > 0.0) {
@@ -88,20 +82,21 @@
       }
       this.displayObj.x = newX;
       this.displayObj.y = newY;
-      if (enableSelection && this.selected) {
+      graphics = this.displayObj.graphics;
+      graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
+      if (this.enableSelection && this.selected) {
+        graphics.beginStroke("blue").setStrokeStyle(3).drawCircle(0, 0, this.particle.radius).endStroke();
         graphics = this.tail.graphics;
         graphics.clear();
         len = pastPositions.length;
-        results = [];
         for (i = j = 0, ref = len - 1; j <= ref; i = j += 1) {
           p = pastPositions[(i + this.particle.curPos) % len];
           px = p.x - this.particle.x;
           py = p.y - this.particle.y;
           r_a = i / len;
           col = "rgba(100, 100, 100, " + r_a + ")";
-          results.push(graphics.beginStroke(col).drawCircle(px, py, this.particle.radius).endStroke());
         }
-        return results;
+        return graphics.beginStroke(col).drawCircle(px, py, this.particle.radius).endStroke();
       }
     };
 

@@ -6,12 +6,9 @@ Interpolator = require("../../../interpolator")
 module.exports = class ParticleRenderer extends Renderer
 	pastPositions = []
 	curPos = 0
-	enableSelection = false
 
-	constructor: (@particle, enableSelect) ->
+	constructor: (@particle, @enableSelection) ->
 		@displayObj = new createjs.Shape()
-
-		enableSelection = enableSelect
 
 		@lastX = @particle.x
 		@lastY = @particle.y
@@ -33,9 +30,6 @@ module.exports = class ParticleRenderer extends Renderer
 		@tail.x = @particle.x
 		@tail.y = @particle.y
 
-		graphics = @displayObj.graphics
-		graphics.beginFill(@particle.style).drawCircle(0, 0, @particle.radius).endFill()
-
 		#@displayObj.addChild(@tail)
 
 		EventManager.eventify(@)
@@ -44,7 +38,7 @@ module.exports = class ParticleRenderer extends Renderer
         @lastX = @particle.x
         @lastY = @particle.y
 
-		if (enableSelection && @selected) 
+		if (@enableSelection && @selected) 
 		    curPos++
 		    curPos %= 20
 
@@ -56,7 +50,6 @@ module.exports = class ParticleRenderer extends Renderer
 
 	select: ->
         @selected = true
-        graphics.beginStroke("blue").setStrokeStyle(3).drawCircle(0, 0, @particle.radius).endStroke()
     
     deselect: ->
         @selected = false
@@ -73,7 +66,12 @@ module.exports = class ParticleRenderer extends Renderer
 		@displayObj.x = newX
 		@displayObj.y = newY
 
-		if (enableSelection && @selected)
+		graphics = @displayObj.graphics
+		graphics.clear().beginFill(@particle.style).drawCircle(0, 0, @particle.radius).endFill()
+
+		if (@enableSelection && @selected)
+			graphics.beginStroke("blue").setStrokeStyle(3).drawCircle(0, 0, @particle.radius).endStroke()
+
 			graphics = @tail.graphics
 			graphics.clear()
 			len = pastPositions.length
@@ -85,4 +83,5 @@ module.exports = class ParticleRenderer extends Renderer
 			    r_a = i / len
 
 			    col = "rgba(100, 100, 100, "+r_a+")"
-			    graphics.beginStroke(col).drawCircle(px, py, @particle.radius).endStroke()
+				graphics.beginStroke(col).drawCircle(px, py, @particle.radius).endStroke()
+

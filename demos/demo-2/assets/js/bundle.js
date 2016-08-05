@@ -1,4 +1,191 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var ECollisionSettings = require("../../../../src-js/settings");
+var ECollision = require("../../../../src-js/ecollision");
+
+$.widget("custom.sliderEx", $.ui.slider, {
+  _create: function() {
+    this.options.title = this.options.title || this.element.attr("title");
+    
+    this.options._valueDiv = $("<div class='slider-val'></div>");
+    
+    var title = this.options.title;
+    var parent = $("<div class='slider-comp'></div>");
+  
+    parent.insertBefore(this.element);
+    parent.append("<div class='slider-title'>"+title+"</div>");
+    
+    this.element.addClass("slider");
+
+    parent.append(this.element.detach());
+    parent.append(this.options._valueDiv);
+    
+    this.options._valueDiv.text(this.options.value);
+    
+    return this._super();
+  },
+  _slide: function() {
+    this._superApply(arguments);
+    
+    this.options._valueDiv.text(this.options.value);
+  }
+});
+
+function getRandomColor() {
+  var letters = '0123456789ABCDEF'.split('');
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+var canvas = $("#ecol-canvas");
+
+var w = canvas.width();
+var h = canvas.height();
+
+var settings = new ECollisionSettings();
+settings.simulation.simulationCanvas = "ecol-canvas";
+settings.global.maxParticles = 1000;
+
+var ecollision = new ECollision(settings);
+
+for (var i = 0; i < 0; i++) {
+  var p = ecollision.simulationUI.addParticle(Math.random()*w, Math.random()*h, 50, 10, getRandomColor());
+
+  p.xVel = 3;
+  p.yVel = 3;
+}
+
+function setCol(text, col) {
+    return ("" + text).fontcolor(col);
+}
+
+ecollision.addListener("tick", function(interpolation) {
+  var fps = "";
+  if (ecollision.fps < 24) {
+    fps = setCol(ecollision.fps, "red");
+  } else {
+    fps = setCol(ecollision.fps, "green");
+  }
+
+  $("#fps-counter").html("FPS: " + fps + " Hz");
+  $("#num-particles").html("Number of particles: " + setCol(ecollision.engine.particles.length, "green"));
+});
+
+ecollision.simulationUI.onSelect = function(particle) {
+    $("#x-slider").sliderEx("value", particle.x);
+    $("#y-slider").sliderEx("value", particle.y);
+    $("#x-vel-slider").sliderEx("value", particle.xVel);
+    $("#y-vel-slider").sliderEx("value", particle.yVel);
+    $("#radius-slider").sliderEx("value", particle.radius);
+    $("#mass-slider").sliderEx("value", particle.mass);
+    $("#cor-slider").sliderEx("value", particle.cOR);
+}
+
+ecollision.start();
+
+$("#run-pause").click(function() {
+    if (ecollision.paused)
+        ecollision.resume();
+    else
+        ecollision.pause();
+
+    changeRunPauseBtn();
+});
+
+$("#step").click(function() {
+  if (ecollision.paused)
+    ecollision.update();
+});
+
+function changeRunPauseBtn() {
+    if (!ecollision.paused) {
+        $("#run-pause").find(".ui-button-text").text("Pause");
+    } else {
+        $("#run-pause").find(".ui-button-text").text("Run");
+    }
+}
+
+$("#add").click(function() {
+  var x = $("#x-slider").sliderEx("value");
+  var y = $("#y-slider").sliderEx("value");
+  var xVel = $("#x-vel-slider").sliderEx("value");
+  var yVel = $("#y-vel-slider").sliderEx("value");
+  var radius = $("#radius-slider").sliderEx("value");
+  var mass = $("#mass-slider").sliderEx("value");
+  var cor = $("#cor-slider").sliderEx("value");
+  
+  var p = ecollision.simulationUI.addParticle(x, y, mass, radius, getRandomColor());
+  
+  p.cOR = cor;
+  p.xVel = xVel;
+  p.yVel = yVel;
+});
+
+$("#remove").click(function() {
+  ecollision.simulationUI.removeSelected();
+});
+
+$("#clear").click(function() {
+  ecollision.restart();
+});
+
+$(".button").button();
+
+$("#sim-speed-slider").sliderEx({
+    step:0.01,
+    value: 1,
+    min:0,
+    max:2,
+    slide: function (event, ui) {
+      settings.global.speedConst = ui.value;
+    }
+});
+
+$("#x-slider").sliderEx({
+    value:w/2,
+    min:0,
+    max:w
+});
+
+$("#y-slider").sliderEx({
+    value:h/2,
+    min:0,
+    max:h
+});
+
+$("#x-vel-slider").sliderEx({
+    value:0,
+    min:-30,
+    max:30
+});
+
+$("#y-vel-slider").sliderEx({
+    value:0,
+    min:-30,
+    max:30
+});
+
+$("#radius-slider").sliderEx({
+    value:30,
+    min:0,
+    max:60
+});
+
+$("#mass-slider").sliderEx({  
+    value:500,
+    min:0,
+    max:1000
+});
+
+$("#cor-slider").sliderEx({
+    value:1,
+    step:0.01,
+    min:0,
+    max:1
+});
+},{"../../../../src-js/ecollision":2,"../../../../src-js/settings":10}],2:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var ECollision, ECollisionSettings, EventManager, Graph, Interpolator, Overlay, Simulation, SimulationEngine,
@@ -146,7 +333,7 @@
 
 }).call(this);
 
-},{"./engine/simulation-engine":2,"./events/event-manager":3,"./interpolator":4,"./settings":9,"./ui/graph":10,"./ui/overlay":11,"./ui/simulation":16}],2:[function(require,module,exports){
+},{"./engine/simulation-engine":3,"./events/event-manager":4,"./interpolator":5,"./settings":10,"./ui/graph":11,"./ui/overlay":12,"./ui/simulation":17}],3:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var EventManager, PVector, Particle, SimulationEngine;
@@ -370,7 +557,7 @@
 
 }).call(this);
 
-},{"../events/event-manager":3,"../math/pvector":6,"../objects/particle":7}],3:[function(require,module,exports){
+},{"../events/event-manager":4,"../math/pvector":7,"../objects/particle":8}],4:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 
 /* EventManager, v1.0.1
@@ -492,7 +679,7 @@
 
 }).call(this);
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var EventManager, Interpolator,
@@ -550,7 +737,7 @@
 
 }).call(this);
 
-},{"./events/event-manager":3}],5:[function(require,module,exports){
+},{"./events/event-manager":4}],6:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var Point2D;
@@ -567,7 +754,7 @@
 
 }).call(this);
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var PVector;
@@ -608,7 +795,7 @@
 
 }).call(this);
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var Particle, PhysicsObject, Point2D,
@@ -629,6 +816,8 @@
     Particle.prototype.pastPositions = [];
 
     Particle.prototype.curPos = 0;
+
+    Particle.prototype.renderer = null;
 
     function Particle(x, y, radius, style, settings) {
       this.radius = radius;
@@ -659,7 +848,7 @@
 
 }).call(this);
 
-},{"../math/point-2d":5,"./physics-object":8}],8:[function(require,module,exports){
+},{"../math/point-2d":6,"./physics-object":9}],9:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var EventManager, PhysicsObject;
@@ -700,7 +889,7 @@
 
 }).call(this);
 
-},{"../events/event-manager":3}],9:[function(require,module,exports){
+},{"../events/event-manager":4}],10:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var ECollisionSettings;
@@ -725,7 +914,7 @@
       simulationWidth: 1000,
       simulationHeight: 1000,
       simulationCanvas: "simulation-canvas",
-      enableSelection: false
+      enableSelection: true
     };
 
     ECollisionSettings.prototype.graph = {
@@ -747,7 +936,7 @@
 
 }).call(this);
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var Graph, Particle, Point2D, Widget,
@@ -952,7 +1141,7 @@
 
 }).call(this);
 
-},{"../math/point-2d":5,"../objects/particle":7,"./widget":17}],11:[function(require,module,exports){
+},{"../math/point-2d":6,"../objects/particle":8,"./widget":18}],12:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var Overlay, Particle, Widget,
@@ -978,6 +1167,8 @@
     MODE_ADD = 0;
 
     MODE_EDIT = 1;
+
+    Overlay.prototype.particleRenderer = null;
 
     index = 0;
 
@@ -1015,8 +1206,8 @@
 
     interval = 0;
 
-    function Overlay(canvasName, simulation1, settings) {
-      this.simulation = simulation1;
+    function Overlay(canvasName, simulation, settings) {
+      this.simulation = simulation;
       this.settings = settings;
       this.handleClick = bind(this.handleClick, this);
       this.handleMouseMove = bind(this.handleMouseMove, this);
@@ -1058,6 +1249,7 @@
 
     Overlay.prototype.init = function() {
       this.stage.removeAllChildren();
+      this.simulation.renderer.removeParticle(tempObject);
       mouseX = crossX = this.width / 2;
       mouseY = crossY = this.height / 2;
       return this.stage.addChild(modeText);
@@ -1078,7 +1270,7 @@
     };
 
     Overlay.prototype.handleMouseMove = function(ev) {
-      var dx, dy, g, gridX, gridY, i, len, p, ref;
+      var dx, dy, g, gridX, gridY, i, len, p, ref, results;
       mouseX = crossX = ev.stageX;
       mouseY = crossY = ev.stageY;
       if (!freePlace) {
@@ -1110,24 +1302,22 @@
           g.clear().beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(dx, dy);
           break;
         case INDEX_MODIFY:
-          ref = this.simulation.engine.particles;
+          ref = this.simulation.renderer.getParticles();
+          results = [];
           for (i = 0, len = ref.length; i < len; i++) {
             p = ref[i];
-            dx = p.x - mouseX;
-            dy = p.y - mouseY;
-            if (dx * dx + dy * dy <= p.radius * p.radius) {
-              p.select();
-              tempObject = p;
+            if (this.simulation.renderer.isParticleAtPos(p, mouseX, mouseY)) {
+              results.push(p.select());
             } else {
-              p.deselect();
+              results.push(p.deselect());
             }
           }
-          break;
+          return results;
       }
     };
 
     Overlay.prototype.handleClick = function(ev) {
-      var p, selected;
+      var p, possibles, selected;
       if (ev.button === 2 && index !== INDEX_MODIFY) {
         switch (index) {
           case INDEX_PLACE:
@@ -1155,25 +1345,26 @@
             tempObject.xVel = tempObject.yVel = 0;
             if (mode === MODE_EDIT && !copyPlace) {
               index = INDEX_MODIFY;
-              this.stage.removeChild(tempObject.displayObj);
+              this.simulation.renderer.removeParticle(tempObject);
             } else {
               index = INDEX_PLACE;
             }
             break;
           case INDEX_MODIFY:
-            tempObject.displayObj.dispatchEvent("click");
-            if (ev.button === 2) {
-              this.simulation.removeSelected();
-            } else {
-              selected = tempObject;
-              tempObject = selected.copy();
-              lastX = selected.x;
-              lastY = selected.y;
-              this.stage.addChild(tempObject.displayObj);
-              if (!copyPlace) {
-                this.simulation.removeSelected();
+            possibles = this.simulation.renderer.getParticlesAtPos(mouseX, mouseY);
+            if (possibles.length > 0) {
+              selected = possibles[0].particle;
+              this.simulation.removeParticle(selected);
+              if (ev.button !== 2) {
+                tempObject = selected.copy();
+                lastX = selected.x;
+                lastY = selected.y;
+                this.particleRenderer = this.simulation.renderer.addParticle(tempObject);
+                if (!copyPlace) {
+                  this.simulation.removeSelected();
+                }
+                index = INDEX_PLACE;
               }
-              index = INDEX_PLACE;
             }
             break;
         }
@@ -1183,9 +1374,6 @@
 
     Overlay.prototype.draw = function(interpolation) {
       if (!this.hidden) {
-        if (tempObject !== null) {
-          tempObject.draw(tempObject.x, tempObject.y);
-        }
         if (showError) {
           errorTimer -= 1000 / this.settings.global.updateRate;
           if (errorTimer <= 0) {
@@ -1198,19 +1386,12 @@
     };
 
     Overlay.prototype.reset = function() {
-      var p;
       if (mode === MODE_EDIT) {
-        p = simulation.addParticle(lastX, lastY, tempObject.mass, tempObject.radius, tempObject.style);
-        p.xVel = tempObject.xVel;
-        p.yVel = tempObject.yVel;
-        this.removeChild(tempObject.displayObj);
-        tempObject = null;
-        return index = INDEX_MODIFY;
-      } else {
-        this.stage.removeChild(velocityLine);
-        this.stage.removeChild(infoText);
-        return index = INDEX_PLACE;
+        console.log("LOL");
       }
+      this.stage.removeChild(velocityLine);
+      this.stage.removeChild(infoText);
+      return index = INDEX_PLACE;
     };
 
     Overlay.prototype.beginAdd = function(mass, cOR, style) {
@@ -1219,9 +1400,9 @@
       tempObject = new Particle(crossX, crossY, 25, style, this.settings);
       tempObject.mass = mass;
       tempObject.cOR = cOR;
+      this.particleRenderer = this.simulation.renderer.addParticle(tempObject);
       infoText.x = mouseX;
       infoText.y = mouseY;
-      this.stage.addChild(tempObject.displayObj);
       modeText.text = "Mode: Add";
       index = INDEX_PLACE;
       return mode = MODE_ADD;
@@ -1237,10 +1418,8 @@
 
     Overlay.prototype.end = function() {
       this.hide();
-      this.stage.removeAllChildren();
-      if (tempObject !== null) {
-        tempObject = null;
-      }
+      this.simulation.renderer.removeParticle(tempObject);
+      tempObject = null;
       mode = -1;
       freePlace = false;
       return copyPlace = false;
@@ -1260,7 +1439,7 @@
 
 }).call(this);
 
-},{"../objects/particle":7,"./widget":17}],12:[function(require,module,exports){
+},{"../objects/particle":8,"./widget":18}],13:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var EaselJSRenderer, ParticleRenderer, SimulationRenderer,
@@ -1283,11 +1462,11 @@
       this.renderObjs = [];
       this.interpolator.addListener("before-update", (function(_this) {
         return function() {
-          var i, len, particle, ref, results;
+          var j, len, particle, ref, results;
           ref = _this.renderObjs;
           results = [];
-          for (i = 0, len = ref.length; i < len; i++) {
-            particle = ref[i];
+          for (j = 0, len = ref.length; j < len; j++) {
+            particle = ref[j];
             results.push(particle.capture());
           }
           return results;
@@ -1298,17 +1477,76 @@
     EaselJSRenderer.prototype.addParticle = function(particle) {
       var pr;
       pr = new ParticleRenderer(particle, this.settings.simulation.enableSelection);
+      particle.renderer = pr;
       this.stage.addChild(pr.displayObj);
-      return this.renderObjs.push(pr);
+      this.renderObjs.push(pr);
+      return pr;
     };
 
-    EaselJSRenderer.prototype.removeParticle = function(particle) {};
+    EaselJSRenderer.prototype.getParticlesAtPos = function(x, y) {
+      var j, len, list, ref, renderable;
+      list = [];
+      ref = this.renderObjs;
+      for (j = 0, len = ref.length; j < len; j++) {
+        renderable = ref[j];
+        if (this.isParticleAtPos(renderable, x, y)) {
+          list.push(renderable);
+        }
+      }
+      return list;
+    };
+
+    EaselJSRenderer.prototype.isParticleAtPos = function(particle, x, y) {
+      var dx, dy, p;
+      p = particle.particle;
+      dx = p.x - x;
+      dy = p.y - y;
+      if (dx * dx + dy * dy <= p.radius * p.radius) {
+        return true;
+      }
+      return false;
+    };
+
+    EaselJSRenderer.prototype.removeParticles = function(particles) {};
+
+    EaselJSRenderer.prototype.removeParticle = function(particle) {
+      var i, j, len, p, ref, results;
+      ref = this.renderObjs;
+      results = [];
+      for (i = j = 0, len = ref.length; j < len; i = ++j) {
+        p = ref[i];
+        if (particle === p.particle) {
+          particle.renderer = null;
+          this.stage.removeChild(p.displayObj);
+          this.renderObjs.splice(i, 1);
+          break;
+        } else {
+          results.push(void 0);
+        }
+      }
+      return results;
+    };
+
+    EaselJSRenderer.prototype.getParticles = function() {
+      return this.renderObjs;
+    };
+
+    EaselJSRenderer.prototype.clear = function() {
+      var j, len, p, ref;
+      ref = this.renderObjs;
+      for (j = 0, len = ref.length; j < len; j++) {
+        p = ref[j];
+        this.stage.removeChild(p.displayObj);
+        p.particle = null;
+      }
+      return this.renderObjs = [];
+    };
 
     EaselJSRenderer.prototype.draw = function(interpolation) {
-      var i, len, particle, ref;
+      var j, len, particle, ref;
       ref = this.renderObjs;
-      for (i = 0, len = ref.length; i < len; i++) {
-        particle = ref[i];
+      for (j = 0, len = ref.length; j < len; j++) {
+        particle = ref[j];
         particle.draw(interpolation);
       }
       return this.stage.update();
@@ -1320,7 +1558,7 @@
 
 }).call(this);
 
-},{"../simulation-renderer":15,"./particle-renderer":13}],13:[function(require,module,exports){
+},{"../simulation-renderer":16,"./particle-renderer":14}],14:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var EventManager, Interpolator, ParticleRenderer, Point2D, Renderer,
@@ -1336,7 +1574,7 @@
   Interpolator = require("../../../interpolator");
 
   module.exports = ParticleRenderer = (function(superClass) {
-    var curPos, enableSelection, len, pastPositions;
+    var curPos, len, pastPositions;
 
     extend(ParticleRenderer, superClass);
 
@@ -1344,13 +1582,10 @@
 
     curPos = 0;
 
-    enableSelection = false;
-
-    function ParticleRenderer(particle, enableSelect) {
-      var graphics;
+    function ParticleRenderer(particle, enableSelection) {
       this.particle = particle;
+      this.enableSelection = enableSelection;
       this.displayObj = new createjs.Shape();
-      enableSelection = enableSelect;
       this.lastX = this.particle.x;
       this.lastY = this.particle.y;
       this.selected = false;
@@ -1370,8 +1605,6 @@
       this.tail = new createjs.Shape();
       this.tail.x = this.particle.x;
       this.tail.y = this.particle.y;
-      graphics = this.displayObj.graphics;
-      graphics.beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
       EventManager.eventify(this);
     }
 
@@ -1380,7 +1613,7 @@
       return this.lastY = this.particle.y;
     };
 
-    if (enableSelection && ParticleRenderer.selected) {
+    if (ParticleRenderer.enableSelection && ParticleRenderer.selected) {
       curPos++;
       curPos %= 20;
       len = pastPositions.length;
@@ -1392,8 +1625,7 @@
     }
 
     ParticleRenderer.prototype.select = function() {
-      this.selected = true;
-      return graphics.beginStroke("blue").setStrokeStyle(3).drawCircle(0, 0, this.particle.radius).endStroke();
+      return this.selected = true;
     };
 
     ParticleRenderer.prototype.deselect = function() {
@@ -1402,7 +1634,7 @@
     };
 
     ParticleRenderer.prototype.draw = function(interpolation) {
-      var col, graphics, i, j, newX, newY, p, px, py, r_a, ref, results;
+      var col, graphics, i, j, newX, newY, p, px, py, r_a, ref;
       newX = this.particle.x;
       newY = this.particle.y;
       if (interpolation > 0.0) {
@@ -1411,20 +1643,21 @@
       }
       this.displayObj.x = newX;
       this.displayObj.y = newY;
-      if (enableSelection && this.selected) {
+      graphics = this.displayObj.graphics;
+      graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
+      if (this.enableSelection && this.selected) {
+        graphics.beginStroke("blue").setStrokeStyle(3).drawCircle(0, 0, this.particle.radius).endStroke();
         graphics = this.tail.graphics;
         graphics.clear();
         len = pastPositions.length;
-        results = [];
         for (i = j = 0, ref = len - 1; j <= ref; i = j += 1) {
           p = pastPositions[(i + this.particle.curPos) % len];
           px = p.x - this.particle.x;
           py = p.y - this.particle.y;
           r_a = i / len;
           col = "rgba(100, 100, 100, " + r_a + ")";
-          results.push(graphics.beginStroke(col).drawCircle(px, py, this.particle.radius).endStroke());
         }
-        return results;
+        return graphics.beginStroke(col).drawCircle(px, py, this.particle.radius).endStroke();
       }
     };
 
@@ -1434,7 +1667,7 @@
 
 }).call(this);
 
-},{"../../../events/event-manager":3,"../../../interpolator":4,"../../../math/point-2d":5,"../renderer":14}],14:[function(require,module,exports){
+},{"../../../events/event-manager":4,"../../../interpolator":5,"../../../math/point-2d":6,"../renderer":15}],15:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var Renderer;
@@ -1450,7 +1683,7 @@
 
 }).call(this);
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var Renderer, SimulationRenderer,
@@ -1477,7 +1710,7 @@
 
 }).call(this);
 
-},{"./renderer":14}],16:[function(require,module,exports){
+},{"./renderer":15}],17:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var EaselJSRenderer, EventManager, Particle, Simulation, Widget,
@@ -1533,8 +1766,25 @@
     };
 
     Simulation.prototype.removeParticle = function(index) {
-      this.stage.removeChild(this.engine.particles[index].displayObj);
-      return this.engine.particles.splice(index, 1);
+      var i, j, len, p, ref, results;
+      if (typeof index === "object") {
+        this.renderer.removeParticle(index);
+        ref = this.engine.particles;
+        results = [];
+        for (i = j = 0, len = ref.length; j < len; i = ++j) {
+          p = ref[i];
+          if (p === index) {
+            this.engine.particles.splice(i, 1);
+            break;
+          } else {
+            results.push(void 0);
+          }
+        }
+        return results;
+      } else {
+        this.renderer.removeParticle(this.engine.particles[index]);
+        return this.engine.particles.splice(index, 1);
+      }
     };
 
     Simulation.prototype.loadParticles = function(toBeLoaded) {
@@ -1581,7 +1831,7 @@
     };
 
     Simulation.prototype.restart = function() {
-      this.stage.removeAllChildren();
+      this.renderer.clear();
       selected = null;
       this.engine.reset();
       return this.fire("restart");
@@ -1598,7 +1848,7 @@
 
 }).call(this);
 
-},{"../events/event-manager":3,"../objects/particle":7,"./renderer/easeljs/easeljs-renderer":12,"./widget":17}],17:[function(require,module,exports){
+},{"../events/event-manager":4,"../objects/particle":8,"./renderer/easeljs/easeljs-renderer":13,"./widget":18}],18:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
   var Widget;
@@ -1656,279 +1906,4 @@
 
 }).call(this);
 
-},{}],18:[function(require,module,exports){
-var ECollisionSettings = require('../../../bin/out/settings');
-var ECollision = require('../../../bin/out/ecollision');
-
-var eCollisionSettings = new ECollisionSettings();
-var ecollision = new ECollision(eCollisionSettings);
-
-$.widget("custom.sliderEx", $.ui.slider, {
-    _unit:"",
-    _amount: null,
-    _formatVal: function(val) {
-        if (val > 0.09 && val < 1) {
-            val = val.toPrecision(2);
-        }
-        return val+" "+this._unit;
-    },
-    _slide: function () {
-        this._superApply(arguments);
-
-        this._amount.text(this._formatVal(this.options.value));
-
-        var pos = this.handle.position();
-        var width = this._amount.width()/2;
-        
-        var newLeft = pos.left;
-        
-        this._amount.css("left", newLeft+"px");
-    },
-    
-    _start: function() {
-        this._superApply(arguments);
-        var left = this.handle.css("left");
-        
-        this._amount.css('visibility','visible').hide().fadeIn("fast").css("left", left);
-    },
-    
-    _stop: function() {
-        this._superApply(arguments);
-
-        this._amount.fadeOut("fast");
-    },
-    
-    _create: function() {
-        var min = parseFloat(this.element.attr("min"));
-        var max = parseFloat(this.element.attr("max"));
-        
-        this.options.min = min;
-        this.options.max = max;
-
-        this.options.step = parseFloat(this.element.attr("step")) || 1.0;
-        
-        this.options.value = parseFloat(this.element.attr("value")) || (min+max/2);
-        
-        var unit = this.element.attr("unit");
-        this._unit = unit || "";
-        
-        this._amount = $('<div class="slider-amount">'+this._formatVal(this.options.value)+'</div>');
-        
-        this.element.append(this._amount).mousedown(function(event) {
-            event.stopPropagation();
-        });
-        
-        this._super();
-    }
-});
-
-function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
-function toDegrees(ang) {
-    var a = ((ang / Math.PI) * 180)+90;
-    if (a < 0)
-        a += 360;
-    else if (a > 360) {
-        a -= 360;
-    }
-    return a;
-}
-
-function setCol(text, col) {
-    return ("" + text).fontcolor(col);
-}
-
-function setColGreen(text) {
-    return setCol(text, "green");
-}
-
-function dbgBool(bool) {
-    if (bool)
-        return setCol(""+bool, "green");
-    else
-        return setCol(""+bool, "red");
-}
-
-function log(s) {
-    console.log(s);
-}
-
-$("#slider-mass").sliderEx({
-    slide: function(event, ui) {
-        var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
-        if (cp != null)
-            cp.mass = ui.value;
-    }
-});
-    
-$("#slider-cor").sliderEx({
-    slide: function(event, ui) {
-        var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
-        if (cp != null)
-            cp.cOR = ui.value;
-    }
-});
-
-function openAdd() {
-    var mode = ecollision.overlayUI.getMode();
-    if (mode == 0) {
-        ecollision.overlayUI.end();
-    } else {
-        var mass = $("#slider-mass").sliderEx("value");
-        var cOR = $("#slider-cor").sliderEx("value");
-
-        ecollision.overlayUI.beginAdd(mass, cOR, currentColor);
-    }
-}
-
-function openEdit() {
-    var mode = ecollision.overlayUI.getMode();
-    if (mode == 1) {
-        ecollision.overlayUI.end();
-    } else {
-        ecollision.overlayUI.beginEdit();
-    }
-}
-
-$(document).keypress(function(ev) {
-    if (ev.charCode == 97) {
-        openAdd();
-    } else if (ev.charCode == 101) {
-        openEdit();
-    }
-});
-
-$("#add-particle").click(function() {
-    openAdd();
-});
-
-$("#remove-particle").click(function() {
-    openEdit();
-});
-
-var currentColor = getRandomColor();
-
-$("#generate-colour").click(function() {
-    var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
-    if (cp != null) {
-        currentColor = getRandomColor();
-        cp.style = currentColor;
-    }
-})
-
-$("#calibrate").click(function() {
-    ecollision.graphUI.calibrate();
-});
-
-$("#zoom-in").click(function() {
-    ecollision.graphUI.zoomIn();
-});
-
-$("#zoom-out").click(function() {
-    ecollision.graphUI.zoomOut();
-});
-
-$("#move-up").click(function() {
-    ecollision.graphUI.moveUp();
-});
-
-$("#move-down").click(function() {
-    ecollision.graphUI.moveDown();
-});
-
-$("#btn-sim-data").click(function() {
-    eCollisionSettings.global.showVelocities = !eCollisionSettings.global.showVelocities;  
-});
-
-$("#btn-run-pause").click(function() {
-    if (ecollision.paused)
-        ecollision.resume();
-    else
-        ecollision.pause();
-
-    changeRunPauseBtn();
-});
-
-function changeRunPauseBtn() {
-    if (!ecollision.paused) {
-        $("#btn-run-pause").removeClass('icon-playback-play').addClass('icon-pause').text("PAUSE");
-    } else {
-        $("#btn-run-pause").removeClass('icon-pause').addClass('icon-playback-play').text("RUN");
-    }
-}
-
-$("#btn-next").click(function() {
-    ecollision.update();
-});
-
-var savedState = [];
-
-$("#btn-save").click(function() {
-    savedState = [];
-    ecollision.simulationUI.saveParticles(savedState);
-});
-
-$("#btn-load").click(function() {
-    ecollision.simulationUI.loadParticles(savedState);
-});
-
-$("#btn-reset").click(function() {
-    ecollision.restart();
-});
-
-$("#sim-speed-slider").sliderEx({
-    slide: function(event, ui) {
-        eCollisionSettings.global.speedConst = parseFloat(ui.value);
-    }
-});
-
-var fpsDiv = $("#fps-div");
-var particleInfo = $("#particle-info-box");
-
-ecollision.simulationUI.onSelect = function(particle) {
-    $("#slider-mass").sliderEx("value", particle.mass);
-    $("#slider-cor").sliderEx("value", particle.cOR);
-}
-
-ecollision.onTick = function() {
-    if (eCollisionSettings.global.showVelocities) {
-        var fps = "";
-        if (ecollision.fps < 24) {
-            fps = setCol(ecollision.fps, "red");
-        } else {
-            fps = setCol(ecollision.fps, "green");
-
-        }
-        debugStr = "Frame rate: " + fps + " Hz" +
-                   "<br /> Update rate: " + setColGreen(ecollision.getUpdateRate()) + " Hz" +
-                   "<br /> Energy in system: " + setColGreen(ecollision.graphUI.getEnergy()) + " kJ" +
-                   "<br /> Number of particles: " + setColGreen(ecollision.engine.numOfParticles());
-                   
-        fpsDiv.html(debugStr);
-    } else fpsDiv.html("");
-
-    var selected = ecollision.simulationUI.getSelected();
-    if (selected != null) {
-        var str = "<b>XVel:</b> " + Math.round(selected.xVel*eCollisionSettings.global.updateRate) + " px/s" + 
-                  "<br /> <b>YVel:</b> " + Math.round(selected.yVel*eCollisionSettings.global.updateRate) + " px/s" +
-                  "<br /> <b>Direction:</b> " + Math.round(toDegrees(Math.atan2(selected.yVel, selected.xVel))) + " degrees" +
-                  "<br /> <b>Mass:</b> " + selected.mass + " kg" +
-                  "<br /> <b>CoR:</b> " + selected.cOR +
-                  "<br /> <b>Radius:</b> " + selected.radius + " px"
-                  "<br /> <b>Energy:</b> " + Math.round(selected.getEnergy()) + " J";
-        
-        particleInfo.html(str);
-    } else {
-        particleInfo.html("");
-    }
-}
-
-ecollision.start();
-},{"../../../bin/out/ecollision":1,"../../../bin/out/settings":9}]},{},[18]);
+},{}]},{},[1]);

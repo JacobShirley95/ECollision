@@ -22,7 +22,7 @@
       simulationWidth: 1000,
       simulationHeight: 1000,
       simulationCanvas: "simulation-canvas",
-      enableSelection: false
+      enableSelection: true
     };
 
     ECollisionSettings.prototype.graph = {

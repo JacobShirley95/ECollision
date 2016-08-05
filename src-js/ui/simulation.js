@@ -53,8 +53,25 @@
     };
 
     Simulation.prototype.removeParticle = function(index) {
-      this.stage.removeChild(this.engine.particles[index].displayObj);
-      return this.engine.particles.splice(index, 1);
+      var i, j, len, p, ref, results;
+      if (typeof index === "object") {
+        this.renderer.removeParticle(index);
+        ref = this.engine.particles;
+        results = [];
+        for (i = j = 0, len = ref.length; j < len; i = ++j) {
+          p = ref[i];
+          if (p === index) {
+            this.engine.particles.splice(i, 1);
+            break;
+          } else {
+            results.push(void 0);
+          }
+        }
+        return results;
+      } else {
+        this.renderer.removeParticle(this.engine.particles[index]);
+        return this.engine.particles.splice(index, 1);
+      }
     };
 
     Simulation.prototype.loadParticles = function(toBeLoaded) {
@@ -101,7 +118,7 @@
     };
 
     Simulation.prototype.restart = function() {
-      this.stage.removeAllChildren();
+      this.renderer.clear();
       selected = null;
       this.engine.reset();
       return this.fire("restart");

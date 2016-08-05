@@ -16,7 +16,7 @@ module.exports = class ECollisionSettings
 		simulationWidth: 1000
 		simulationHeight: 1000
 		simulationCanvas: "simulation-canvas"
-		enableSelection: false
+		enableSelection: true
 
 	graph:
 		graphCanvas: "graph-canvas"

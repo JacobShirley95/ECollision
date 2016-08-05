@@ -9,6 +9,8 @@ module.exports = class Overlay extends Widget
     MODE_ADD = 0
     MODE_EDIT = 1
 
+    particleRenderer: null
+
     index = 0
 
     mode = -1
@@ -82,6 +84,8 @@ module.exports = class Overlay extends Widget
     init: -> 
         @stage.removeAllChildren()
 
+        @simulation.renderer.removeParticle(tempObject)
+
         mouseX = crossX = @width/2
         mouseY = crossY = @height/2
 
@@ -139,16 +143,11 @@ module.exports = class Overlay extends Widget
                 break
 
             when INDEX_MODIFY
-                for p in @simulation.engine.particles
-                    dx = p.x-mouseX
-                    dy = p.y-mouseY
-                    if (dx*dx + dy*dy <= p.radius*p.radius) 
+                for p in @simulation.renderer.getParticles()
+                    if (@simulation.renderer.isParticleAtPos(p, mouseX, mouseY))
                         p.select()
-                        
-                        tempObject = p
-                    else 
+                    else
                         p.deselect()
-                break
 
      handleClick: (ev) => 
         if (ev.button == 2 && index != INDEX_MODIFY) 
@@ -186,29 +185,29 @@ module.exports = class Overlay extends Widget
 
                     if (mode == MODE_EDIT && !copyPlace) 
                         index = INDEX_MODIFY
-                        @stage.removeChild(tempObject.displayObj)
+                        @simulation.renderer.removeParticle(tempObject)
                     else 
                         index = INDEX_PLACE
 
                     break
                 when INDEX_MODIFY
-                    tempObject.displayObj.dispatchEvent("click")
-                    if (ev.button == 2) 
-                        @simulation.removeSelected()
-                    else 
-                        selected = tempObject
+                    possibles = @simulation.renderer.getParticlesAtPos(mouseX, mouseY)
+                    if (possibles.length > 0)
+                        selected = possibles[0].particle
 
-                        tempObject = selected.copy()
+                        @simulation.removeParticle(selected)
+                        if (ev.button != 2)
+                            tempObject = selected.copy()
 
-                        lastX = selected.x
-                        lastY = selected.y
+                            lastX = selected.x
+                            lastY = selected.y
 
-                        @stage.addChild(tempObject.displayObj)
+                            @particleRenderer = @simulation.renderer.addParticle(tempObject)
 
-                        if (!copyPlace)
-                            @simulation.removeSelected()
+                            if (!copyPlace)
+                                @simulation.removeSelected()
 
-                        index = INDEX_PLACE
+                            index = INDEX_PLACE
 
                     break
         
@@ -216,8 +215,8 @@ module.exports = class Overlay extends Widget
     
     draw: (interpolation) ->
         if (!@hidden) 
-            if (tempObject != null) 
-                tempObject.draw(tempObject.x, tempObject.y)
+            ##if (tempObject != null) 
+                #tempObject.draw(tempObject.x, tempObject.y)
 
             if (showError) 
                 errorTimer -= 1000/@settings.global.updateRate
@@ -229,21 +228,11 @@ module.exports = class Overlay extends Widget
             @stage.update()
     
      reset: ->
-        if (mode == MODE_EDIT) 
-            p = simulation.addParticle(lastX, lastY, tempObject.mass, tempObject.radius, tempObject.style)
-
-            p.xVel = tempObject.xVel
-            p.yVel = tempObject.yVel
-
-            @removeChild(tempObject.displayObj)
-            tempObject = null
-
-            index = INDEX_MODIFY
-         else 
-            @stage.removeChild(velocityLine)
-            @stage.removeChild(infoText)
-            index = INDEX_PLACE
-    
+        if (mode == MODE_EDIT)
+            console.log("LOL")
+        @stage.removeChild(velocityLine)
+        @stage.removeChild(infoText)
+        index = INDEX_PLACE
     
     beginAdd: (mass, cOR, style) ->
         @show()
@@ -252,11 +241,11 @@ module.exports = class Overlay extends Widget
         tempObject = new Particle(crossX, crossY, 25, style, @settings)
         tempObject.mass = mass
         tempObject.cOR = cOR
+
+        @particleRenderer = @simulation.renderer.addParticle(tempObject)
         
         infoText.x = mouseX
         infoText.y = mouseY
-
-        @stage.addChild(tempObject.displayObj)
 
         modeText.text = "Mode: Add"
 
@@ -274,9 +263,10 @@ module.exports = class Overlay extends Widget
 
     end: ->
         @hide()
-        @stage.removeAllChildren()
-        if (tempObject != null) 
-            tempObject = null
+        
+        @simulation.renderer.removeParticle(tempObject)
+
+        tempObject = null
         
         mode = -1
 

@@ -35,8 +35,16 @@ module.exports = class Simulation extends Widget
         return particle
     
     removeParticle: (index) ->
-        @stage.removeChild(@engine.particles[index].displayObj)
-        @engine.particles.splice(index, 1)
+        if (typeof index == "object")
+            @renderer.removeParticle(index)
+
+            for p,i in @engine.particles
+                if (p == index)
+                    @engine.particles.splice(i, 1)
+                    break
+        else
+            @renderer.removeParticle(@engine.particles[index])
+            @engine.particles.splice(index, 1)
 
     loadParticles: (toBeLoaded) ->
         @restart()
@@ -64,7 +72,7 @@ module.exports = class Simulation extends Widget
         return selected
     
     restart: ->
-        @stage.removeAllChildren()
+        @renderer.clear()
         selected = null
         @engine.reset()
         @fire("restart")

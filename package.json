@@ -15,7 +15,7 @@
     "transbuild": "npm run transpile && npm run build",
     "watch": "coffee -o src-js --watch -c src/.",
     "minify": "node build/minify.js",
-    "build-demos": "npm run transpile && browserify demo-v2/assets/js/script.js > demo-v2/assets/js/bundle.js && browserify demo/assets/js/script.js > demo/assets/js/bundle.js"
+    "build-demos": "browserify demos/demo-2/assets/js/script.js > demos/demo-2/assets/js/bundle.js && browserify demos/demo-1/assets/js/script.js > demos/demo-1/assets/js/bundle.js"
   },
   "repository": {
     "type": "git",

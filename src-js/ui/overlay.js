@@ -24,6 +24,8 @@
 
     MODE_EDIT = 1;
 
+    Overlay.prototype.particleRenderer = null;
+
     index = 0;
 
     mode = -1;
@@ -60,8 +62,8 @@
 
     interval = 0;
 
-    function Overlay(canvasName, simulation1, settings) {
-      this.simulation = simulation1;
+    function Overlay(canvasName, simulation, settings) {
+      this.simulation = simulation;
       this.settings = settings;
       this.handleClick = bind(this.handleClick, this);
       this.handleMouseMove = bind(this.handleMouseMove, this);
@@ -103,6 +105,7 @@
 
     Overlay.prototype.init = function() {
       this.stage.removeAllChildren();
+      this.simulation.renderer.removeParticle(tempObject);
       mouseX = crossX = this.width / 2;
       mouseY = crossY = this.height / 2;
       return this.stage.addChild(modeText);
@@ -123,7 +126,7 @@
     };
 
     Overlay.prototype.handleMouseMove = function(ev) {
-      var dx, dy, g, gridX, gridY, i, len, p, ref;
+      var dx, dy, g, gridX, gridY, i, len, p, ref, results;
       mouseX = crossX = ev.stageX;
       mouseY = crossY = ev.stageY;
       if (!freePlace) {
@@ -155,24 +158,22 @@
           g.clear().beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(dx, dy);
           break;
         case INDEX_MODIFY:
-          ref = this.simulation.engine.particles;
+          ref = this.simulation.renderer.getParticles();
+          results = [];
           for (i = 0, len = ref.length; i < len; i++) {
             p = ref[i];
-            dx = p.x - mouseX;
-            dy = p.y - mouseY;
-            if (dx * dx + dy * dy <= p.radius * p.radius) {
-              p.select();
-              tempObject = p;
+            if (this.simulation.renderer.isParticleAtPos(p, mouseX, mouseY)) {
+              results.push(p.select());
             } else {
-              p.deselect();
+              results.push(p.deselect());
             }
           }
-          break;
+          return results;
       }
     };
 
     Overlay.prototype.handleClick = function(ev) {
-      var p, selected;
+      var p, possibles, selected;
       if (ev.button === 2 && index !== INDEX_MODIFY) {
         switch (index) {
           case INDEX_PLACE:
@@ -200,25 +201,26 @@
             tempObject.xVel = tempObject.yVel = 0;
             if (mode === MODE_EDIT && !copyPlace) {
               index = INDEX_MODIFY;
-              this.stage.removeChild(tempObject.displayObj);
+              this.simulation.renderer.removeParticle(tempObject);
             } else {
               index = INDEX_PLACE;
             }
             break;
           case INDEX_MODIFY:
-            tempObject.displayObj.dispatchEvent("click");
-            if (ev.button === 2) {
-              this.simulation.removeSelected();
-            } else {
-              selected = tempObject;
-              tempObject = selected.copy();
-              lastX = selected.x;
-              lastY = selected.y;
-              this.stage.addChild(tempObject.displayObj);
-              if (!copyPlace) {
-                this.simulation.removeSelected();
+            possibles = this.simulation.renderer.getParticlesAtPos(mouseX, mouseY);
+            if (possibles.length > 0) {
+              selected = possibles[0].particle;
+              this.simulation.removeParticle(selected);
+              if (ev.button !== 2) {
+                tempObject = selected.copy();
+                lastX = selected.x;
+                lastY = selected.y;
+                this.particleRenderer = this.simulation.renderer.addParticle(tempObject);
+                if (!copyPlace) {
+                  this.simulation.removeSelected();
+                }
+                index = INDEX_PLACE;
               }
-              index = INDEX_PLACE;
             }
             break;
         }
@@ -228,9 +230,6 @@
 
     Overlay.prototype.draw = function(interpolation) {
       if (!this.hidden) {
-        if (tempObject !== null) {
-          tempObject.draw(tempObject.x, tempObject.y);
-        }
         if (showError) {
           errorTimer -= 1000 / this.settings.global.updateRate;
           if (errorTimer <= 0) {
@@ -243,19 +242,12 @@
     };
 
     Overlay.prototype.reset = function() {
-      var p;
       if (mode === MODE_EDIT) {
-        p = simulation.addParticle(lastX, lastY, tempObject.mass, tempObject.radius, tempObject.style);
-        p.xVel = tempObject.xVel;
-        p.yVel = tempObject.yVel;
-        this.removeChild(tempObject.displayObj);
-        tempObject = null;
-        return index = INDEX_MODIFY;
-      } else {
-        this.stage.removeChild(velocityLine);
-        this.stage.removeChild(infoText);
-        return index = INDEX_PLACE;
+        console.log("LOL");
       }
+      this.stage.removeChild(velocityLine);
+      this.stage.removeChild(infoText);
+      return index = INDEX_PLACE;
     };
 
     Overlay.prototype.beginAdd = function(mass, cOR, style) {
@@ -264,9 +256,9 @@
       tempObject = new Particle(crossX, crossY, 25, style, this.settings);
       tempObject.mass = mass;
       tempObject.cOR = cOR;
+      this.particleRenderer = this.simulation.renderer.addParticle(tempObject);
       infoText.x = mouseX;
       infoText.y = mouseY;
-      this.stage.addChild(tempObject.displayObj);
       modeText.text = "Mode: Add";
       index = INDEX_PLACE;
       return mode = MODE_ADD;
@@ -282,10 +274,8 @@
 
     Overlay.prototype.end = function() {
       this.hide();
-      this.stage.removeAllChildren();
-      if (tempObject !== null) {
-        tempObject = null;
-      }
+      this.simulation.renderer.removeParticle(tempObject);
+      tempObject = null;
       mode = -1;
       freePlace = false;
       return copyPlace = false;

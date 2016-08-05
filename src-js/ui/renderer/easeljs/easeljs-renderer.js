@@ -20,11 +20,11 @@
       this.renderObjs = [];
       this.interpolator.addListener("before-update", (function(_this) {
         return function() {
-          var i, len, particle, ref, results;
+          var j, len, particle, ref, results;
           ref = _this.renderObjs;
           results = [];
-          for (i = 0, len = ref.length; i < len; i++) {
-            particle = ref[i];
+          for (j = 0, len = ref.length; j < len; j++) {
+            particle = ref[j];
             results.push(particle.capture());
           }
           return results;
@@ -35,17 +35,76 @@
     EaselJSRenderer.prototype.addParticle = function(particle) {
       var pr;
       pr = new ParticleRenderer(particle, this.settings.simulation.enableSelection);
+      particle.renderer = pr;
       this.stage.addChild(pr.displayObj);
-      return this.renderObjs.push(pr);
+      this.renderObjs.push(pr);
+      return pr;
     };
 
-    EaselJSRenderer.prototype.removeParticle = function(particle) {};
+    EaselJSRenderer.prototype.getParticlesAtPos = function(x, y) {
+      var j, len, list, ref, renderable;
+      list = [];
+      ref = this.renderObjs;
+      for (j = 0, len = ref.length; j < len; j++) {
+        renderable = ref[j];
+        if (this.isParticleAtPos(renderable, x, y)) {
+          list.push(renderable);
+        }
+      }
+      return list;
+    };
+
+    EaselJSRenderer.prototype.isParticleAtPos = function(particle, x, y) {
+      var dx, dy, p;
+      p = particle.particle;
+      dx = p.x - x;
+      dy = p.y - y;
+      if (dx * dx + dy * dy <= p.radius * p.radius) {
+        return true;
+      }
+      return false;
+    };
+
+    EaselJSRenderer.prototype.removeParticles = function(particles) {};
+
+    EaselJSRenderer.prototype.removeParticle = function(particle) {
+      var i, j, len, p, ref, results;
+      ref = this.renderObjs;
+      results = [];
+      for (i = j = 0, len = ref.length; j < len; i = ++j) {
+        p = ref[i];
+        if (particle === p.particle) {
+          particle.renderer = null;
+          this.stage.removeChild(p.displayObj);
+          this.renderObjs.splice(i, 1);
+          break;
+        } else {
+          results.push(void 0);
+        }
+      }
+      return results;
+    };
+
+    EaselJSRenderer.prototype.getParticles = function() {
+      return this.renderObjs;
+    };
+
+    EaselJSRenderer.prototype.clear = function() {
+      var j, len, p, ref;
+      ref = this.renderObjs;
+      for (j = 0, len = ref.length; j < len; j++) {
+        p = ref[j];
+        this.stage.removeChild(p.displayObj);
+        p.particle = null;
+      }
+      return this.renderObjs = [];
+    };
 
     EaselJSRenderer.prototype.draw = function(interpolation) {
-      var i, len, particle, ref;
+      var j, len, particle, ref;
       ref = this.renderObjs;
-      for (i = 0, len = ref.length; i < len; i++) {
-        particle = ref[i];
+      for (j = 0, len = ref.length; j < len; j++) {
+        particle = ref[j];
         particle.draw(interpolation);
       }
       return this.stage.update();

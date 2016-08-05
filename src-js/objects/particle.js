@@ -19,6 +19,8 @@
 
     Particle.prototype.curPos = 0;
 
+    Particle.prototype.renderer = null;
+
     function Particle(x, y, radius, style, settings) {
       this.radius = radius;
       this.style = style;
