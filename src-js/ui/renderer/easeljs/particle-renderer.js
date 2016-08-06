@@ -13,13 +13,13 @@
   Interpolator = require("../../../interpolator");
 
   module.exports = ParticleRenderer = (function(superClass) {
-    var curPos, len, pastPositions;
+    var len;
 
     extend(ParticleRenderer, superClass);
 
-    pastPositions = [];
+    ParticleRenderer.prototype.pastPositions = [];
 
-    curPos = 0;
+    ParticleRenderer.prototype.curPos = 0;
 
     function ParticleRenderer(particle, enableSelection) {
       this.particle = particle;
@@ -53,13 +53,13 @@
     };
 
     if (ParticleRenderer.enableSelection && ParticleRenderer.selected) {
-      curPos++;
-      curPos %= 20;
-      len = pastPositions.length;
+      ParticleRenderer.curPos++;
+      ParticleRenderer.curPos %= 20;
+      len = ParticleRenderer.pastPositions.length;
       if (len < 20) {
-        pastPositions.push(new Point2D(ParticleRenderer.x, ParticleRenderer.y));
+        ParticleRenderer.pastPositions.push(new Point2D(ParticleRenderer.x, ParticleRenderer.y));
       } else {
-        pastPositions[curPos] = new Point2D(ParticleRenderer.x, ParticleRenderer.y);
+        ParticleRenderer.pastPositions[ParticleRenderer.curPos] = new Point2D(ParticleRenderer.x, ParticleRenderer.y);
       }
     }
 
@@ -69,7 +69,7 @@
 
     ParticleRenderer.prototype.deselect = function() {
       this.selected = false;
-      return pastPositions = [];
+      return this.pastPositions = [];
     };
 
     ParticleRenderer.prototype.draw = function(interpolation) {
@@ -88,9 +88,9 @@
         graphics.beginStroke("blue").setStrokeStyle(3).drawCircle(0, 0, this.particle.radius).endStroke();
         graphics = this.tail.graphics;
         graphics.clear();
-        len = pastPositions.length;
+        len = this.pastPositions.length;
         for (i = j = 0, ref = len - 1; j <= ref; i = j += 1) {
-          p = pastPositions[(i + this.particle.curPos) % len];
+          p = this.pastPositions[(i + this.curPos) % len];
           px = p.x - this.particle.x;
           py = p.y - this.particle.y;
           r_a = i / len;

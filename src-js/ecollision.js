@@ -18,20 +18,11 @@
   Interpolator = require("./interpolator");
 
   module.exports = ECollision = (function() {
-    var curTime, fps, fpsCount, fpsTime, newTime, refreshTime, setSpeedConst, setUpdateRate, thread, timeStamp, updateRate, updateTime, widgets;
-
-    widgets = [];
-
-    fpsCount = fps = fpsTime = newTime = timeStamp = curTime = 0;
-
-    thread = -1;
-
-    updateRate = updateTime = refreshTime = 0;
+    var setSpeedConst, setUpdateRate;
 
     function ECollision(settings) {
       this.settings = settings;
       this.tick = bind(this.tick, this);
-      this.update = bind(this.update, this);
       this.engine = new SimulationEngine(this.settings.simulation.simulationWidth, this.settings.simulation.simulationHeight, this.settings);
       this.interpol = new Interpolator(this.settings.global.refreshRate, this.settings.global.updateRate);
       this.interpol.lockFPS = true;
@@ -39,8 +30,9 @@
       this.graphUI = new Graph(this.settings.graph.graphCanvas, this.engine, 1 / 50, 5, this.settings);
       this.overlayUI = new Overlay(this.settings.overlay.overlayCanvas, this.simulationUI, this.settings);
       this.paused = false;
-      this.fps = 0;
-      widgets = [this.simulationUI, this.graphUI, this.overlayUI];
+      this.fpsCount = this.fps = this.fpsTime = 0;
+      this.updateRate = this.updateTime = this.refreshTime = 0;
+      this.widgets = [this.simulationUI, this.graphUI, this.overlayUI];
       this.interpol.addListener("update", (function(_this) {
         return function() {
           if (!_this.paused) {
@@ -48,71 +40,75 @@
           }
         };
       })(this)).addListener("render", this.tick);
-      updateRate = this.settings.global.updateRate;
-      updateTime = 1000.0 / updateRate;
-      refreshTime = 1000 / this.settings.global.refreshRate;
+      this.updateRate = this.settings.global.updateRate;
+      this.updateTime = 1000.0 / this.updateRate;
+      this.refreshTime = 1000 / this.settings.global.refreshRate;
       EventManager.eventify(this);
     }
 
     ECollision.prototype.start = function() {
-      var i, len, widget;
-      for (i = 0, len = widgets.length; i < len; i++) {
-        widget = widgets[i];
+      var i, len, ref, widget;
+      ref = this.widgets;
+      for (i = 0, len = ref.length; i < len; i++) {
+        widget = ref[i];
         widget.init();
       }
       return this.interpol.start();
     };
 
     ECollision.prototype.restart = function() {
-      var i, len, results, widget;
+      var i, len, ref, results, widget;
+      ref = this.widgets;
       results = [];
-      for (i = 0, len = widgets.length; i < len; i++) {
-        widget = widgets[i];
+      for (i = 0, len = ref.length; i < len; i++) {
+        widget = ref[i];
         results.push(widget.restart());
       }
       return results;
     };
 
     ECollision.prototype.resume = function() {
-      var i, len, results, widget;
+      var i, len, ref, results, widget;
       this.paused = false;
+      ref = this.widgets;
       results = [];
-      for (i = 0, len = widgets.length; i < len; i++) {
-        widget = widgets[i];
+      for (i = 0, len = ref.length; i < len; i++) {
+        widget = ref[i];
         results.push(widget.resume());
       }
       return results;
     };
 
     ECollision.prototype.pause = function() {
-      var i, len, results, widget;
+      var i, len, ref, results, widget;
       this.paused = true;
+      ref = this.widgets;
       results = [];
-      for (i = 0, len = widgets.length; i < len; i++) {
-        widget = widgets[i];
+      for (i = 0, len = ref.length; i < len; i++) {
+        widget = ref[i];
         results.push(widget.pause());
       }
       return results;
     };
 
     ECollision.prototype.stop = function() {
-      if (thread !== -1) {
-        clearInterval(thread);
-        return thread = -1;
+      if (this.thread !== -1) {
+        clearInterval(this.thread);
+        return this.thread = -1;
       }
     };
 
     ECollision.prototype.getUpdateRate = function() {
-      return updateRate;
+      return this.updateRate;
     };
 
     ECollision.prototype.getUpdateTime = function() {
-      return updateTime;
+      return this.updateTime;
     };
 
     setUpdateRate = function(rate) {
-      updateRate = rate;
-      return updateTime = 1000.0 / updateRate;
+      this.updateRate = rate;
+      return this.updateTime = 1000.0 / this.updateRate;
     };
 
     setSpeedConst = function(speedConst) {
@@ -124,16 +120,17 @@
     };
 
     ECollision.prototype.tick = function(interpolation) {
-      var fpsCurTime, i, len, widget;
-      fpsCurTime = new Date().getTime();
-      fpsCount++;
-      if (fpsCurTime - fpsTime >= 1000) {
-        this.fps = fpsCount;
-        fpsCount = 0;
-        fpsTime = fpsCurTime;
+      var i, len, ref, widget;
+      this.fpsCurTime = new Date().getTime();
+      this.fpsCount++;
+      if (this.fpsCurTime - this.fpsTime >= 1000) {
+        this.fps = this.fpsCount;
+        this.fpsCount = 0;
+        this.fpsTime = this.fpsCurTime;
       }
-      for (i = 0, len = widgets.length; i < len; i++) {
-        widget = widgets[i];
+      ref = this.widgets;
+      for (i = 0, len = ref.length; i < len; i++) {
+        widget = ref[i];
         widget.draw(interpolation);
       }
       return this.fire('tick', [interpolation]);

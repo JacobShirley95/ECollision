@@ -7,14 +7,6 @@ EventManager = require("./events/event-manager")
 Interpolator = require("./interpolator")
 
 module.exports = class ECollision
-    widgets = []
-
-    fpsCount = fps = fpsTime = newTime = timeStamp = curTime = 0
-
-    thread = -1
-
-    updateRate = updateTime = refreshTime = 0
-
     constructor: (@settings) ->
         @engine = new SimulationEngine(@settings.simulation.simulationWidth, @settings.simulation.simulationHeight, @settings)
 
@@ -27,76 +19,77 @@ module.exports = class ECollision
 
         @paused = false
 
-        @fps = 0
+        @fpsCount = @fps = @fpsTime = 0
+        @updateRate = @updateTime = @refreshTime = 0
 
-        widgets = [@simulationUI, @graphUI, @overlayUI]
+        @widgets = [@simulationUI, @graphUI, @overlayUI]
 
         @interpol.addListener("update", () =>
             if (!@paused)
                 @update()
         ).addListener("render", @tick)
 
-        updateRate = @settings.global.updateRate
-        updateTime = 1000.0 / updateRate
-        refreshTime = 1000 / @settings.global.refreshRate
+        @updateRate = @settings.global.updateRate
+        @updateTime = 1000.0 / @updateRate
+        @refreshTime = 1000 / @settings.global.refreshRate
 
         EventManager.eventify(@)
 
     start: ->
-        for widget in widgets
+        for widget in @widgets
             widget.init()
         
         @interpol.start()
 
     restart: ->
-        for widget in widgets
+        for widget in @widgets
             widget.restart()
 
     resume: ->
         @paused = false
         
-        for widget in widgets
+        for widget in @widgets
             widget.resume()
 
     pause: ->
         @paused = true
 
-        for widget in widgets
+        for widget in @widgets
             widget.pause()
 
     stop: ->
-        if (thread != -1)
-            clearInterval(thread)
+        if (@thread != -1)
+            clearInterval(@thread)
 
-            thread = -1
+            @thread = -1
 
     getUpdateRate: ->
-        return updateRate
+        return @updateRate
     
     getUpdateTime: ->
-        return updateTime
+        return @updateTime
     
     setUpdateRate = (rate) ->
-        updateRate = rate
-        updateTime = 1000.0 / updateRate
+        @updateRate = rate
+        @updateTime = 1000.0 / @updateRate
 
     setSpeedConst = (speedConst) ->
         @engine.speedConst = speedConst
 
-    update: =>
+    update: ->
         @engine.update()
     
     tick: (interpolation) =>
-        fpsCurTime = new Date().getTime()
-        fpsCount++
+        @fpsCurTime = new Date().getTime()
+        @fpsCount++
 
-        if (fpsCurTime - fpsTime >= 1000)
-            @fps = fpsCount
+        if (@fpsCurTime - @fpsTime >= 1000)
+            @fps = @fpsCount
 
-            fpsCount = 0
-            fpsTime = fpsCurTime
+            @fpsCount = 0
+            @fpsTime = @fpsCurTime
 
-        for widget in widgets
+        for widget in @widgets
             widget.draw(interpolation)
 
         @fire('tick', [interpolation])

@@ -2,10 +2,7 @@ PhysicsObject = require('./physics-object')
 Point2D = require('../math/point-2d')
 
 module.exports = class Particle extends PhysicsObject
-    selected: false
     cOR: 1.0
-    pastPositions: []
-    curPos:0
     renderer: null
 
     constructor: (x, y, @radius, @style, @settings) ->

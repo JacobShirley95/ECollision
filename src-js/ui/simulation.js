@@ -13,11 +13,9 @@
   EaselJSRenderer = require("./renderer/easeljs/easeljs-renderer");
 
   module.exports = Simulation = (function(superClass) {
-    var selected;
-
     extend(Simulation, superClass);
 
-    selected = null;
+    Simulation.prototype.selected = null;
 
     function Simulation(canvasName, engine, interpolator, settings) {
       this.engine = engine;
@@ -101,25 +99,25 @@
 
     Simulation.prototype.removeSelected = function() {
       var i, j, len, particle, ref;
-      if (selected !== null) {
+      if (this.selected !== null) {
         ref = this.particles;
         for (i = j = 0, len = ref.length; j < len; i = ++j) {
           particle = ref[i];
-          if (particle === selected) {
+          if (particle === this.selected) {
             this.removeParticle(i);
           }
         }
-        return selected = null;
+        return this.selected = null;
       }
     };
 
     Simulation.prototype.getSelected = function() {
-      return selected;
+      return this.selected;
     };
 
     Simulation.prototype.restart = function() {
       this.renderer.clear();
-      selected = null;
+      this.selected = null;
       this.engine.reset();
       return this.fire("restart");
     };

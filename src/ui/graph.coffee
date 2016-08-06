@@ -3,28 +3,28 @@ Particle = require('../objects/particle')
 Point2D = require('../math/point-2d')
 
 module.exports = class Graph extends Widget
-    x:0
-    y:0
+    x: 0
+    y: 0
     scaleX: 0
     scaleY: 0
 
-    graph = new createjs.Shape()
+    graph: new createjs.Shape()
 
-    offsetX = 0.0
-    offsetY = 0.0
+    offsetX: 0.0
+    offsetY: 0.0
 
-    userY = 0
+    userY: 0
     
-    data = []
-    start = 0
-    maxLen = 150
+    data: []
+    start: 0
+    maxLen: 150
     
-    updated = false
+    updated: false
 
-    currX = 0
-    currY = 0
+    currX: 0
+    currY: 0
 
-    zoomIndex = 0
+    zoomIndex: 0
 
     constructor: (canvasName, @engine, @scaleX, @scaleY, @settings) ->
         super(canvasName)
@@ -39,135 +39,135 @@ module.exports = class Graph extends Widget
         @stage.addChild(xAxis)
         @stage.addChild(yAxis)
         
-        @stage.addChild(graph)
+        @stage.addChild(@graph)
         @stage.update()
         
         @updateData()
     
     draw: (interpolation) ->
         if (@engine != null)
-            g = graph.graphics
+            g = @graph.graphics
             
             g.clear()
             
-            length = data.length-1
+            length = @data.length-1
             total = 0
 
             j = 0
             while j < length-1
-                if (updated)
-                    updated = false
+                if (@updated)
+                    @updated = false
                     return
                 
-                total += data[j].y
+                total += @data[j].y
                 
                 #calculate offsetted index for point at index j
-                i = (start+j)%length
-                i2 = (start+j+1)%length
+                i = (@start+j)%length
+                i2 = (@start+j+1)%length
                 
-                x2 = (data[i].x*@scaleX)-offsetX
-                y2 = (data[i].y*@scaleY)+offsetY+userY
+                x2 = (@data[i].x*@scaleX)-@offsetX
+                y2 = (@data[i].y*@scaleY)+@offsetY+@userY
                 
                 #if second x value is larger than width, move graph along
                 if (x2 > @width)
-                    offsetX += x2-@width
+                    @offsetX += x2-@width
         
-                x1 = (data[i].x*@scaleX)-offsetX
-                y1 = (data[i].y*@scaleY)+offsetY+userY
+                x1 = (@data[i].x*@scaleX)-@offsetX
+                y1 = (@data[i].y*@scaleY)+@offsetY+@userY
                 
-                x3 = (data[i2].x*@scaleX)-offsetX
-                y3 = (data[i2].y*@scaleY)+offsetY+userY
+                x3 = (@data[i2].x*@scaleX)-@offsetX
+                y3 = (@data[i2].y*@scaleY)+@offsetY+@userY
                 
                 g.beginStroke("red").moveTo(@x+x1, @y+@height-y1).lineTo(@x+x3, @y+@height-y3)
                 j++
 
             if (!@paused)
-                currX += 1000/@settings.global.updateRate
-                currY = @getEnergy()
+                @currX += 1000/@settings.global.updateRate
+                @currY = @getEnergy()
 
-                @addData(currX, currY)
+                @addData(@currX, @currY)
                 
-            dataY = total/data.length
+            @dataY = total/@data.length
             targetY = @height/2
         
-            offsetY = targetY-(dataY*@scaleY)
+            @offsetY = targetY-(@dataY*@scaleY)
             
             @stage.update()
 
     restart: ->
-        data = []
-        start = 0
-        currX = currY = 0
-        offsetX = offsetY = 0
-        updated = true
+        @data = []
+        @start = 0
+        @currX = @currY = 0
+        @offsetX = @offsetY = 0
+        @updated = true
     
     calibrate: ->
-        userY = 0
+        @userY = 0
     
     zoomIn: ->
-        if (zoomIndex < @settings.graph.graphMaxZoomIndex)
+        if (@zoomIndex < @settings.graph.graphMaxZoomIndex)
             @scaleX *= @settings.graph.graphZoomFactor
             @scaleY *= @settings.graph.graphZoomFactor
             
-            offsetX *= @scaleX
-            offsetY *= @scaleY
+            @offsetX *= @scaleX
+            @offsetY *= @scaleY
             
             @updateData()
 
-            zoomIndex++
+            @zoomIndex++
         else throw("ERROR: Maximum zoom reached")
     
     zoomOut: ->
-        if (zoomIndex > -@settings.graph.graphMinZoomIndex)
+        if (@zoomIndex > -@settings.graph.graphMinZoomIndex)
             @scaleX /= @settings.graph.graphZoomFactor
             @scaleY /= @settings.graph.graphZoomFactor
             
-            offsetX *= @scaleX
-            offsetY *= @scaleY
+            @offsetX *= @scaleX
+            @offsetY *= @scaleY
 
             @updateData()
 
-            zoomIndex--
+            @zoomIndex--
         else throw("ERROR: Minimum zoom reached")
     
     moveUp: ->
-        userY -= 5
+        @userY -= 5
     
     moveDown: ->
-        userY += 5
+        @userY += 5
 
     getZoomIndex: ->
-        return zoomIndex
+        return @zoomIndex
     
     addData: (x, y) ->
-        if (data.length > maxLen)
-            s = start
+        if (@data.length > @maxLen)
+            s = @start
  
-            start = (start + 1)%maxLen
+            @start = (@start + 1)%@maxLen
 
-            data[s] = new Point2D(x, y)
+            @data[s] = new Point2D(x, y)
         else
-            data.push(new Point2D(x, y))
+            @data.push(new Point2D(x, y))
     
     updateData: ->
-        data2 = []
+        @data2 = []
 
-        maxLen = Math.round(@width/((1000/@settings.global.updateRate)*@scaleX))+5
+        @maxLen = Math.round(@width/((1000/@settings.global.updateRate)*@scaleX))+5
 
-        aLen = data.length-1
+        aLen = @data.length-1
         diff = 0
         
-        if (aLen > maxLen)
-            diff = aLen-maxLen
+        if (aLen > @maxLen)
+            diff = aLen-@maxLen
 
         for j in [diff..aLen-1] by 1
-            i = (start+j)%aLen
-            data2.push(data[i])
+            i = (@start+j)%aLen
+            @data2.push(@data[i])
         
-        updated = true
-        start = 0
+        @updated = true
+        @start = 0
         
-        data = data2
+        @data = @data2
     
     getEnergy: ->
         energy = 0.0

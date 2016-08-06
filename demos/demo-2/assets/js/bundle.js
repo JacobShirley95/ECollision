@@ -206,20 +206,11 @@ $("#cor-slider").sliderEx({
   Interpolator = require("./interpolator");
 
   module.exports = ECollision = (function() {
-    var curTime, fps, fpsCount, fpsTime, newTime, refreshTime, setSpeedConst, setUpdateRate, thread, timeStamp, updateRate, updateTime, widgets;
-
-    widgets = [];
-
-    fpsCount = fps = fpsTime = newTime = timeStamp = curTime = 0;
-
-    thread = -1;
-
-    updateRate = updateTime = refreshTime = 0;
+    var setSpeedConst, setUpdateRate;
 
     function ECollision(settings) {
       this.settings = settings;
       this.tick = bind(this.tick, this);
-      this.update = bind(this.update, this);
       this.engine = new SimulationEngine(this.settings.simulation.simulationWidth, this.settings.simulation.simulationHeight, this.settings);
       this.interpol = new Interpolator(this.settings.global.refreshRate, this.settings.global.updateRate);
       this.interpol.lockFPS = true;
@@ -227,8 +218,9 @@ $("#cor-slider").sliderEx({
       this.graphUI = new Graph(this.settings.graph.graphCanvas, this.engine, 1 / 50, 5, this.settings);
       this.overlayUI = new Overlay(this.settings.overlay.overlayCanvas, this.simulationUI, this.settings);
       this.paused = false;
-      this.fps = 0;
-      widgets = [this.simulationUI, this.graphUI, this.overlayUI];
+      this.fpsCount = this.fps = this.fpsTime = 0;
+      this.updateRate = this.updateTime = this.refreshTime = 0;
+      this.widgets = [this.simulationUI, this.graphUI, this.overlayUI];
       this.interpol.addListener("update", (function(_this) {
         return function() {
           if (!_this.paused) {
@@ -236,71 +228,75 @@ $("#cor-slider").sliderEx({
           }
         };
       })(this)).addListener("render", this.tick);
-      updateRate = this.settings.global.updateRate;
-      updateTime = 1000.0 / updateRate;
-      refreshTime = 1000 / this.settings.global.refreshRate;
+      this.updateRate = this.settings.global.updateRate;
+      this.updateTime = 1000.0 / this.updateRate;
+      this.refreshTime = 1000 / this.settings.global.refreshRate;
       EventManager.eventify(this);
     }
 
     ECollision.prototype.start = function() {
-      var i, len, widget;
-      for (i = 0, len = widgets.length; i < len; i++) {
-        widget = widgets[i];
+      var i, len, ref, widget;
+      ref = this.widgets;
+      for (i = 0, len = ref.length; i < len; i++) {
+        widget = ref[i];
         widget.init();
       }
       return this.interpol.start();
     };
 
     ECollision.prototype.restart = function() {
-      var i, len, results, widget;
+      var i, len, ref, results, widget;
+      ref = this.widgets;
       results = [];
-      for (i = 0, len = widgets.length; i < len; i++) {
-        widget = widgets[i];
+      for (i = 0, len = ref.length; i < len; i++) {
+        widget = ref[i];
         results.push(widget.restart());
       }
       return results;
     };
 
     ECollision.prototype.resume = function() {
-      var i, len, results, widget;
+      var i, len, ref, results, widget;
       this.paused = false;
+      ref = this.widgets;
       results = [];
-      for (i = 0, len = widgets.length; i < len; i++) {
-        widget = widgets[i];
+      for (i = 0, len = ref.length; i < len; i++) {
+        widget = ref[i];
         results.push(widget.resume());
       }
       return results;
     };
 
     ECollision.prototype.pause = function() {
-      var i, len, results, widget;
+      var i, len, ref, results, widget;
       this.paused = true;
+      ref = this.widgets;
       results = [];
-      for (i = 0, len = widgets.length; i < len; i++) {
-        widget = widgets[i];
+      for (i = 0, len = ref.length; i < len; i++) {
+        widget = ref[i];
         results.push(widget.pause());
       }
       return results;
     };
 
     ECollision.prototype.stop = function() {
-      if (thread !== -1) {
-        clearInterval(thread);
-        return thread = -1;
+      if (this.thread !== -1) {
+        clearInterval(this.thread);
+        return this.thread = -1;
       }
     };
 
     ECollision.prototype.getUpdateRate = function() {
-      return updateRate;
+      return this.updateRate;
     };
 
     ECollision.prototype.getUpdateTime = function() {
-      return updateTime;
+      return this.updateTime;
     };
 
     setUpdateRate = function(rate) {
-      updateRate = rate;
-      return updateTime = 1000.0 / updateRate;
+      this.updateRate = rate;
+      return this.updateTime = 1000.0 / this.updateRate;
     };
 
     setSpeedConst = function(speedConst) {
@@ -312,16 +308,17 @@ $("#cor-slider").sliderEx({
     };
 
     ECollision.prototype.tick = function(interpolation) {
-      var fpsCurTime, i, len, widget;
-      fpsCurTime = new Date().getTime();
-      fpsCount++;
-      if (fpsCurTime - fpsTime >= 1000) {
-        this.fps = fpsCount;
-        fpsCount = 0;
-        fpsTime = fpsCurTime;
+      var i, len, ref, widget;
+      this.fpsCurTime = new Date().getTime();
+      this.fpsCount++;
+      if (this.fpsCurTime - this.fpsTime >= 1000) {
+        this.fps = this.fpsCount;
+        this.fpsCount = 0;
+        this.fpsTime = this.fpsCurTime;
       }
-      for (i = 0, len = widgets.length; i < len; i++) {
-        widget = widgets[i];
+      ref = this.widgets;
+      for (i = 0, len = ref.length; i < len; i++) {
+        widget = ref[i];
         widget.draw(interpolation);
       }
       return this.fire('tick', [interpolation]);
@@ -809,13 +806,7 @@ $("#cor-slider").sliderEx({
   module.exports = Particle = (function(superClass) {
     extend(Particle, superClass);
 
-    Particle.prototype.selected = false;
-
     Particle.prototype.cOR = 1.0;
-
-    Particle.prototype.pastPositions = [];
-
-    Particle.prototype.curPos = 0;
 
     Particle.prototype.renderer = null;
 
@@ -950,8 +941,6 @@ $("#cor-slider").sliderEx({
   Point2D = require('../math/point-2d');
 
   module.exports = Graph = (function(superClass) {
-    var currX, currY, data, graph, maxLen, offsetX, offsetY, start, updated, userY, zoomIndex;
-
     extend(Graph, superClass);
 
     Graph.prototype.x = 0;
@@ -962,27 +951,27 @@ $("#cor-slider").sliderEx({
 
     Graph.prototype.scaleY = 0;
 
-    graph = new createjs.Shape();
+    Graph.prototype.graph = new createjs.Shape();
 
-    offsetX = 0.0;
+    Graph.prototype.offsetX = 0.0;
 
-    offsetY = 0.0;
+    Graph.prototype.offsetY = 0.0;
 
-    userY = 0;
+    Graph.prototype.userY = 0;
 
-    data = [];
+    Graph.prototype.data = [];
 
-    start = 0;
+    Graph.prototype.start = 0;
 
-    maxLen = 150;
+    Graph.prototype.maxLen = 150;
 
-    updated = false;
+    Graph.prototype.updated = false;
 
-    currX = 0;
+    Graph.prototype.currX = 0;
 
-    currY = 0;
+    Graph.prototype.currY = 0;
 
-    zoomIndex = 0;
+    Graph.prototype.zoomIndex = 0;
 
     function Graph(canvasName, engine, scaleX, scaleY, settings) {
       this.engine = engine;
@@ -1000,128 +989,128 @@ $("#cor-slider").sliderEx({
       yAxis.graphics.beginStroke("red").moveTo(this.x, this.y).lineTo(this.x, this.height);
       this.stage.addChild(xAxis);
       this.stage.addChild(yAxis);
-      this.stage.addChild(graph);
+      this.stage.addChild(this.graph);
       this.stage.update();
       return this.updateData();
     };
 
     Graph.prototype.draw = function(interpolation) {
-      var dataY, g, i, i2, j, length, targetY, total, x1, x2, x3, y1, y2, y3;
+      var g, i, i2, j, length, targetY, total, x1, x2, x3, y1, y2, y3;
       if (this.engine !== null) {
-        g = graph.graphics;
+        g = this.graph.graphics;
         g.clear();
-        length = data.length - 1;
+        length = this.data.length - 1;
         total = 0;
         j = 0;
         while (j < length - 1) {
-          if (updated) {
-            updated = false;
+          if (this.updated) {
+            this.updated = false;
             return;
           }
-          total += data[j].y;
-          i = (start + j) % length;
-          i2 = (start + j + 1) % length;
-          x2 = (data[i].x * this.scaleX) - offsetX;
-          y2 = (data[i].y * this.scaleY) + offsetY + userY;
+          total += this.data[j].y;
+          i = (this.start + j) % length;
+          i2 = (this.start + j + 1) % length;
+          x2 = (this.data[i].x * this.scaleX) - this.offsetX;
+          y2 = (this.data[i].y * this.scaleY) + this.offsetY + this.userY;
           if (x2 > this.width) {
-            offsetX += x2 - this.width;
+            this.offsetX += x2 - this.width;
           }
-          x1 = (data[i].x * this.scaleX) - offsetX;
-          y1 = (data[i].y * this.scaleY) + offsetY + userY;
-          x3 = (data[i2].x * this.scaleX) - offsetX;
-          y3 = (data[i2].y * this.scaleY) + offsetY + userY;
+          x1 = (this.data[i].x * this.scaleX) - this.offsetX;
+          y1 = (this.data[i].y * this.scaleY) + this.offsetY + this.userY;
+          x3 = (this.data[i2].x * this.scaleX) - this.offsetX;
+          y3 = (this.data[i2].y * this.scaleY) + this.offsetY + this.userY;
           g.beginStroke("red").moveTo(this.x + x1, this.y + this.height - y1).lineTo(this.x + x3, this.y + this.height - y3);
           j++;
         }
         if (!this.paused) {
-          currX += 1000 / this.settings.global.updateRate;
-          currY = this.getEnergy();
-          this.addData(currX, currY);
+          this.currX += 1000 / this.settings.global.updateRate;
+          this.currY = this.getEnergy();
+          this.addData(this.currX, this.currY);
         }
-        dataY = total / data.length;
+        this.dataY = total / this.data.length;
         targetY = this.height / 2;
-        offsetY = targetY - (dataY * this.scaleY);
+        this.offsetY = targetY - (this.dataY * this.scaleY);
         return this.stage.update();
       }
     };
 
     Graph.prototype.restart = function() {
-      data = [];
-      start = 0;
-      currX = currY = 0;
-      offsetX = offsetY = 0;
-      return updated = true;
+      this.data = [];
+      this.start = 0;
+      this.currX = this.currY = 0;
+      this.offsetX = this.offsetY = 0;
+      return this.updated = true;
     };
 
     Graph.prototype.calibrate = function() {
-      return userY = 0;
+      return this.userY = 0;
     };
 
     Graph.prototype.zoomIn = function() {
-      if (zoomIndex < this.settings.graph.graphMaxZoomIndex) {
+      if (this.zoomIndex < this.settings.graph.graphMaxZoomIndex) {
         this.scaleX *= this.settings.graph.graphZoomFactor;
         this.scaleY *= this.settings.graph.graphZoomFactor;
-        offsetX *= this.scaleX;
-        offsetY *= this.scaleY;
+        this.offsetX *= this.scaleX;
+        this.offsetY *= this.scaleY;
         this.updateData();
-        return zoomIndex++;
+        return this.zoomIndex++;
       } else {
         throw "ERROR: Maximum zoom reached";
       }
     };
 
     Graph.prototype.zoomOut = function() {
-      if (zoomIndex > -this.settings.graph.graphMinZoomIndex) {
+      if (this.zoomIndex > -this.settings.graph.graphMinZoomIndex) {
         this.scaleX /= this.settings.graph.graphZoomFactor;
         this.scaleY /= this.settings.graph.graphZoomFactor;
-        offsetX *= this.scaleX;
-        offsetY *= this.scaleY;
+        this.offsetX *= this.scaleX;
+        this.offsetY *= this.scaleY;
         this.updateData();
-        return zoomIndex--;
+        return this.zoomIndex--;
       } else {
         throw "ERROR: Minimum zoom reached";
       }
     };
 
     Graph.prototype.moveUp = function() {
-      return userY -= 5;
+      return this.userY -= 5;
     };
 
     Graph.prototype.moveDown = function() {
-      return userY += 5;
+      return this.userY += 5;
     };
 
     Graph.prototype.getZoomIndex = function() {
-      return zoomIndex;
+      return this.zoomIndex;
     };
 
     Graph.prototype.addData = function(x, y) {
       var s;
-      if (data.length > maxLen) {
-        s = start;
-        start = (start + 1) % maxLen;
-        return data[s] = new Point2D(x, y);
+      if (this.data.length > this.maxLen) {
+        s = this.start;
+        this.start = (this.start + 1) % this.maxLen;
+        return this.data[s] = new Point2D(x, y);
       } else {
-        return data.push(new Point2D(x, y));
+        return this.data.push(new Point2D(x, y));
       }
     };
 
     Graph.prototype.updateData = function() {
-      var aLen, data2, diff, i, j, k, ref, ref1;
-      data2 = [];
-      maxLen = Math.round(this.width / ((1000 / this.settings.global.updateRate) * this.scaleX)) + 5;
-      aLen = data.length - 1;
+      var aLen, diff, i, j, k, ref, ref1;
+      this.data2 = [];
+      this.maxLen = Math.round(this.width / ((1000 / this.settings.global.updateRate) * this.scaleX)) + 5;
+      aLen = this.data.length - 1;
       diff = 0;
-      if (aLen > maxLen) {
-        diff = aLen - maxLen;
+      if (aLen > this.maxLen) {
+        diff = aLen - this.maxLen;
       }
       for (j = k = ref = diff, ref1 = aLen - 1; k <= ref1; j = k += 1) {
-        i = (start + j) % aLen;
-        data2.push(data[i]);
+        i = (this.start + j) % aLen;
+        this.data2.push(this.data[i]);
       }
-      updated = true;
-      start = 0;
-      return data = data2;
+      this.updated = true;
+      this.start = 0;
+      return this.data = this.data2;
     };
 
     Graph.prototype.getEnergy = function() {
@@ -1144,7 +1133,7 @@ $("#cor-slider").sliderEx({
 },{"../math/point-2d":6,"../objects/particle":8,"./widget":18}],12:[function(require,module,exports){
 // Generated by CoffeeScript 1.10.0
 (function() {
-  var Overlay, Particle, Widget,
+  var Overlay, Particle, Widget, gcd,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
@@ -1153,58 +1142,31 @@ $("#cor-slider").sliderEx({
 
   Particle = require("../objects/particle");
 
-  module.exports = Overlay = (function(superClass) {
-    var INDEX_MODIFY, INDEX_PLACE, INDEX_VELOCITY, MODE_ADD, MODE_EDIT, copyPlace, crossX, crossY, errorText, errorTimer, freePlace, gcd, index, infoText, interval, lastX, lastY, mode, modeText, mouseX, mouseY, showError, tempObject, velocityLine;
+  gcd = function(a, b) {
+    if (!b) {
+      return a;
+    }
+    return gcd(b, a % b);
+  };
 
+  module.exports = Overlay = (function(superClass) {
     extend(Overlay, superClass);
 
-    INDEX_PLACE = 0;
+    Overlay.INDEX_PLACE = 0;
 
-    INDEX_VELOCITY = 1;
+    Overlay.INDEX_VELOCITY = 1;
 
-    INDEX_MODIFY = 2;
+    Overlay.INDEX_MODIFY = 2;
 
-    MODE_ADD = 0;
+    Overlay.MODE_ADD = 0;
 
-    MODE_EDIT = 1;
+    Overlay.MODE_EDIT = 1;
 
-    Overlay.prototype.particleRenderer = null;
+    Overlay.prototype.errorTimer = 0;
 
-    index = 0;
+    Overlay.prototype.showError = false;
 
-    mode = -1;
-
-    mouseX = crossX = 0;
-
-    mouseY = crossY = 0;
-
-    velocityLine = new createjs.Shape();
-
-    infoText = new createjs.Text("", "bold 15px Arial");
-
-    errorText = new createjs.Text("", "bold 15px Arial", "red");
-
-    errorTimer = 0;
-
-    showError = false;
-
-    modeText = new createjs.Text("", "bold 15px Arial");
-
-    modeText.x = 0;
-
-    modeText.y = 10;
-
-    freePlace = false;
-
-    copyPlace = false;
-
-    lastX = 0;
-
-    lastY = 0;
-
-    tempObject = null;
-
-    interval = 0;
+    Overlay.prototype.tempObject = null;
 
     function Overlay(canvasName, simulation, settings) {
       this.simulation = simulation;
@@ -1213,157 +1175,148 @@ $("#cor-slider").sliderEx({
       this.handleMouseMove = bind(this.handleMouseMove, this);
       this.handleMouseWheel = bind(this.handleMouseWheel, this);
       Overlay.__super__.constructor.call(this, canvasName);
-      mouseX = crossX = this.width / 2;
-      mouseY = crossY = this.height / 2;
-      modeText.x = (this.width / 2) - 40;
-      interval = gcd(this.width, this.height);
+      this.modeText = new createjs.Text("", "bold 15px Arial");
+      this.modeText.x = 0;
+      this.modeText.y = 10;
+      this.velocityLine = new createjs.Shape();
+      this.velText = new createjs.Text("", "bold 15px Arial");
+      this.errorText = new createjs.Text("", "bold 15px Arial", "red");
+      this.mouseX = this.crossX = this.width / 2;
+      this.mouseY = this.crossY = this.height / 2;
+      this.mode = -1;
+      this.index = 0;
+      this.modeText.x = (this.width / 2) - 40;
+      this.interval = gcd(this.width, this.height);
       this.hide();
-      $(document).keydown(function(event) {
-        freePlace = event.ctrlKey;
-        return copyPlace = event.shiftKey;
-      });
-      $(document).keyup(function(event) {
-        freePlace = false;
-        return copyPlace = false;
-      });
+      $(document).keydown((function(_this) {
+        return function(event) {
+          _this.freePlace = event.ctrlKey;
+          return _this.copyPlace = event.shiftKey;
+        };
+      })(this));
+      $(document).keyup((function(_this) {
+        return function(event) {
+          _this.freePlace = false;
+          return _this.copyPlace = false;
+        };
+      })(this));
       this.canvas.bind('contextmenu', function(e) {
         return false;
       });
-      mouseX = crossX = this.width / 2;
-      mouseY = crossY = this.height / 2;
+      this.mouseX = this.crossX = this.width / 2;
+      this.mouseY = this.crossY = this.height / 2;
       this.stage.addEventListener("stagemousemove", this.handleMouseMove);
       this.canvas.mousedown(this.handleClick);
       this.canvas.mousewheel(this.handleMouseWheel);
     }
 
-    gcd = function(a, b) {
-      if (!b) {
-        return a;
-      }
-      return gcd(b, a % b);
-    };
-
     Overlay.prototype.resize = function(width, height) {
-      return interval = gcd(this.width, this.height);
+      return this.interval = gcd(this.width, this.height);
     };
 
     Overlay.prototype.init = function() {
       this.stage.removeAllChildren();
-      this.simulation.renderer.removeParticle(tempObject);
-      mouseX = crossX = this.width / 2;
-      mouseY = crossY = this.height / 2;
-      return this.stage.addChild(modeText);
+      this.simulation.renderer.removeParticle(this.tempObject);
+      this.mouseX = this.crossX = this.width / 2;
+      this.mouseY = this.crossY = this.height / 2;
+      return this.stage.addChild(this.modeText);
     };
 
     Overlay.prototype.handleMouseWheel = function(ev) {
       var d;
       d = ev.deltaY;
       if (d < 0) {
-        if (tempObject.radius > this.settings.global.minRadius) {
-          return tempObject.radius -= 1;
+        if (this.tempObject.radius > this.settings.global.minRadius) {
+          return this.tempObject.radius -= 1;
         }
       } else {
-        if (tempObject.radius < this.settings.global.maxRadius) {
-          return tempObject.radius += 1;
+        if (this.tempObject.radius < this.settings.global.maxRadius) {
+          return this.tempObject.radius += 1;
         }
       }
     };
 
     Overlay.prototype.handleMouseMove = function(ev) {
-      var dx, dy, g, gridX, gridY, i, len, p, ref, results;
-      mouseX = crossX = ev.stageX;
-      mouseY = crossY = ev.stageY;
-      if (!freePlace) {
-        gridX = Math.round(mouseX / interval);
-        gridY = Math.round(mouseY / interval);
-        crossX = gridX * interval;
-        crossY = gridY * interval;
+      var dx, dy, g, gridX, gridY;
+      this.mouseX = this.crossX = ev.stageX;
+      this.mouseY = this.crossY = ev.stageY;
+      if (!this.freePlace) {
+        gridX = Math.round(this.mouseX / this.interval);
+        gridY = Math.round(this.mouseY / this.interval);
+        this.crossX = gridX * this.interval;
+        this.crossY = gridY * this.interval;
       }
-      switch (index) {
-        case INDEX_PLACE:
-          velocityLine.x = crossX;
-          velocityLine.y = crossY;
-          if (tempObject !== null) {
-            tempObject.x = crossX;
-            tempObject.y = crossY;
+      switch (this.index) {
+        case Overlay.INDEX_PLACE:
+          this.velocityLine.x = this.crossX;
+          this.velocityLine.y = this.crossY;
+          if (this.tempObject !== null) {
+            this.tempObject.x = this.crossX;
+            this.tempObject.y = this.crossY;
           }
-          infoText.x = crossX;
-          infoText.y = crossY;
+          this.velText.x = this.crossX;
+          this.velText.y = this.crossY;
           break;
-        case INDEX_VELOCITY:
-          g = velocityLine.graphics;
-          dx = crossX - velocityLine.x;
-          dy = crossY - velocityLine.y;
-          infoText.x = velocityLine.x + (dx / 2);
-          infoText.y = velocityLine.y + (dy / 2);
-          infoText.text = Math.round(Math.sqrt(dx * dx + dy * dy)) + " px/s";
-          tempObject.xVel = dx / this.settings.global.updateRate;
-          tempObject.yVel = dy / this.settings.global.updateRate;
+        case Overlay.INDEX_VELOCITY:
+          g = this.velocityLine.graphics;
+          dx = this.crossX - this.velocityLine.x;
+          dy = this.crossY - this.velocityLine.y;
+          this.velText.x = this.velocityLine.x + (dx / 2);
+          this.velText.y = this.velocityLine.y + (dy / 2);
+          this.velText.text = Math.round(Math.sqrt(dx * dx + dy * dy)) + " px/s";
+          this.tempObject.xVel = dx / this.settings.global.updateRate;
+          this.tempObject.yVel = dy / this.settings.global.updateRate;
           g.clear().beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(dx, dy);
           break;
-        case INDEX_MODIFY:
-          ref = this.simulation.renderer.getParticles();
-          results = [];
-          for (i = 0, len = ref.length; i < len; i++) {
-            p = ref[i];
-            if (this.simulation.renderer.isParticleAtPos(p, mouseX, mouseY)) {
-              results.push(p.select());
-            } else {
-              results.push(p.deselect());
-            }
-          }
-          return results;
       }
     };
 
     Overlay.prototype.handleClick = function(ev) {
       var p, possibles, selected;
-      if (ev.button === 2 && index !== INDEX_MODIFY) {
-        switch (index) {
-          case INDEX_PLACE:
+      if (ev.button === 2 && this.index !== Overlay.INDEX_MODIFY) {
+        switch (this.index) {
+          case Overlay.INDEX_PLACE:
             this.end();
             break;
-          case INDEX_VELOCITY:
+          case Overlay.INDEX_VELOCITY:
             break;
         }
         this.reset();
       } else {
-        switch (index) {
-          case INDEX_PLACE:
-            velocityLine.graphics.clear();
-            this.stage.addChild(velocityLine);
-            this.stage.addChild(infoText);
-            index = INDEX_VELOCITY;
+        switch (this.index) {
+          case Overlay.INDEX_PLACE:
+            this.velocityLine.graphics.clear();
+            this.stage.addChild(this.velocityLine);
+            this.stage.addChild(this.velText);
+            this.index = Overlay.INDEX_VELOCITY;
             break;
-          case INDEX_VELOCITY:
-            p = this.simulation.addParticle(tempObject.x, tempObject.y, tempObject.mass, tempObject.radius, tempObject.style);
-            p.xVel = tempObject.xVel;
-            p.yVel = tempObject.yVel;
-            p.cOR = tempObject.cOR;
-            this.stage.removeChild(velocityLine);
-            this.stage.removeChild(infoText);
-            tempObject.xVel = tempObject.yVel = 0;
-            if (mode === MODE_EDIT && !copyPlace) {
-              index = INDEX_MODIFY;
-              this.simulation.renderer.removeParticle(tempObject);
+          case Overlay.INDEX_VELOCITY:
+            p = this.simulation.addParticle(this.tempObject.x, this.tempObject.y, this.tempObject.mass, this.tempObject.radius, this.tempObject.style);
+            p.xVel = this.tempObject.xVel;
+            p.yVel = this.tempObject.yVel;
+            p.cOR = this.tempObject.cOR;
+            this.stage.removeChild(this.velocityLine);
+            this.stage.removeChild(this.velText);
+            this.tempObject.xVel = this.tempObject.yVel = 0;
+            if (this.mode === Overlay.MODE_EDIT && !this.copyPlace) {
+              this.index = Overlay.INDEX_MODIFY;
+              this.simulation.renderer.removeParticle(this.tempObject);
             } else {
-              index = INDEX_PLACE;
+              this.index = Overlay.INDEX_PLACE;
             }
             break;
-          case INDEX_MODIFY:
-            possibles = this.simulation.renderer.getParticlesAtPos(mouseX, mouseY);
+          case Overlay.INDEX_MODIFY:
+            possibles = this.simulation.renderer.getParticlesAtPos(this.mouseX, this.mouseY);
             if (possibles.length > 0) {
               selected = possibles[0].particle;
               this.simulation.removeParticle(selected);
               if (ev.button !== 2) {
-                tempObject = selected.copy();
-                lastX = selected.x;
-                lastY = selected.y;
-                this.particleRenderer = this.simulation.renderer.addParticle(tempObject);
-                if (!copyPlace) {
+                this.tempObject = selected.copy();
+                this.particleRenderer = this.simulation.renderer.addParticle(this.tempObject);
+                if (!this.copyPlace) {
                   this.simulation.removeSelected();
                 }
-                index = INDEX_PLACE;
+                this.index = Overlay.INDEX_PLACE;
               }
             }
             break;
@@ -1373,12 +1326,24 @@ $("#cor-slider").sliderEx({
     };
 
     Overlay.prototype.draw = function(interpolation) {
+      var i, len, p, ref;
       if (!this.hidden) {
-        if (showError) {
-          errorTimer -= 1000 / this.settings.global.updateRate;
-          if (errorTimer <= 0) {
-            showError = false;
-            this.stage.removeChild(errorText);
+        if (this.index === Overlay.INDEX_MODIFY) {
+          ref = this.simulation.renderer.getParticles();
+          for (i = 0, len = ref.length; i < len; i++) {
+            p = ref[i];
+            if (this.simulation.renderer.isParticleAtPos(p, this.mouseX, this.mouseY)) {
+              p.select();
+            } else {
+              p.deselect();
+            }
+          }
+        }
+        if (this.showError) {
+          this.errorTimer -= 1000 / this.settings.global.updateRate;
+          if (this.errorTimer <= 0) {
+            this.showError = false;
+            this.stage.removeChild(this.errorText);
           }
         }
         return this.stage.update();
@@ -1386,51 +1351,48 @@ $("#cor-slider").sliderEx({
     };
 
     Overlay.prototype.reset = function() {
-      if (mode === MODE_EDIT) {
-        console.log("LOL");
-      }
-      this.stage.removeChild(velocityLine);
-      this.stage.removeChild(infoText);
-      return index = INDEX_PLACE;
+      this.stage.removeChild(this.velocityLine);
+      this.stage.removeChild(this.velText);
+      return this.index = Overlay.INDEX_PLACE;
     };
 
     Overlay.prototype.beginAdd = function(mass, cOR, style) {
       this.show();
       this.init();
-      tempObject = new Particle(crossX, crossY, 25, style, this.settings);
-      tempObject.mass = mass;
-      tempObject.cOR = cOR;
-      this.particleRenderer = this.simulation.renderer.addParticle(tempObject);
-      infoText.x = mouseX;
-      infoText.y = mouseY;
-      modeText.text = "Mode: Add";
-      index = INDEX_PLACE;
-      return mode = MODE_ADD;
+      this.tempObject = new Particle(this.crossX, this.crossY, 25, style, this.settings);
+      this.tempObject.mass = mass;
+      this.tempObject.cOR = cOR;
+      this.particleRenderer = this.simulation.renderer.addParticle(this.tempObject);
+      this.velText.x = this.mouseX;
+      this.velText.y = this.mouseY;
+      this.modeText.text = "Mode: Add";
+      this.index = Overlay.INDEX_PLACE;
+      return this.mode = Overlay.MODE_ADD;
     };
 
     Overlay.prototype.beginEdit = function() {
       this.show();
       this.init();
-      modeText.text = "Mode: Edit";
-      index = INDEX_MODIFY;
-      return mode = MODE_EDIT;
+      this.modeText.text = "Mode: Edit";
+      this.index = Overlay.INDEX_MODIFY;
+      return this.mode = Overlay.MODE_EDIT;
     };
 
     Overlay.prototype.end = function() {
       this.hide();
-      this.simulation.renderer.removeParticle(tempObject);
-      tempObject = null;
-      mode = -1;
-      freePlace = false;
-      return copyPlace = false;
+      this.simulation.renderer.removeParticle(this.tempObject);
+      this.tempObject = null;
+      this.mode = -1;
+      this.freePlace = false;
+      return this.copyPlace = false;
     };
 
     Overlay.prototype.getCurrentParticle = function() {
-      return tempObject;
+      return this.tempObject;
     };
 
     Overlay.prototype.getMode = function() {
-      return mode;
+      return this.mode;
     };
 
     return Overlay;
@@ -1574,13 +1536,13 @@ $("#cor-slider").sliderEx({
   Interpolator = require("../../../interpolator");
 
   module.exports = ParticleRenderer = (function(superClass) {
-    var curPos, len, pastPositions;
+    var len;
 
     extend(ParticleRenderer, superClass);
 
-    pastPositions = [];
+    ParticleRenderer.prototype.pastPositions = [];
 
-    curPos = 0;
+    ParticleRenderer.prototype.curPos = 0;
 
     function ParticleRenderer(particle, enableSelection) {
       this.particle = particle;
@@ -1614,13 +1576,13 @@ $("#cor-slider").sliderEx({
     };
 
     if (ParticleRenderer.enableSelection && ParticleRenderer.selected) {
-      curPos++;
-      curPos %= 20;
-      len = pastPositions.length;
+      ParticleRenderer.curPos++;
+      ParticleRenderer.curPos %= 20;
+      len = ParticleRenderer.pastPositions.length;
       if (len < 20) {
-        pastPositions.push(new Point2D(ParticleRenderer.x, ParticleRenderer.y));
+        ParticleRenderer.pastPositions.push(new Point2D(ParticleRenderer.x, ParticleRenderer.y));
       } else {
-        pastPositions[curPos] = new Point2D(ParticleRenderer.x, ParticleRenderer.y);
+        ParticleRenderer.pastPositions[ParticleRenderer.curPos] = new Point2D(ParticleRenderer.x, ParticleRenderer.y);
       }
     }
 
@@ -1630,7 +1592,7 @@ $("#cor-slider").sliderEx({
 
     ParticleRenderer.prototype.deselect = function() {
       this.selected = false;
-      return pastPositions = [];
+      return this.pastPositions = [];
     };
 
     ParticleRenderer.prototype.draw = function(interpolation) {
@@ -1649,9 +1611,9 @@ $("#cor-slider").sliderEx({
         graphics.beginStroke("blue").setStrokeStyle(3).drawCircle(0, 0, this.particle.radius).endStroke();
         graphics = this.tail.graphics;
         graphics.clear();
-        len = pastPositions.length;
+        len = this.pastPositions.length;
         for (i = j = 0, ref = len - 1; j <= ref; i = j += 1) {
-          p = pastPositions[(i + this.particle.curPos) % len];
+          p = this.pastPositions[(i + this.curPos) % len];
           px = p.x - this.particle.x;
           py = p.y - this.particle.y;
           r_a = i / len;
@@ -1726,11 +1688,9 @@ $("#cor-slider").sliderEx({
   EaselJSRenderer = require("./renderer/easeljs/easeljs-renderer");
 
   module.exports = Simulation = (function(superClass) {
-    var selected;
-
     extend(Simulation, superClass);
 
-    selected = null;
+    Simulation.prototype.selected = null;
 
     function Simulation(canvasName, engine, interpolator, settings) {
       this.engine = engine;
@@ -1814,25 +1774,25 @@ $("#cor-slider").sliderEx({
 
     Simulation.prototype.removeSelected = function() {
       var i, j, len, particle, ref;
-      if (selected !== null) {
+      if (this.selected !== null) {
         ref = this.particles;
         for (i = j = 0, len = ref.length; j < len; i = ++j) {
           particle = ref[i];
-          if (particle === selected) {
+          if (particle === this.selected) {
             this.removeParticle(i);
           }
         }
-        return selected = null;
+        return this.selected = null;
       }
     };
 
     Simulation.prototype.getSelected = function() {
-      return selected;
+      return this.selected;
     };
 
     Simulation.prototype.restart = function() {
       this.renderer.clear();
-      selected = null;
+      this.selected = null;
       this.engine.reset();
       return this.fire("restart");
     };

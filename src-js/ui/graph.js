@@ -11,8 +11,6 @@
   Point2D = require('../math/point-2d');
 
   module.exports = Graph = (function(superClass) {
-    var currX, currY, data, graph, maxLen, offsetX, offsetY, start, updated, userY, zoomIndex;
-
     extend(Graph, superClass);
 
     Graph.prototype.x = 0;
@@ -23,27 +21,27 @@
 
     Graph.prototype.scaleY = 0;
 
-    graph = new createjs.Shape();
+    Graph.prototype.graph = new createjs.Shape();
 
-    offsetX = 0.0;
+    Graph.prototype.offsetX = 0.0;
 
-    offsetY = 0.0;
+    Graph.prototype.offsetY = 0.0;
 
-    userY = 0;
+    Graph.prototype.userY = 0;
 
-    data = [];
+    Graph.prototype.data = [];
 
-    start = 0;
+    Graph.prototype.start = 0;
 
-    maxLen = 150;
+    Graph.prototype.maxLen = 150;
 
-    updated = false;
+    Graph.prototype.updated = false;
 
-    currX = 0;
+    Graph.prototype.currX = 0;
 
-    currY = 0;
+    Graph.prototype.currY = 0;
 
-    zoomIndex = 0;
+    Graph.prototype.zoomIndex = 0;
 
     function Graph(canvasName, engine, scaleX, scaleY, settings) {
       this.engine = engine;
@@ -61,128 +59,128 @@
       yAxis.graphics.beginStroke("red").moveTo(this.x, this.y).lineTo(this.x, this.height);
       this.stage.addChild(xAxis);
       this.stage.addChild(yAxis);
-      this.stage.addChild(graph);
+      this.stage.addChild(this.graph);
       this.stage.update();
       return this.updateData();
     };
 
     Graph.prototype.draw = function(interpolation) {
-      var dataY, g, i, i2, j, length, targetY, total, x1, x2, x3, y1, y2, y3;
+      var g, i, i2, j, length, targetY, total, x1, x2, x3, y1, y2, y3;
       if (this.engine !== null) {
-        g = graph.graphics;
+        g = this.graph.graphics;
         g.clear();
-        length = data.length - 1;
+        length = this.data.length - 1;
         total = 0;
         j = 0;
         while (j < length - 1) {
-          if (updated) {
-            updated = false;
+          if (this.updated) {
+            this.updated = false;
             return;
           }
-          total += data[j].y;
-          i = (start + j) % length;
-          i2 = (start + j + 1) % length;
-          x2 = (data[i].x * this.scaleX) - offsetX;
-          y2 = (data[i].y * this.scaleY) + offsetY + userY;
+          total += this.data[j].y;
+          i = (this.start + j) % length;
+          i2 = (this.start + j + 1) % length;
+          x2 = (this.data[i].x * this.scaleX) - this.offsetX;
+          y2 = (this.data[i].y * this.scaleY) + this.offsetY + this.userY;
           if (x2 > this.width) {
-            offsetX += x2 - this.width;
+            this.offsetX += x2 - this.width;
           }
-          x1 = (data[i].x * this.scaleX) - offsetX;
-          y1 = (data[i].y * this.scaleY) + offsetY + userY;
-          x3 = (data[i2].x * this.scaleX) - offsetX;
-          y3 = (data[i2].y * this.scaleY) + offsetY + userY;
+          x1 = (this.data[i].x * this.scaleX) - this.offsetX;
+          y1 = (this.data[i].y * this.scaleY) + this.offsetY + this.userY;
+          x3 = (this.data[i2].x * this.scaleX) - this.offsetX;
+          y3 = (this.data[i2].y * this.scaleY) + this.offsetY + this.userY;
           g.beginStroke("red").moveTo(this.x + x1, this.y + this.height - y1).lineTo(this.x + x3, this.y + this.height - y3);
           j++;
         }
         if (!this.paused) {
-          currX += 1000 / this.settings.global.updateRate;
-          currY = this.getEnergy();
-          this.addData(currX, currY);
+          this.currX += 1000 / this.settings.global.updateRate;
+          this.currY = this.getEnergy();
+          this.addData(this.currX, this.currY);
         }
-        dataY = total / data.length;
+        this.dataY = total / this.data.length;
         targetY = this.height / 2;
-        offsetY = targetY - (dataY * this.scaleY);
+        this.offsetY = targetY - (this.dataY * this.scaleY);
         return this.stage.update();
       }
     };
 
     Graph.prototype.restart = function() {
-      data = [];
-      start = 0;
-      currX = currY = 0;
-      offsetX = offsetY = 0;
-      return updated = true;
+      this.data = [];
+      this.start = 0;
+      this.currX = this.currY = 0;
+      this.offsetX = this.offsetY = 0;
+      return this.updated = true;
     };
 
     Graph.prototype.calibrate = function() {
-      return userY = 0;
+      return this.userY = 0;
     };
 
     Graph.prototype.zoomIn = function() {
-      if (zoomIndex < this.settings.graph.graphMaxZoomIndex) {
+      if (this.zoomIndex < this.settings.graph.graphMaxZoomIndex) {
         this.scaleX *= this.settings.graph.graphZoomFactor;
         this.scaleY *= this.settings.graph.graphZoomFactor;
-        offsetX *= this.scaleX;
-        offsetY *= this.scaleY;
+        this.offsetX *= this.scaleX;
+        this.offsetY *= this.scaleY;
         this.updateData();
-        return zoomIndex++;
+        return this.zoomIndex++;
       } else {
         throw "ERROR: Maximum zoom reached";
       }
     };
 
     Graph.prototype.zoomOut = function() {
-      if (zoomIndex > -this.settings.graph.graphMinZoomIndex) {
+      if (this.zoomIndex > -this.settings.graph.graphMinZoomIndex) {
         this.scaleX /= this.settings.graph.graphZoomFactor;
         this.scaleY /= this.settings.graph.graphZoomFactor;
-        offsetX *= this.scaleX;
-        offsetY *= this.scaleY;
+        this.offsetX *= this.scaleX;
+        this.offsetY *= this.scaleY;
         this.updateData();
-        return zoomIndex--;
+        return this.zoomIndex--;
       } else {
         throw "ERROR: Minimum zoom reached";
       }
     };
 
     Graph.prototype.moveUp = function() {
-      return userY -= 5;
+      return this.userY -= 5;
     };
 
     Graph.prototype.moveDown = function() {
-      return userY += 5;
+      return this.userY += 5;
     };
 
     Graph.prototype.getZoomIndex = function() {
-      return zoomIndex;
+      return this.zoomIndex;
     };
 
     Graph.prototype.addData = function(x, y) {
       var s;
-      if (data.length > maxLen) {
-        s = start;
-        start = (start + 1) % maxLen;
-        return data[s] = new Point2D(x, y);
+      if (this.data.length > this.maxLen) {
+        s = this.start;
+        this.start = (this.start + 1) % this.maxLen;
+        return this.data[s] = new Point2D(x, y);
       } else {
-        return data.push(new Point2D(x, y));
+        return this.data.push(new Point2D(x, y));
       }
     };
 
     Graph.prototype.updateData = function() {
-      var aLen, data2, diff, i, j, k, ref, ref1;
-      data2 = [];
-      maxLen = Math.round(this.width / ((1000 / this.settings.global.updateRate) * this.scaleX)) + 5;
-      aLen = data.length - 1;
+      var aLen, diff, i, j, k, ref, ref1;
+      this.data2 = [];
+      this.maxLen = Math.round(this.width / ((1000 / this.settings.global.updateRate) * this.scaleX)) + 5;
+      aLen = this.data.length - 1;
       diff = 0;
-      if (aLen > maxLen) {
-        diff = aLen - maxLen;
+      if (aLen > this.maxLen) {
+        diff = aLen - this.maxLen;
       }
       for (j = k = ref = diff, ref1 = aLen - 1; k <= ref1; j = k += 1) {
-        i = (start + j) % aLen;
-        data2.push(data[i]);
+        i = (this.start + j) % aLen;
+        this.data2.push(this.data[i]);
       }
-      updated = true;
-      start = 0;
-      return data = data2;
+      this.updated = true;
+      this.start = 0;
+      return this.data = this.data2;
     };
 
     Graph.prototype.getEnergy = function() {

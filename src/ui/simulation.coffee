@@ -4,7 +4,7 @@ EventManager = require("../events/event-manager")
 EaselJSRenderer = require("./renderer/easeljs/easeljs-renderer")
 
 module.exports = class Simulation extends Widget
-    selected = null
+    selected: null
 
     constructor: (canvasName, @engine, @interpolator, @settings) ->
         super(canvasName)
@@ -61,19 +61,19 @@ module.exports = class Simulation extends Widget
             saved.push(particle.copy())
 
     removeSelected: ->
-        if (selected != null)
+        if (@selected != null)
             for particle,i in @particles
-                if (particle == selected)
+                if (particle == @selected)
                     @removeParticle(i)
 
-            selected = null
+            @selected = null
 
     getSelected: ->
-        return selected
+        return @selected
     
     restart: ->
         @renderer.clear()
-        selected = null
+        @selected = null
         @engine.reset()
         @fire("restart")
     

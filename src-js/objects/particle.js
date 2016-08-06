@@ -11,13 +11,7 @@
   module.exports = Particle = (function(superClass) {
     extend(Particle, superClass);
 
-    Particle.prototype.selected = false;
-
     Particle.prototype.cOR = 1.0;
-
-    Particle.prototype.pastPositions = [];
-
-    Particle.prototype.curPos = 0;
 
     Particle.prototype.renderer = null;
 

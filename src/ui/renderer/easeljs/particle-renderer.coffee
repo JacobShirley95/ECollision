@@ -4,8 +4,8 @@ EventManager = require("../../../events/event-manager")
 Interpolator = require("../../../interpolator")
 
 module.exports = class ParticleRenderer extends Renderer
-	pastPositions = []
-	curPos = 0
+	pastPositions: []
+	curPos: 0
 
 	constructor: (@particle, @enableSelection) ->
 		@displayObj = new createjs.Shape()
@@ -39,21 +39,21 @@ module.exports = class ParticleRenderer extends Renderer
         @lastY = @particle.y
 
 		if (@enableSelection && @selected) 
-		    curPos++
-		    curPos %= 20
+		    @curPos++
+		    @curPos %= 20
 
-		    len = pastPositions.length
+		    len = @pastPositions.length
 		    if (len < 20) 
-		        pastPositions.push(new Point2D(@x, @y))
+		        @pastPositions.push(new Point2D(@x, @y))
 		     else 
-		        pastPositions[curPos] = new Point2D(@x, @y)
+		        @pastPositions[@curPos] = new Point2D(@x, @y)
 
 	select: ->
         @selected = true
     
     deselect: ->
         @selected = false
-        pastPositions = []
+        @pastPositions = []
 
 	draw: (interpolation) ->
 		newX = @particle.x
@@ -74,9 +74,9 @@ module.exports = class ParticleRenderer extends Renderer
 
 			graphics = @tail.graphics
 			graphics.clear()
-			len = pastPositions.length
+			len = @pastPositions.length
 			for i in [0..len-1] by 1
-			    p = pastPositions[(i + @particle.curPos) % len]
+			    p = @pastPositions[(i + @curPos) % len]
 			    px = p.x-@particle.x
 			    py = p.y-@particle.y
 
