@@ -3,15 +3,15 @@
 * Copyright (c) 2009, Howard Rauscher
 * Licensed under the MIT License
 ###
- 
+
 #Based on the code https://gist.github.com/howardr/118668 - thanks!
 
-module.exports = class EventManager
+export default class EventManager
     class EventArg
         constructor: (@name, @data) ->
             @cancelled = false;
             @removed = false;
-        
+
         cancel: ->
             @cancelled = true;
 
@@ -34,10 +34,10 @@ module.exports = class EventManager
             if(listeners != undefined)
                 foundAt = -1
                 for listener,i in listeners
-                    if(listener == fn) 
+                    if(listener == fn)
                         foundAt = i
                         break
-                
+
                 if(foundAt >= 0)
                     listeners.splice(foundAt, 1);
 
@@ -51,16 +51,16 @@ module.exports = class EventManager
             evt = null
             for listener,i in listeners
                 evt = new EventArg(name, data)
-                
+
                 listener.apply(window, args.concat(evt))
 
                 data = evt.data
-                if(evt.removed) 
+                if(evt.removed)
                     listeners.splice(i, 1)
                     len = listeners.length
                     --i
-                
-                if(evt.cancelled) 
+
+                if(evt.cancelled)
                     break
         return @
 
@@ -71,8 +71,8 @@ module.exports = class EventManager
         methods = ['addListener', 'removeListener', 'fire']
         manager = manager || new EventManager()
 
-        func = (method) -> 
-            object[method] = -> 
+        func = (method) ->
+            object[method] = ->
                 return manager[method].apply(manager, arguments)
-        
+
         func(method) for method in methods

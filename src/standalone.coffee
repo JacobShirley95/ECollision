@@ -1,7 +1,9 @@
-module.exports.ECollision = require("./ecollision")
-module.exports.ECollisionSettings = require("./settings")
+import ECollision from "./ecollision"
+import ECollisionSettings from "./settings"
 
-module.exports.SimulationEngine = require("./engine/simulation-engine")
+import SimulationEngine from "./engine/simulation-engine"
 
-module.exports.SimulationRenderer = require("./ui/renderer/simulation-renderer")
-module.exports.EaselJSRenderer = require("./ui/renderer/easeljs/easeljs-renderer")
+import SimulationRenderer from "./ui/renderer/simulation-renderer"
+import EaselJSRenderer from "./ui/renderer/easeljs/easeljs-renderer"
+
+export {ECollision, ECollisionSettings, SimulationEngine, SimulationRenderer, EaselJSRenderer}

@@ -1,7 +1,7 @@
-module.exports = class Widget
+export default class Widget
     constructor: (@canvasName) ->
         @canvas = $("#"+@canvasName)
-        
+
         @width = @canvas.width()
         @height = @canvas.height()
 
@@ -12,31 +12,31 @@ module.exports = class Widget
         @canvas.attr("width", @width)
         @canvas.attr("height", @height)
 
-    init: -> 
+    init: ->
 
     addEventListener: (event, handler) ->
         @stage.addEventListener(event, handler)
-    
-    draw: (interpolation) ->
-    
-    restart: ->
-    
-    stop: -> 
 
-    resume: -> 
+    draw: (interpolation) ->
+
+    restart: ->
+
+    stop: ->
+
+    resume: ->
         @paused = false
 
-    pause: -> 
+    pause: ->
         @paused = true
-    
+
     resize: (newWidth, newHeight) ->
         @width = newWidth;
         @height = newHeight;
-    
-    show: -> 
+
+    show: ->
         @hidden = false
         @canvas.fadeIn(200)
-    
-    hide: -> 
+
+    hide: ->
         @hidden = true
         @canvas.fadeOut(200)

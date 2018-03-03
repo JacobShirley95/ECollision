@@ -1,5 +1,5 @@
-var ECollisionSettings = require("../../../../src-js/settings");
-var ECollision = require("../../../../src-js/ecollision");
+import ECollisionSettings from "../../../../src-es6/settings.js";
+import ECollision from "../../../../src-es6/ecollision.js";
 
 var eCollisionSettings = new ECollisionSettings();
 var ecollision = new ECollision(eCollisionSettings);
@@ -20,45 +20,45 @@ $.widget("custom.sliderEx", $.ui.slider, {
 
         var pos = this.handle.position();
         var width = this._amount.width()/2;
-        
+
         var newLeft = pos.left;
-        
+
         this._amount.css("left", newLeft+"px");
     },
-    
+
     _start: function() {
         this._superApply(arguments);
         var left = this.handle.css("left");
-        
+
         this._amount.css('visibility','visible').hide().fadeIn("fast").css("left", left);
     },
-    
+
     _stop: function() {
         this._superApply(arguments);
 
         this._amount.fadeOut("fast");
     },
-    
+
     _create: function() {
         var min = parseFloat(this.element.attr("min"));
         var max = parseFloat(this.element.attr("max"));
-        
+
         this.options.min = min;
         this.options.max = max;
 
         this.options.step = parseFloat(this.element.attr("step")) || 1.0;
-        
+
         this.options.value = parseFloat(this.element.attr("value")) || (min+max/2);
-        
+
         var unit = this.element.attr("unit");
         this._unit = unit || "";
-        
+
         this._amount = $('<div class="slider-amount">'+this._formatVal(this.options.value)+'</div>');
-        
+
         this.element.append(this._amount).mousedown(function(event) {
             event.stopPropagation();
         });
-        
+
         this._super();
     }
 });
@@ -101,6 +101,50 @@ function log(s) {
     console.log(s);
 }
 
+
+var fpsDiv = $("#fps-div");
+var particleInfo = $("#particle-info-box");
+
+ecollision.simulationUI.onSelect = function(particle) {
+    $("#slider-mass").sliderEx("value", particle.mass);
+    $("#slider-cor").sliderEx("value", particle.cOR);
+}
+
+ecollision.addListener("tick", function() {
+    if (eCollisionSettings.global.showVelocities) {
+        var fps = "";
+        if (ecollision.fps < 24) {
+            fps = setCol(ecollision.fps, "red");
+        } else {
+            fps = setCol(ecollision.fps, "green");
+
+        }
+        var debugStr = "Frame rate: " + fps + " Hz" +
+                   "<br /> Update rate: " + setColGreen(ecollision.getUpdateRate()) + " Hz" +
+                   "<br /> Energy in system: " + setColGreen(ecollision.graphUI.getEnergy()) + " kJ" +
+                   "<br /> Number of particles: " + setColGreen(ecollision.engine.particles.length);
+
+        fpsDiv.html(debugStr);
+    } else fpsDiv.html("");
+
+    var selected = ecollision.simulationUI.getSelected();
+    if (selected != null) {
+        var str = "<b>XVel:</b> " + Math.round(selected.xVel*eCollisionSettings.global.updateRate) + " px/s" +
+                  "<br /> <b>YVel:</b> " + Math.round(selected.yVel*eCollisionSettings.global.updateRate) + " px/s" +
+                  "<br /> <b>Direction:</b> " + Math.round(toDegrees(Math.atan2(selected.yVel, selected.xVel))) + " degrees" +
+                  "<br /> <b>Mass:</b> " + selected.mass + " kg" +
+                  "<br /> <b>CoR:</b> " + selected.cOR +
+                  "<br /> <b>Radius:</b> " + selected.radius + " px"
+                  "<br /> <b>Energy:</b> " + Math.round(selected.getEnergy()) + " J";
+
+        particleInfo.html(str);
+    } else {
+        particleInfo.html("");
+    }
+});
+
+ecollision.start();
+
 $("#slider-mass").sliderEx({
     slide: function(event, ui) {
         var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
@@ -108,7 +152,7 @@ $("#slider-mass").sliderEx({
             cp.mass = ui.value;
     }
 });
-    
+
 $("#slider-cor").sliderEx({
     slide: function(event, ui) {
         var cp = ecollision.overlayUI.getCurrentParticle() || ecollision.simulationUI.getSelected();
@@ -185,7 +229,7 @@ $("#move-down").click(function() {
 });
 
 $("#btn-sim-data").click(function() {
-    eCollisionSettings.global.showVelocities = !eCollisionSettings.global.showVelocities;  
+    eCollisionSettings.global.showVelocities = !eCollisionSettings.global.showVelocities;
 });
 
 $("#btn-run-pause").click(function() {
@@ -229,46 +273,3 @@ $("#sim-speed-slider").sliderEx({
         eCollisionSettings.global.speedConst = parseFloat(ui.value);
     }
 });
-
-var fpsDiv = $("#fps-div");
-var particleInfo = $("#particle-info-box");
-
-ecollision.simulationUI.onSelect = function(particle) {
-    $("#slider-mass").sliderEx("value", particle.mass);
-    $("#slider-cor").sliderEx("value", particle.cOR);
-}
-
-ecollision.onTick = function() {
-    if (eCollisionSettings.global.showVelocities) {
-        var fps = "";
-        if (ecollision.fps < 24) {
-            fps = setCol(ecollision.fps, "red");
-        } else {
-            fps = setCol(ecollision.fps, "green");
-
-        }
-        debugStr = "Frame rate: " + fps + " Hz" +
-                   "<br /> Update rate: " + setColGreen(ecollision.getUpdateRate()) + " Hz" +
-                   "<br /> Energy in system: " + setColGreen(ecollision.graphUI.getEnergy()) + " kJ" +
-                   "<br /> Number of particles: " + setColGreen(ecollision.engine.numOfParticles());
-                   
-        fpsDiv.html(debugStr);
-    } else fpsDiv.html("");
-
-    var selected = ecollision.simulationUI.getSelected();
-    if (selected != null) {
-        var str = "<b>XVel:</b> " + Math.round(selected.xVel*eCollisionSettings.global.updateRate) + " px/s" + 
-                  "<br /> <b>YVel:</b> " + Math.round(selected.yVel*eCollisionSettings.global.updateRate) + " px/s" +
-                  "<br /> <b>Direction:</b> " + Math.round(toDegrees(Math.atan2(selected.yVel, selected.xVel))) + " degrees" +
-                  "<br /> <b>Mass:</b> " + selected.mass + " kg" +
-                  "<br /> <b>CoR:</b> " + selected.cOR +
-                  "<br /> <b>Radius:</b> " + selected.radius + " px"
-                  "<br /> <b>Energy:</b> " + Math.round(selected.getEnergy()) + " J";
-        
-        particleInfo.html(str);
-    } else {
-        particleInfo.html("");
-    }
-}
-
-ecollision.start();

@@ -1,8 +1,8 @@
-Widget = require("./widget")
-Particle = require('../objects/particle')
-Point2D = require('../math/point-2d')
+import Widget from "./widget";
+import Particle from "../objects/particle";
+import Point2D from "../math/point-2d";
 
-module.exports = class Graph extends Widget
+export default class Graph extends Widget
     x: 0
     y: 0
     scaleX: 0
@@ -14,11 +14,11 @@ module.exports = class Graph extends Widget
     offsetY: 0.0
 
     userY: 0
-    
+
     data: []
     start: 0
     maxLen: 150
-    
+
     updated: false
 
     currX: 0
@@ -28,28 +28,28 @@ module.exports = class Graph extends Widget
 
     constructor: (canvasName, @engine, @scaleX, @scaleY, @settings) ->
         super(canvasName)
-    
+
     init: ->
         xAxis = new createjs.Shape()
         yAxis = new createjs.Shape()
 
         xAxis.graphics.beginStroke("red").moveTo(@x, @height).lineTo(@width, @height)
         yAxis.graphics.beginStroke("red").moveTo(@x, @y).lineTo(@x, @height)
-        
+
         @stage.addChild(xAxis)
         @stage.addChild(yAxis)
-        
+
         @stage.addChild(@graph)
         @stage.update()
-        
+
         @updateData()
-    
+
     draw: (interpolation) ->
         if (@engine != null)
             g = @graph.graphics
-            
+
             g.clear()
-            
+
             length = @data.length-1
             total = 0
 
@@ -58,26 +58,26 @@ module.exports = class Graph extends Widget
                 if (@updated)
                     @updated = false
                     return
-                
+
                 total += @data[j].y
-                
+
                 #calculate offsetted index for point at index j
                 i = (@start+j)%length
                 i2 = (@start+j+1)%length
-                
+
                 x2 = (@data[i].x*@scaleX)-@offsetX
                 y2 = (@data[i].y*@scaleY)+@offsetY+@userY
-                
+
                 #if second x value is larger than width, move graph along
                 if (x2 > @width)
                     @offsetX += x2-@width
-        
+
                 x1 = (@data[i].x*@scaleX)-@offsetX
                 y1 = (@data[i].y*@scaleY)+@offsetY+@userY
-                
+
                 x3 = (@data[i2].x*@scaleX)-@offsetX
                 y3 = (@data[i2].y*@scaleY)+@offsetY+@userY
-                
+
                 g.beginStroke("red").moveTo(@x+x1, @y+@height-y1).lineTo(@x+x3, @y+@height-y3)
                 j++
 
@@ -86,12 +86,12 @@ module.exports = class Graph extends Widget
                 @currY = @getEnergy()
 
                 @addData(@currX, @currY)
-                
+
             @dataY = total/@data.length
             targetY = @height/2
-        
+
             @offsetY = targetY-(@dataY*@scaleY)
-            
+
             @stage.update()
 
     restart: ->
@@ -100,28 +100,28 @@ module.exports = class Graph extends Widget
         @currX = @currY = 0
         @offsetX = @offsetY = 0
         @updated = true
-    
+
     calibrate: ->
         @userY = 0
-    
+
     zoomIn: ->
         if (@zoomIndex < @settings.graph.graphMaxZoomIndex)
             @scaleX *= @settings.graph.graphZoomFactor
             @scaleY *= @settings.graph.graphZoomFactor
-            
+
             @offsetX *= @scaleX
             @offsetY *= @scaleY
-            
+
             @updateData()
 
             @zoomIndex++
         else throw("ERROR: Maximum zoom reached")
-    
+
     zoomOut: ->
         if (@zoomIndex > -@settings.graph.graphMinZoomIndex)
             @scaleX /= @settings.graph.graphZoomFactor
             @scaleY /= @settings.graph.graphZoomFactor
-            
+
             @offsetX *= @scaleX
             @offsetY *= @scaleY
 
@@ -129,26 +129,26 @@ module.exports = class Graph extends Widget
 
             @zoomIndex--
         else throw("ERROR: Minimum zoom reached")
-    
+
     moveUp: ->
         @userY -= 5
-    
+
     moveDown: ->
         @userY += 5
 
     getZoomIndex: ->
         return @zoomIndex
-    
+
     addData: (x, y) ->
         if (@data.length > @maxLen)
             s = @start
- 
+
             @start = (@start + 1)%@maxLen
 
             @data[s] = new Point2D(x, y)
         else
             @data.push(new Point2D(x, y))
-    
+
     updateData: ->
         @data2 = []
 
@@ -156,23 +156,23 @@ module.exports = class Graph extends Widget
 
         aLen = @data.length-1
         diff = 0
-        
+
         if (aLen > @maxLen)
             diff = aLen-@maxLen
 
         for j in [diff..aLen-1] by 1
             i = (@start+j)%aLen
             @data2.push(@data[i])
-        
+
         @updated = true
         @start = 0
-        
+
         @data = @data2
-    
+
     getEnergy: ->
         energy = 0.0
 
         for particle in @engine.particles
             energy += particle.getEnergy()
-        
+
         return Math.round(energy/1000)

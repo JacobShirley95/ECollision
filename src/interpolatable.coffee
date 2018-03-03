@@ -1,4 +1,4 @@
-module.exports = class Interpolatable
+export default class Interpolatable
 	constructor: ->
 
 	interpolate: (fraction) ->

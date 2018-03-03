@@ -3,3 +3,4 @@ docs/~$*.docx
 bower_components/
 node_modules/
 *.log
+package-lock.json

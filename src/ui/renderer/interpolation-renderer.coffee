@@ -1,7 +1,8 @@
-Renderer = require("./renderer")
+import Renderer from "./renderer";
 
-module.exports = class InterpolationRenderer extends Renderer
+export default class InterpolationRenderer extends Renderer
 	constructor: ->
+		super()
 		@interpolatables = []
 
 	addInterpolatable: (interpolatable) ->

@@ -1,7 +1,8 @@
-Renderer = require("./renderer")
+import Renderer from "./renderer";
 
-module.exports = class SimulationRenderer extends Renderer
-	constructor: (@canvas, @interpolator) ->
+export default class SimulationRenderer extends Renderer
+	constructor: (@interpolator) ->
+		super()
 
 	addParticle: (particle) ->
 

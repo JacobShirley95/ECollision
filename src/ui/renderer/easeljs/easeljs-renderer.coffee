@@ -1,16 +1,15 @@
-ParticleRenderer = require('./particle-renderer')
-SimulationRenderer = require('../simulation-renderer')
+import ParticleRenderer from "./particle-renderer";
+import SimulationRenderer from "../simulation-renderer";
 
-module.exports = class EaselJSRenderer extends SimulationRenderer
-	constructor: (@canvasName, @interpolator, @settings) ->
-		super(@canvasName, @interpolator)
-		@stage = new createjs.Stage(@canvasName)
+export default class EaselJSRenderer extends SimulationRenderer
+	constructor: (@stage, interpolator, @settings) ->
+		super(interpolator)
 
 		@renderObjs = []
 
 		@interpolator.addListener("before-update", () =>
 			for particle in @renderObjs
-            	particle.capture()
+				particle.capture()
 		)
 
 	addParticle: (particle) ->
@@ -36,7 +35,7 @@ module.exports = class EaselJSRenderer extends SimulationRenderer
 		dx = p.x-x
 		dy = p.y-y
 
-		if (dx*dx + dy*dy <= p.radius*p.radius) 
+		if (dx*dx + dy*dy <= p.radius*p.radius)
 			return true
 
 		return false
@@ -66,6 +65,6 @@ module.exports = class EaselJSRenderer extends SimulationRenderer
 
 	draw: (interpolation) ->
 		for particle in @renderObjs
-            particle.draw(interpolation)
+			particle.draw(interpolation)
 
 		@stage.update()

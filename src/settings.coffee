@@ -1,4 +1,4 @@
-module.exports = class ECollisionSettings
+export default class ECollisionSettings
 	constructor: ->
 	global:
 		refreshRate: 24

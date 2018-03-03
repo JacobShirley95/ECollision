@@ -1,7 +1,7 @@
-PhysicsObject = require('./physics-object')
-Point2D = require('../math/point-2d')
+import PhysicsObject from "./physics-object";
+import Point2D from "../math/point-2d";
 
-module.exports = class Particle extends PhysicsObject
+export default class Particle extends PhysicsObject
     cOR: 1.0
     renderer: null
 
@@ -11,7 +11,7 @@ module.exports = class Particle extends PhysicsObject
     update: ->
         @x += @xVel*@settings.global.speedConst
         @y += @yVel*@settings.global.speedConst
-        
+
     copy: ->
        p = new Particle(@x, @y, @radius, @style, @settings)
 

@@ -2,7 +2,7 @@
     <head>
         <title>ECollision</title>
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-        
+
         <!-- Load Open Sans font -->
         <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
@@ -25,22 +25,22 @@
 
         <!-- Load my stylesheet -->
         <link rel="stylesheet" type="text/css" href="assets/stylesheets/style.css">
-    </head> 
-    
+    </head>
+
     <body>
         <div class="gridster">
             <ul></ul>
         </div>
 
         <script>
-            var SCRIPT = "assets/js/bundle.js"
+            var SCRIPT = "assets/js/script.js"
             var gridster;
 
             $(function(){
                 function resizeWidgets(e, ui, $widget) {
-                
+
                 }
-                
+
                 gridster = $(".gridster > ul").gridster({
                     widget_margins: [5, 5],
                     widget_base_dimensions: [100, 50],
@@ -54,28 +54,29 @@
                 }).data('gridster');
 
                 var panels = [ ['simulation', 4, 10],
-                                ['graph', 2, 4], 
+                                ['graph', 2, 4],
                                 ['sim-controls', 2, 3],
                                 ['particle-info', 2, 3],
                                 ['particle-controls', 4, 2]
                               ];
 
                 var numLoadedPanels = 0;
-            
+
                 $.each(panels, function(i, panel){
                     var p = panel[0];
                     panel[0] = '<li id="'+p+'"></li>';
                     gridster.add_widget.apply(gridster, panel);
-                    
+
                     console.log("Loading: "+p);
                     $("#"+p).load("panels/"+p+".html", function() {
                         console.log("Successfully loaded: "+p);
                         numLoadedPanels++;
                         if (numLoadedPanels == panels.length) {
                             var element = document.createElement("script");
-                            
+                            element.setAttribute("type", "module");
+
                             element.src = SCRIPT;
-                            
+
                             document.body.appendChild(element);
                         }
                     });

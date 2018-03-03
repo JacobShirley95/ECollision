@@ -1,12 +1,12 @@
-SimulationEngine = require("./engine/simulation-engine")
-Simulation = require("./ui/simulation")
-Graph = require("./ui/graph")
-Overlay = require("./ui/overlay")
-ECollisionSettings = require("./settings")
-EventManager = require("./events/event-manager")
-Interpolator = require("./interpolator")
+import SimulationEngine from "./engine/simulation-engine";
+import Simulation from "./ui/simulation";
+import Graph from "./ui/graph";
+import Overlay from "./ui/overlay"
+import ECollisionSettings from "./settings";
+import EventManager from "./events/event-manager";
+import Interpolator from "./interpolator";
 
-module.exports = class ECollision
+export default class ECollision
     constructor: (@settings) ->
         @engine = new SimulationEngine(@settings.simulation.simulationWidth, @settings.simulation.simulationHeight, @settings)
 
@@ -15,7 +15,7 @@ module.exports = class ECollision
 
         @simulationUI = new Simulation(@settings.simulation.simulationCanvas, @engine, @interpol, @settings)
         @graphUI = new Graph(@settings.graph.graphCanvas, @engine, 1/50, 5, @settings)
-        @overlayUI = new Overlay(@settings.overlay.overlayCanvas, @simulationUI, @settings)
+        @overlayUI = new Overlay(@settings.overlay.overlayCanvas, @simulationUI, @interpol, @settings)
 
         @paused = false
 
@@ -38,7 +38,7 @@ module.exports = class ECollision
     start: ->
         for widget in @widgets
             widget.init()
-        
+
         @interpol.start()
 
     restart: ->
@@ -47,7 +47,7 @@ module.exports = class ECollision
 
     resume: ->
         @paused = false
-        
+
         for widget in @widgets
             widget.resume()
 
@@ -65,10 +65,10 @@ module.exports = class ECollision
 
     getUpdateRate: ->
         return @updateRate
-    
+
     getUpdateTime: ->
         return @updateTime
-    
+
     setUpdateRate = (rate) ->
         @updateRate = rate
         @updateTime = 1000.0 / @updateRate
@@ -78,9 +78,9 @@ module.exports = class ECollision
 
     update: ->
         @engine.update()
-    
+
     tick: (interpolation) =>
-        @fpsCurTime = new Date().getTime()
+        @fpsCurTime = Date.now();
         @fpsCount++
 
         if (@fpsCurTime - @fpsTime >= 1000)

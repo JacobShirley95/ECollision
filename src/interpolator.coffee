@@ -1,6 +1,6 @@
-EventManager = require("./events/event-manager")
+import EventManager from "./events/event-manager";
 
-module.exports = class Interpolator
+export default class Interpolator
 	interpolation: 0.0
 	lockFPS: false
 
@@ -38,10 +38,3 @@ module.exports = class Interpolator
 
 		@interpolation = Math.min(1.0, (@curTime - @timeStamp) / @updateTime)
 		@fire("render", [@interpolation])
-
-		
-
-
-
-
-

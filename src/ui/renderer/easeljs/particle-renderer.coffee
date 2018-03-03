@@ -1,13 +1,14 @@
-Renderer = require("../renderer")
-Point2D = require("../../../math/point-2d")
-EventManager = require("../../../events/event-manager")
-Interpolator = require("../../../interpolator")
+import Renderer from "../renderer";
+import Point2D from "../../../math/point-2d";
+import EventManager from "../../../events/event-manager";
+import Interpolator from "../../../interpolator";
 
-module.exports = class ParticleRenderer extends Renderer
+export default class ParticleRenderer extends Renderer
 	pastPositions: []
 	curPos: 0
 
 	constructor: (@particle, @enableSelection) ->
+		super()
 		@displayObj = new createjs.Shape()
 
 		@lastX = @particle.x
@@ -22,8 +23,8 @@ module.exports = class ParticleRenderer extends Renderer
 				@fire("deselect", [ev, @])
 				@deselect()
 			else
-		    	@fire("select", [ev, @])
-		    	@select()
+				@fire("select", [ev, @])
+				@select()
 		)
 
 		@tail = new createjs.Shape()
@@ -35,25 +36,25 @@ module.exports = class ParticleRenderer extends Renderer
 		EventManager.eventify(@)
 
 	capture: ->
-        @lastX = @particle.x
-        @lastY = @particle.y
+		@lastX = @particle.x
+		@lastY = @particle.y
 
-		if (@enableSelection && @selected) 
-		    @curPos++
-		    @curPos %= 20
+		if (@enableSelection && @selected)
+			@curPos++
+			@curPos %= 20
 
-		    len = @pastPositions.length
-		    if (len < 20) 
-		        @pastPositions.push(new Point2D(@x, @y))
-		     else 
-		        @pastPositions[@curPos] = new Point2D(@x, @y)
+			len = @pastPositions.length
+			if (len < 20)
+				@pastPositions.push(new Point2D(@x, @y))
+			else
+				@pastPositions[@curPos] = new Point2D(@x, @y)
 
 	select: ->
-        @selected = true
-    
-    deselect: ->
-        @selected = false
-        @pastPositions = []
+		@selected = true
+
+	deselect: ->
+		@selected = false
+		@pastPositions = []
 
 	draw: (interpolation) ->
 		newX = @particle.x
@@ -66,6 +67,8 @@ module.exports = class ParticleRenderer extends Renderer
 		@displayObj.x = newX
 		@displayObj.y = newY
 
+		#console.log(@particle.x)
+
 		graphics = @displayObj.graphics
 		graphics.clear().beginFill(@particle.style).drawCircle(0, 0, @particle.radius).endFill()
 
@@ -76,12 +79,11 @@ module.exports = class ParticleRenderer extends Renderer
 			graphics.clear()
 			len = @pastPositions.length
 			for i in [0..len-1] by 1
-			    p = @pastPositions[(i + @curPos) % len]
-			    px = p.x-@particle.x
-			    py = p.y-@particle.y
+				p = @pastPositions[(i + @curPos) % len]
+				px = p.x-@particle.x
+				py = p.y-@particle.y
 
-			    r_a = i / len
+				r_a = i / len
 
-			    col = "rgba(100, 100, 100, "+r_a+")"
+				col = "rgba(100, 100, 100, "+r_a+")"
 				graphics.beginStroke(col).drawCircle(px, py, @particle.radius).endStroke()
-

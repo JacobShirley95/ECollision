@@ -1,2 +1,2 @@
-module.exports = class Point2D
+export default class Point2D
 	constructor: (@x, @y) ->

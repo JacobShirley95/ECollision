@@ -1,6 +1,6 @@
-EventManager = require("../events/event-manager")
+import EventManager from "../events/event-manager.js";
 
-module.exports = class PhysicsObject
+export default class PhysicsObject
     xVel:0
     yVel:0
 
@@ -17,6 +17,6 @@ module.exports = class PhysicsObject
     update: ->
         @x += @xVel
         @y += @yVel
-    
-    getEnergy: -> 
+
+    getEnergy: ->
         return 0.5 * @mass * ((@xVel*@xVel) + (@yVel*@yVel))

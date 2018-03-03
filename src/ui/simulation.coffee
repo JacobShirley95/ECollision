@@ -1,23 +1,24 @@
-Widget = require("./widget")
-Particle = require('../objects/particle')
-EventManager = require("../events/event-manager")
-EaselJSRenderer = require("./renderer/easeljs/easeljs-renderer")
+import Widget from "./widget";
+import Particle from "../objects/particle";
+import EventManager from "../events/event-manager";
+import EaselJSRenderer from "./renderer/easeljs/easeljs-renderer";
 
-module.exports = class Simulation extends Widget
+export default class Simulation extends Widget
     selected: null
 
     constructor: (canvasName, @engine, @interpolator, @settings) ->
         super(canvasName)
+
         @engine.width = @width
         @engine.height = @height
 
-        @renderer = new EaselJSRenderer(@canvasName, @interpolator, @settings)
+        @renderer = new EaselJSRenderer(@stage, @interpolator, @settings)
 
         EventManager.eventify(@)
 
     resize: (newWidth, newHeight) ->
         @engine.setBounds(newWidth, newHeight)
-    
+
     addParticle: (x, y, mass, radius, style) ->
         particle = new Particle(x, y, radius, style, @settings)
         particle.mass = mass
@@ -31,9 +32,9 @@ module.exports = class Simulation extends Widget
         )
 
         @engine.particles.push(particle)
-        
+
         return particle
-    
+
     removeParticle: (index) ->
         if (typeof index == "object")
             @renderer.removeParticle(index)
@@ -70,13 +71,14 @@ module.exports = class Simulation extends Widget
 
     getSelected: ->
         return @selected
-    
+
     restart: ->
         @renderer.clear()
         @selected = null
         @engine.reset()
+
         @fire("restart")
-    
+
     draw: (interpolation) ->
         @renderer.draw(interpolation)
 

@@ -1,4 +1,4 @@
-module.exports = class PVector
+export default class PVector
     constructor: (@x, @y) ->
 
     getMagnitude: ->
