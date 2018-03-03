@@ -5,10 +5,10 @@ export default Widget = class Widget {
   constructor(canvasName) {
     this.canvasName = canvasName;
     this.canvas = $("#" + this.canvasName);
-    this.width = this.canvas.width();
-    this.height = this.canvas.height();
     this.hidden = false;
     this.stage = new createjs.Stage(this.canvasName);
+    this.width = this.canvas.width();
+    this.height = this.canvas.height();
     this.canvas.attr("width", this.width);
     this.canvas.attr("height", this.height);
   }
@@ -34,8 +34,15 @@ export default Widget = class Widget {
   }
 
   resize(newWidth, newHeight) {
-    this.width = newWidth;
-    return this.height = newHeight;
+    if (typeof newWidth === "undefined") {
+      this.width = this.canvas.width();
+      this.height = this.canvas.height();
+    } else {
+      this.width = newWidth;
+      this.height = newHeight;
+    }
+    this.canvas.attr("width", this.width);
+    return this.canvas.attr("height", this.height);
   }
 
   show() {

@@ -13,16 +13,24 @@ export default class ECollision
         @interpol = new Interpolator(@settings.global.refreshRate, @settings.global.updateRate)
         @interpol.lockFPS = true
 
-        @simulationUI = new Simulation(@settings.simulation.simulationCanvas, @engine, @interpol, @settings)
-        @graphUI = new Graph(@settings.graph.graphCanvas, @engine, 1/50, 5, @settings)
-        @overlayUI = new Overlay(@settings.overlay.overlayCanvas, @simulationUI, @interpol, @settings)
+        @widgets = []
+
+        if (@settings.simulation.simulationCanvas)
+            @simulationUI = new Simulation(@settings.simulation.simulationCanvas, @engine, @interpol, @settings)
+            @widgets.push(@simulationUI)
+
+        if (@settings.graph)
+            @graphUI = new Graph(@settings.graph.graphCanvas, @engine, 1/50, 5, @settings)
+            @widgets.push(@graphUI)
+
+        if (@settings.overlay)
+            @overlayUI = new Overlay(@settings.overlay.overlayCanvas, @simulationUI, @interpol, @settings)
+            @widgets.push(@overlayUI)
 
         @paused = false
 
         @fpsCount = @fps = @fpsTime = 0
         @updateRate = @updateTime = @refreshTime = 0
-
-        @widgets = [@simulationUI, @graphUI, @overlayUI]
 
         @interpol.addListener("update", () =>
             if (!@paused)
@@ -75,6 +83,10 @@ export default class ECollision
 
     setSpeedConst = (speedConst) ->
         @engine.speedConst = speedConst
+
+    resize: ->
+        for widget in @widgets
+            widget.resize()
 
     update: ->
         @engine.update()

@@ -23,7 +23,8 @@ export default Simulation = (function() {
     }
 
     resize(newWidth, newHeight) {
-      return this.engine.setBounds(newWidth, newHeight);
+      super.resize(newWidth, newHeight);
+      return this.engine.setBounds(this.width, this.height);
     }
 
     addParticle(x, y, mass, radius, style) {

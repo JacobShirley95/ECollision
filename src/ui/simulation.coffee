@@ -17,7 +17,8 @@ export default class Simulation extends Widget
         EventManager.eventify(@)
 
     resize: (newWidth, newHeight) ->
-        @engine.setBounds(newWidth, newHeight)
+        super(newWidth, newHeight)
+        @engine.setBounds(@width, @height)
 
     addParticle: (x, y, mass, radius, style) ->
         particle = new Particle(x, y, radius, style, @settings)

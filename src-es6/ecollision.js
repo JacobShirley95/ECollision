@@ -25,13 +25,22 @@ export default ECollision = (function() {
       this.engine = new SimulationEngine(this.settings.simulation.simulationWidth, this.settings.simulation.simulationHeight, this.settings);
       this.interpol = new Interpolator(this.settings.global.refreshRate, this.settings.global.updateRate);
       this.interpol.lockFPS = true;
-      this.simulationUI = new Simulation(this.settings.simulation.simulationCanvas, this.engine, this.interpol, this.settings);
-      this.graphUI = new Graph(this.settings.graph.graphCanvas, this.engine, 1 / 50, 5, this.settings);
-      this.overlayUI = new Overlay(this.settings.overlay.overlayCanvas, this.simulationUI, this.interpol, this.settings);
+      this.widgets = [];
+      if (this.settings.simulation.simulationCanvas) {
+        this.simulationUI = new Simulation(this.settings.simulation.simulationCanvas, this.engine, this.interpol, this.settings);
+        this.widgets.push(this.simulationUI);
+      }
+      if (this.settings.graph) {
+        this.graphUI = new Graph(this.settings.graph.graphCanvas, this.engine, 1 / 50, 5, this.settings);
+        this.widgets.push(this.graphUI);
+      }
+      if (this.settings.overlay) {
+        this.overlayUI = new Overlay(this.settings.overlay.overlayCanvas, this.simulationUI, this.interpol, this.settings);
+        this.widgets.push(this.overlayUI);
+      }
       this.paused = false;
       this.fpsCount = this.fps = this.fpsTime = 0;
       this.updateRate = this.updateTime = this.refreshTime = 0;
-      this.widgets = [this.simulationUI, this.graphUI, this.overlayUI];
       this.interpol.addListener("update", () => {
         if (!this.paused) {
           return this.update();
@@ -101,6 +110,17 @@ export default ECollision = (function() {
 
     getUpdateTime() {
       return this.updateTime;
+    }
+
+    resize() {
+      var i, len, ref, results, widget;
+      ref = this.widgets;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        widget = ref[i];
+        results.push(widget.resize());
+      }
+      return results;
     }
 
     update() {

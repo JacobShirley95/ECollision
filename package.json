@@ -11,10 +11,11 @@
   },
   "scripts": {
     "transpile": "coffee -o src-es6 -c src/.",
-    "build": "browserify --standalone ecollision -t [ babelify --presets [ env ] ] src-es6/standalone.js > bin/ecollision.js",
+    "build": "browserify --standalone ecollision -t [ babelify --presets [ env ] ] src-es6/standalone.js > dist/ecollision.js",
     "transbuild": "npm run transpile && npm run build",
     "watch": "coffee -o src-es6 --watch -c src/.",
-    "minify": "node build/minify.js"
+    "minify": "uglifyjs dist/ecollision.js > dist/ecollision.min.js",
+    "all": "npm run transbuild && npm run minify"
   },
   "repository": {
     "type": "git",

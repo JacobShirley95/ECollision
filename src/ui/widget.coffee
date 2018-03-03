@@ -2,13 +2,13 @@ export default class Widget
     constructor: (@canvasName) ->
         @canvas = $("#"+@canvasName)
 
-        @width = @canvas.width()
-        @height = @canvas.height()
-
         @hidden = false
 
         @stage = new createjs.Stage(@canvasName)
 
+        @width = @canvas.width()
+        @height = @canvas.height()
+        
         @canvas.attr("width", @width)
         @canvas.attr("height", @height)
 
@@ -30,8 +30,15 @@ export default class Widget
         @paused = true
 
     resize: (newWidth, newHeight) ->
-        @width = newWidth;
-        @height = newHeight;
+        if (typeof newWidth == "undefined")
+            @width = @canvas.width()
+            @height = @canvas.height()
+        else
+            @width = newWidth
+            @height = newHeight
+
+        @canvas.attr("width", @width)
+        @canvas.attr("height", @height)
 
     show: ->
         @hidden = false

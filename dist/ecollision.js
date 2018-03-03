@@ -56,13 +56,22 @@ exports.default = ECollision = function () {
       this.engine = new _simulationEngine2.default(this.settings.simulation.simulationWidth, this.settings.simulation.simulationHeight, this.settings);
       this.interpol = new _interpolator2.default(this.settings.global.refreshRate, this.settings.global.updateRate);
       this.interpol.lockFPS = true;
-      this.simulationUI = new _simulation2.default(this.settings.simulation.simulationCanvas, this.engine, this.interpol, this.settings);
-      this.graphUI = new _graph2.default(this.settings.graph.graphCanvas, this.engine, 1 / 50, 5, this.settings);
-      this.overlayUI = new _overlay2.default(this.settings.overlay.overlayCanvas, this.simulationUI, this.interpol, this.settings);
+      this.widgets = [];
+      if (this.settings.simulation.simulationCanvas) {
+        this.simulationUI = new _simulation2.default(this.settings.simulation.simulationCanvas, this.engine, this.interpol, this.settings);
+        this.widgets.push(this.simulationUI);
+      }
+      if (this.settings.graph) {
+        this.graphUI = new _graph2.default(this.settings.graph.graphCanvas, this.engine, 1 / 50, 5, this.settings);
+        this.widgets.push(this.graphUI);
+      }
+      if (this.settings.overlay) {
+        this.overlayUI = new _overlay2.default(this.settings.overlay.overlayCanvas, this.simulationUI, this.interpol, this.settings);
+        this.widgets.push(this.overlayUI);
+      }
       this.paused = false;
       this.fpsCount = this.fps = this.fpsTime = 0;
       this.updateRate = this.updateTime = this.refreshTime = 0;
-      this.widgets = [this.simulationUI, this.graphUI, this.overlayUI];
       this.interpol.addListener("update", function () {
         if (!_this.paused) {
           return _this.update();
@@ -140,6 +149,18 @@ exports.default = ECollision = function () {
       key: "getUpdateTime",
       value: function getUpdateTime() {
         return this.updateTime;
+      }
+    }, {
+      key: "resize",
+      value: function resize() {
+        var i, len, ref, results, widget;
+        ref = this.widgets;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          widget = ref[i];
+          results.push(widget.resize());
+        }
+        return results;
       }
     }, {
       key: "update",
@@ -2017,6 +2038,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 var _widget = require("./widget");
 
 var _widget2 = _interopRequireDefault(_widget);
@@ -2066,7 +2089,8 @@ exports.default = Simulation = function () {
     _createClass(Simulation, [{
       key: "resize",
       value: function resize(newWidth, newHeight) {
-        return this.engine.setBounds(newWidth, newHeight);
+        _get(Simulation.prototype.__proto__ || Object.getPrototypeOf(Simulation.prototype), "resize", this).call(this, newWidth, newHeight);
+        return this.engine.setBounds(this.width, this.height);
       }
     }, {
       key: "addParticle",
@@ -2201,10 +2225,10 @@ exports.default = Widget = function () {
 
     this.canvasName = canvasName;
     this.canvas = $("#" + this.canvasName);
-    this.width = this.canvas.width();
-    this.height = this.canvas.height();
     this.hidden = false;
     this.stage = new createjs.Stage(this.canvasName);
+    this.width = this.canvas.width();
+    this.height = this.canvas.height();
     this.canvas.attr("width", this.width);
     this.canvas.attr("height", this.height);
   }
@@ -2239,8 +2263,15 @@ exports.default = Widget = function () {
   }, {
     key: "resize",
     value: function resize(newWidth, newHeight) {
-      this.width = newWidth;
-      return this.height = newHeight;
+      if (typeof newWidth === "undefined") {
+        this.width = this.canvas.width();
+        this.height = this.canvas.height();
+      } else {
+        this.width = newWidth;
+        this.height = newHeight;
+      }
+      this.canvas.attr("width", this.width);
+      return this.canvas.attr("height", this.height);
     }
   }, {
     key: "show",
