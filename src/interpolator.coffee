@@ -10,12 +10,21 @@ export default class Interpolator
 		@renderTime = 1000.0 / @renderRate
 
 		@curTime = @lastTime = @timeStamp = 0
-		@thread = 0
+		@started = false
 
 		EventManager.eventify(@)
 
 	start: ->
-		@thread = setInterval(@update, @updateTime)
+		@started = true
+		@_start()
+
+	_start: =>
+		if (@started)
+			@update()
+			requestAnimationFrame(@_start)
+
+	stop: ->
+		@started = false
 
 	@interpolate: (startVal, endVal, fraction) ->
 		return startVal + (fraction*(endVal-startVal))

@@ -7,6 +7,7 @@ export default class Particle extends PhysicsObject
 
     constructor: (x, y, @radius, @style, @settings) ->
         super(x, y, 0)
+        @needsUpdate = false
 
     update: ->
         @x += @xVel*@settings.global.speedConst

@@ -66,10 +66,7 @@ export default class ECollision
             widget.pause()
 
     stop: ->
-        if (@thread != -1)
-            clearInterval(@thread)
-
-            @thread = -1
+        @interpol.stop()
 
     getUpdateRate: ->
         return @updateRate

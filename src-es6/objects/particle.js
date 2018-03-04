@@ -12,6 +12,7 @@ export default Particle = (function() {
       this.radius = radius;
       this.style = style;
       this.settings = settings;
+      this.needsUpdate = false;
     }
 
     update() {

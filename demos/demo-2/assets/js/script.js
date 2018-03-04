@@ -55,14 +55,14 @@ function setCol(text, col) {
 
 ecollision.addListener("tick", function(interpolation) {
   var fps = "";
-  if (ecollision.fps < 24) {
+  /*if (ecollision.fps < 24) {
     fps = setCol(ecollision.fps, "red");
   } else {
     fps = setCol(ecollision.fps, "green");
   }
 
   $("#fps-counter").html("FPS: " + fps + " Hz");
-  $("#num-particles").html("Number of particles: " + setCol(ecollision.engine.particles.length, "green"));
+  $("#num-particles").html("Number of particles: " + setCol(ecollision.engine.particles.length, "green"));*/
 });
 
 ecollision.simulationUI.onSelect = function(particle) {

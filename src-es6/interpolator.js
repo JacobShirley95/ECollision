@@ -6,6 +6,7 @@ import EventManager from "./events/event-manager";
 export default Interpolator = (function() {
   class Interpolator {
     constructor(renderRate, updateRate) {
+      this._start = this._start.bind(this);
       this.update = this.update.bind(this);
       this.renderRate = renderRate;
       this.updateRate = updateRate;
@@ -13,12 +14,24 @@ export default Interpolator = (function() {
       this.updateTime = 1000.0 / this.updateRate;
       this.renderTime = 1000.0 / this.renderRate;
       this.curTime = this.lastTime = this.timeStamp = 0;
-      this.thread = 0;
+      this.started = false;
       EventManager.eventify(this);
     }
 
     start() {
-      return this.thread = setInterval(this.update, this.updateTime);
+      this.started = true;
+      return this._start();
+    }
+
+    _start() {
+      if (this.started) {
+        this.update();
+        return requestAnimationFrame(this._start);
+      }
+    }
+
+    stop() {
+      return this.started = false;
     }
 
     static interpolate(startVal, endVal, fraction) {

@@ -98,10 +98,7 @@ export default ECollision = (function() {
     }
 
     stop() {
-      if (this.thread !== -1) {
-        clearInterval(this.thread);
-        return this.thread = -1;
-      }
+      return this.interpol.stop();
     }
 
     getUpdateRate() {

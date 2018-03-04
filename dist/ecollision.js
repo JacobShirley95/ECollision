@@ -135,10 +135,7 @@ exports.default = ECollision = function () {
     }, {
       key: "stop",
       value: function stop() {
-        if (this.thread !== -1) {
-          clearInterval(this.thread);
-          return this.thread = -1;
-        }
+        return this.interpol.stop();
       }
     }, {
       key: "getUpdateRate",
@@ -737,6 +734,7 @@ exports.default = Interpolator = function () {
     function Interpolator(renderRate, updateRate) {
       _classCallCheck(this, Interpolator);
 
+      this._start = this._start.bind(this);
       this.update = this.update.bind(this);
       this.renderRate = renderRate;
       this.updateRate = updateRate;
@@ -744,14 +742,28 @@ exports.default = Interpolator = function () {
       this.updateTime = 1000.0 / this.updateRate;
       this.renderTime = 1000.0 / this.renderRate;
       this.curTime = this.lastTime = this.timeStamp = 0;
-      this.thread = 0;
+      this.started = false;
       _eventManager2.default.eventify(this);
     }
 
     _createClass(Interpolator, [{
       key: "start",
       value: function start() {
-        return this.thread = setInterval(this.update, this.updateTime);
+        this.started = true;
+        return this._start();
+      }
+    }, {
+      key: "_start",
+      value: function _start() {
+        if (this.started) {
+          this.update();
+          return requestAnimationFrame(this._start);
+        }
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        return this.started = false;
       }
     }, {
       key: "update",
@@ -907,6 +919,7 @@ exports.default = Particle = function () {
       _this.radius = radius;
       _this.style = style;
       _this.settings = settings;
+      _this.needsUpdate = false;
       return _this;
     }
 
@@ -1871,10 +1884,8 @@ exports.default = ParticleRenderer = function () {
           return _this.select();
         }
       });
-      _this.tail = new createjs.Shape();
-      _this.tail.x = _this.particle.x;
-      _this.tail.y = _this.particle.y;
-      //@displayObj.addChild(@tail)
+      _this.graphics = _this.displayObj.graphics;
+      _this.graphics.clear().beginFill(_this.particle.style).drawCircle(0, 0, _this.particle.radius).endFill();
       _eventManager2.default.eventify(_this);
       return _this;
     }
@@ -1882,19 +1893,8 @@ exports.default = ParticleRenderer = function () {
     _createClass(ParticleRenderer, [{
       key: "capture",
       value: function capture() {
-        var len;
         this.lastX = this.particle.x;
-        this.lastY = this.particle.y;
-        if (this.enableSelection && this.selected) {
-          this.curPos++;
-          this.curPos %= 20;
-          len = this.pastPositions.length;
-          if (len < 20) {
-            return this.pastPositions.push(new _point2d2.default(this.x, this.y));
-          } else {
-            return this.pastPositions[this.curPos] = new _point2d2.default(this.x, this.y);
-          }
-        }
+        return this.lastY = this.particle.y;
       }
     }, {
       key: "select",
@@ -1910,7 +1910,7 @@ exports.default = ParticleRenderer = function () {
     }, {
       key: "draw",
       value: function draw(interpolation) {
-        var col, graphics, i, j, len, newX, newY, p, px, py, r_a, ref, results;
+        var newX, newY;
         newX = this.particle.x;
         newY = this.particle.y;
         if (interpolation > 0.0) {
@@ -1919,24 +1919,9 @@ exports.default = ParticleRenderer = function () {
         }
         this.displayObj.x = newX;
         this.displayObj.y = newY;
-        //console.log(@particle.x)
-        graphics = this.displayObj.graphics;
-        graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
-        if (this.enableSelection && this.selected) {
-          graphics.beginStroke("blue").setStrokeStyle(3).drawCircle(0, 0, this.particle.radius).endStroke();
-          graphics = this.tail.graphics;
-          graphics.clear();
-          len = this.pastPositions.length;
-          results = [];
-          for (i = j = 0, ref = len - 1; 1 !== 0 && (1 > 0 ? j <= ref : j >= ref); i = j += 1) {
-            p = this.pastPositions[(i + this.curPos) % len];
-            px = p.x - this.particle.x;
-            py = p.y - this.particle.y;
-            r_a = i / len;
-            col = "rgba(100, 100, 100, " + r_a + ")";
-            results.push(graphics.beginStroke(col).drawCircle(px, py, this.particle.radius).endStroke());
-          }
-          return results;
+        if (this.particle.needsUpdate) {
+          this.particle.needsUpdate = false;
+          return this.graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
         }
       }
     }]);
