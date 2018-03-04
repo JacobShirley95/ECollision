@@ -5,11 +5,11 @@ export default class Interpolator
 	lockFPS: false
 
 	constructor: (@renderRate, @updateRate) ->
-		@startTime = new Date().getTime()
+		@lastTime = new Date().getTime()
 		@updateTime = 1000.0 / @updateRate
 		@renderTime = 1000.0 / @renderRate
+		@updateCatchup = @updateTime
 
-		@curTime = @lastTime = @timeStamp = 0
 		@started = false
 
 		EventManager.eventify(@)
@@ -30,20 +30,17 @@ export default class Interpolator
 		return startVal + (fraction*(endVal-startVal))
 
 	update: =>
-		if (@lockFPS)
-			@curTime = new Date().getTime() - @startTime
-		else
-			@curTime += @renderTime
-
-		if (@curTime - @lastTime >= @updateTime)
+		if (@updateCatchup >= @updateTime)
 			@fire("before-update")
-			@timeStamp = @curTime
 
-			while (@curTime - @lastTime >= @updateTime)
+			while (@updateCatchup >= @updateTime)
 				@fire("update")
-				@lastTime += @updateTime
+				@updateCatchup -= @updateTime
 
 			@fire("after-update")
 
-		@interpolation = Math.min(1.0, (@curTime - @timeStamp) / @updateTime)
+		delta = Date.now() - @lastTime
+		@updateCatchup += delta
+		@lastTime += delta
+		@interpolation = Math.min(1.0, delta / @updateTime)
 		@fire("render", [@interpolation])

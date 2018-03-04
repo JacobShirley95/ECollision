@@ -738,10 +738,10 @@ exports.default = Interpolator = function () {
       this.update = this.update.bind(this);
       this.renderRate = renderRate;
       this.updateRate = updateRate;
-      this.startTime = new Date().getTime();
+      this.lastTime = new Date().getTime();
       this.updateTime = 1000.0 / this.updateRate;
       this.renderTime = 1000.0 / this.renderRate;
-      this.curTime = this.lastTime = this.timeStamp = 0;
+      this.updateCatchup = this.updateTime;
       this.started = false;
       _eventManager2.default.eventify(this);
     }
@@ -768,21 +768,19 @@ exports.default = Interpolator = function () {
     }, {
       key: "update",
       value: function update() {
-        if (this.lockFPS) {
-          this.curTime = new Date().getTime() - this.startTime;
-        } else {
-          this.curTime += this.renderTime;
-        }
-        if (this.curTime - this.lastTime >= this.updateTime) {
+        var delta;
+        if (this.updateCatchup >= this.updateTime) {
           this.fire("before-update");
-          this.timeStamp = this.curTime;
-          while (this.curTime - this.lastTime >= this.updateTime) {
+          while (this.updateCatchup >= this.updateTime) {
             this.fire("update");
-            this.lastTime += this.updateTime;
+            this.updateCatchup -= this.updateTime;
           }
           this.fire("after-update");
         }
-        this.interpolation = Math.min(1.0, (this.curTime - this.timeStamp) / this.updateTime);
+        delta = Date.now() - this.lastTime;
+        this.updateCatchup += delta;
+        this.lastTime += delta;
+        this.interpolation = Math.min(1.0, delta / this.updateTime);
         return this.fire("render", [this.interpolation]);
       }
     }], [{
