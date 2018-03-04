@@ -5,10 +5,11 @@ export default class Interpolator
 	lockFPS: false
 
 	constructor: (@renderRate, @updateRate) ->
-		@lastTime = new Date().getTime()
+		@lastTime = Date.now()
 		@updateTime = 1000.0 / @updateRate
 		@renderTime = 1000.0 / @renderRate
 		@updateCatchup = @updateTime
+		@maxUpdateCatchup = @updateTime * 3
 
 		@started = false
 
@@ -29,18 +30,23 @@ export default class Interpolator
 	@interpolate: (startVal, endVal, fraction) ->
 		return startVal + (fraction*(endVal-startVal))
 
+	setMaxUpdateCatchup: (maxUpdateCatchup) ->
+		@maxUpdateCatchup = maxUpdateCatchup
+
 	update: =>
 		if (@updateCatchup >= @updateTime)
 			@fire("before-update")
 
-			while (@updateCatchup >= @updateTime)
+			t = 0
+			while (@updateCatchup >= @updateTime && t < 7)
 				@fire("update")
 				@updateCatchup -= @updateTime
+				t++
 
 			@fire("after-update")
 
 		delta = Date.now() - @lastTime
-		@updateCatchup += delta
+		@updateCatchup += Math.min(delta, @maxUpdateCatchup)
 		@lastTime += delta
 		@interpolation = Math.min(1.0, delta / @updateTime)
 		@fire("render", [@interpolation])
