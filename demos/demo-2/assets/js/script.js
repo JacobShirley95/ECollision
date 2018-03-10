@@ -45,6 +45,8 @@ var h = canvas.height();
 
 var settings = new ECollisionSettings();
 settings.simulation.simulationCanvas = "ecol-canvas";
+settings.overlay = null;
+settings.graph = null;
 settings.global.maxParticles = 1000;
 
 var ecollision = new ECollision(settings);
@@ -93,9 +95,9 @@ $("#step").click(function() {
 
 function changeRunPauseBtn() {
     if (!ecollision.paused) {
-        $("#run-pause").find(".ui-button-text").text("Pause");
+        $("#run-pause").text("Pause");
     } else {
-        $("#run-pause").find(".ui-button-text").text("Run");
+        $("#run-pause").text("Run");
     }
 }
 

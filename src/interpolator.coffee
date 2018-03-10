@@ -1,4 +1,4 @@
-import EventManager from "./events/event-manager";
+import EventManager from "./events/event-manager.js";
 
 export default class Interpolator
 	interpolation: 0.0

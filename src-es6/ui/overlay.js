@@ -2,11 +2,11 @@
 var Overlay, gcd,
   boundMethodCheck = function(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new Error('Bound instance method accessed before binding'); } };
 
-import Widget from "./widget";
+import Widget from "./widget.js";
 
-import Particle from "../objects/particle";
+import Particle from "../objects/particle.js";
 
-import EaselJSRenderer from "./renderer/easeljs/easeljs-renderer";
+import EaselJSRenderer from "./renderer/easeljs/easeljs-renderer.js";
 
 gcd = function(a, b) {
   if (!b) {
@@ -30,6 +30,7 @@ export default Overlay = (function() {
       this.modeText.y = 10;
       this.velocityLine = new createjs.Shape();
       this.velText = new createjs.Text("", "bold 15px Arial");
+      this.velText.cache();
       this.errorText = new createjs.Text("", "bold 15px Arial", "red");
       this.mouseX = this.crossX = this.width / 2;
       this.mouseY = this.crossY = this.height / 2;
@@ -54,7 +55,7 @@ export default Overlay = (function() {
       this.stage.addEventListener("stagemousemove", this.handleMouseMove);
       this.canvas.mousedown(this.handleClick);
       this.canvas.mousewheel(this.handleMouseWheel);
-      this.renderer = new EaselJSRenderer(canvasName, this.interpol, this.Settings);
+      this.renderer = new EaselJSRenderer(this.stage, this.interpol, this.settings);
     }
 
     resize(width, height) {
@@ -63,7 +64,7 @@ export default Overlay = (function() {
 
     init() {
       this.stage.removeAllChildren();
-      this.simulation.renderer.removeParticle(this.tempObject);
+      this.renderer.removeParticle(this.tempObject);
       this.mouseX = this.crossX = this.width / 2;
       this.mouseY = this.crossY = this.height / 2;
       return this.stage.addChild(this.modeText);
@@ -85,7 +86,7 @@ export default Overlay = (function() {
     }
 
     handleMouseMove(ev) {
-      var dx, dy, g, gridX, gridY;
+      var dx, dy, g, gridX, gridY, h, minX, minY, w;
       boundMethodCheck(this, Overlay);
       this.mouseX = this.crossX = ev.stageX;
       this.mouseY = this.crossY = ev.stageY;
@@ -113,9 +114,15 @@ export default Overlay = (function() {
           this.velText.x = this.velocityLine.x + (dx / 2);
           this.velText.y = this.velocityLine.y + (dy / 2);
           this.velText.text = Math.round(Math.sqrt(dx * dx + dy * dy)) + " px/s";
+          this.velText.cache(0, 0, 100, 100);
           this.tempObject.xVel = dx / this.settings.global.updateRate;
           this.tempObject.yVel = dy / this.settings.global.updateRate;
           g.clear().beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(dx, dy);
+          minX = Math.min(dx, 0);
+          minY = Math.min(dy, 0);
+          w = Math.abs(dx);
+          h = Math.abs(dy);
+          this.velocityLine.cache(minX, minY, w, h);
           break;
       }
     }
@@ -150,7 +157,7 @@ export default Overlay = (function() {
             this.tempObject.xVel = this.tempObject.yVel = 0;
             if (this.mode === Overlay.MODE_EDIT && !this.copyPlace) {
               this.index = Overlay.INDEX_MODIFY;
-              this.simulation.renderer.removeParticle(this.tempObject);
+              this.renderer.removeParticle(this.tempObject);
             } else {
               this.index = Overlay.INDEX_PLACE;
             }
@@ -162,7 +169,7 @@ export default Overlay = (function() {
               this.simulation.removeParticle(selected);
               if (ev.button !== 2) {
                 this.tempObject = selected.copy();
-                this.particleRenderer = this.simulation.renderer.addParticle(this.tempObject);
+                this.particleRenderer = this.renderer.addParticle(this.tempObject);
                 if (!this.copyPlace) {
                   this.simulation.removeSelected();
                 }
@@ -196,7 +203,7 @@ export default Overlay = (function() {
             this.stage.removeChild(this.errorText);
           }
         }
-        return this.stage.update();
+        return this.renderer.draw(interpolation);
       }
     }
 
@@ -212,11 +219,13 @@ export default Overlay = (function() {
       this.tempObject = new Particle(this.crossX, this.crossY, 25, style, this.settings);
       this.tempObject.mass = mass;
       this.tempObject.cOR = cOR;
-      this.particleRenderer = this.simulation.renderer.addParticle(this.tempObject);
+      console.log(this.renderer.settings);
+      this.particleRenderer = this.renderer.addParticle(this.tempObject);
       //@stage.addChild(@particleRenderer.displayObj);
       this.velText.x = this.mouseX;
       this.velText.y = this.mouseY;
       this.modeText.text = "Mode: Add";
+      this.modeText.cache(0, 0, 100, 20);
       this.index = Overlay.INDEX_PLACE;
       return this.mode = Overlay.MODE_ADD;
     }
@@ -231,7 +240,7 @@ export default Overlay = (function() {
 
     end() {
       this.hide();
-      this.simulation.renderer.removeParticle(this.tempObject);
+      this.renderer.removeParticle(this.tempObject);
       this.tempObject = null;
       this.mode = -1;
       this.freePlace = false;

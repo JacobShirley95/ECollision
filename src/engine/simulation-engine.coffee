@@ -1,6 +1,6 @@
-import Particle from "../objects/particle";
-import PVector from "../math/pvector";
-import EventManager from "../events/event-manager";
+import Particle from "../objects/particle.js";
+import PVector from "../math/pvector.js";
+import EventManager from "../events/event-manager.js";
 
 export default class SimulationEngine
     particles: []

@@ -1,10 +1,10 @@
-import SimulationEngine from "./engine/simulation-engine";
-import Simulation from "./ui/simulation";
-import Graph from "./ui/graph";
-import Overlay from "./ui/overlay"
-import ECollisionSettings from "./settings";
-import EventManager from "./events/event-manager";
-import Interpolator from "./interpolator";
+import SimulationEngine from "./engine/simulation-engine.js";
+import Simulation from "./ui/simulation.js";
+import Graph from "./ui/graph.js";
+import Overlay from "./ui/overlay.js"
+import ECollisionSettings from "./settings.js";
+import EventManager from "./events/event-manager.js";
+import Interpolator from "./interpolator.js";
 
 export default class ECollision
     constructor: (@settings) ->

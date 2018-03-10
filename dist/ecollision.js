@@ -7,31 +7,31 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _simulationEngine = require("./engine/simulation-engine");
+var _simulationEngine = require("./engine/simulation-engine.js");
 
 var _simulationEngine2 = _interopRequireDefault(_simulationEngine);
 
-var _simulation = require("./ui/simulation");
+var _simulation = require("./ui/simulation.js");
 
 var _simulation2 = _interopRequireDefault(_simulation);
 
-var _graph = require("./ui/graph");
+var _graph = require("./ui/graph.js");
 
 var _graph2 = _interopRequireDefault(_graph);
 
-var _overlay = require("./ui/overlay");
+var _overlay = require("./ui/overlay.js");
 
 var _overlay2 = _interopRequireDefault(_overlay);
 
-var _settings = require("./settings");
+var _settings = require("./settings.js");
 
 var _settings2 = _interopRequireDefault(_settings);
 
-var _eventManager = require("./events/event-manager");
+var _eventManager = require("./events/event-manager.js");
 
 var _eventManager2 = _interopRequireDefault(_eventManager);
 
-var _interpolator = require("./interpolator");
+var _interpolator = require("./interpolator.js");
 
 var _interpolator2 = _interopRequireDefault(_interpolator);
 
@@ -201,7 +201,7 @@ exports.default = ECollision = function () {
   return ECollision;
 }.call(undefined);
 
-},{"./engine/simulation-engine":2,"./events/event-manager":3,"./interpolator":4,"./settings":9,"./ui/graph":11,"./ui/overlay":12,"./ui/simulation":17}],2:[function(require,module,exports){
+},{"./engine/simulation-engine.js":2,"./events/event-manager.js":3,"./interpolator.js":4,"./settings.js":9,"./ui/graph.js":11,"./ui/overlay.js":12,"./ui/simulation.js":17}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -210,15 +210,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _particle = require("../objects/particle");
+var _particle = require("../objects/particle.js");
 
 var _particle2 = _interopRequireDefault(_particle);
 
-var _pvector = require("../math/pvector");
+var _pvector = require("../math/pvector.js");
 
 var _pvector2 = _interopRequireDefault(_pvector);
 
-var _eventManager = require("../events/event-manager");
+var _eventManager = require("../events/event-manager.js");
 
 var _eventManager2 = _interopRequireDefault(_eventManager);
 
@@ -561,7 +561,7 @@ exports.default = SimulationEngine = function () {
   return SimulationEngine;
 }.call(undefined);
 
-},{"../events/event-manager":3,"../math/pvector":6,"../objects/particle":7}],3:[function(require,module,exports){
+},{"../events/event-manager.js":3,"../math/pvector.js":6,"../objects/particle.js":7}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -718,7 +718,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _eventManager = require("./events/event-manager");
+var _eventManager = require("./events/event-manager.js");
 
 var _eventManager2 = _interopRequireDefault(_eventManager);
 
@@ -810,7 +810,7 @@ exports.default = Interpolator = function () {
   return Interpolator;
 }.call(undefined);
 
-},{"./events/event-manager":3}],5:[function(require,module,exports){
+},{"./events/event-manager.js":3}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -894,11 +894,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _physicsObject = require("./physics-object");
+var _physicsObject = require("./physics-object.js");
 
 var _physicsObject2 = _interopRequireDefault(_physicsObject);
 
-var _point2d = require("../math/point-2d");
+var _point2d = require("../math/point-2d.js");
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
@@ -961,7 +961,7 @@ exports.default = Particle = function () {
   return Particle;
 }.call(undefined);
 
-},{"../math/point-2d":5,"./physics-object":8}],8:[function(require,module,exports){
+},{"../math/point-2d.js":5,"./physics-object.js":8}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1088,23 +1088,23 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.EaselJSRenderer = exports.SimulationRenderer = exports.SimulationEngine = exports.ECollisionSettings = exports.ECollision = undefined;
 
-var _ecollision = require("./ecollision");
+var _ecollision = require("./ecollision.js");
 
 var _ecollision2 = _interopRequireDefault(_ecollision);
 
-var _settings = require("./settings");
+var _settings = require("./settings.js");
 
 var _settings2 = _interopRequireDefault(_settings);
 
-var _simulationEngine = require("./engine/simulation-engine");
+var _simulationEngine = require("./engine/simulation-engine.js");
 
 var _simulationEngine2 = _interopRequireDefault(_simulationEngine);
 
-var _simulationRenderer = require("./ui/renderer/simulation-renderer");
+var _simulationRenderer = require("./ui/renderer/simulation-renderer.js");
 
 var _simulationRenderer2 = _interopRequireDefault(_simulationRenderer);
 
-var _easeljsRenderer = require("./ui/renderer/easeljs/easeljs-renderer");
+var _easeljsRenderer = require("./ui/renderer/easeljs/easeljs-renderer.js");
 
 var _easeljsRenderer2 = _interopRequireDefault(_easeljsRenderer);
 
@@ -1116,7 +1116,7 @@ exports.SimulationEngine = _simulationEngine2.default;
 exports.SimulationRenderer = _simulationRenderer2.default;
 exports.EaselJSRenderer = _easeljsRenderer2.default; // Generated by CoffeeScript 2.2.2
 
-},{"./ecollision":1,"./engine/simulation-engine":2,"./settings":9,"./ui/renderer/easeljs/easeljs-renderer":13,"./ui/renderer/simulation-renderer":16}],11:[function(require,module,exports){
+},{"./ecollision.js":1,"./engine/simulation-engine.js":2,"./settings.js":9,"./ui/renderer/easeljs/easeljs-renderer.js":13,"./ui/renderer/simulation-renderer.js":16}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1125,15 +1125,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _widget = require("./widget");
+var _widget = require("./widget.js");
 
 var _widget2 = _interopRequireDefault(_widget);
 
-var _particle = require("../objects/particle");
+var _particle = require("../objects/particle.js");
 
 var _particle2 = _interopRequireDefault(_particle);
 
-var _point2d = require("../math/point-2d");
+var _point2d = require("../math/point-2d.js");
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
@@ -1361,7 +1361,7 @@ exports.default = Graph = function () {
   return Graph;
 }.call(undefined);
 
-},{"../math/point-2d":5,"../objects/particle":7,"./widget":18}],12:[function(require,module,exports){
+},{"../math/point-2d.js":5,"../objects/particle.js":7,"./widget.js":18}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1370,15 +1370,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _widget = require("./widget");
+var _widget = require("./widget.js");
 
 var _widget2 = _interopRequireDefault(_widget);
 
-var _particle = require("../objects/particle");
+var _particle = require("../objects/particle.js");
 
 var _particle2 = _interopRequireDefault(_particle);
 
-var _easeljsRenderer = require("./renderer/easeljs/easeljs-renderer");
+var _easeljsRenderer = require("./renderer/easeljs/easeljs-renderer.js");
 
 var _easeljsRenderer2 = _interopRequireDefault(_easeljsRenderer);
 
@@ -1426,6 +1426,7 @@ exports.default = Overlay = function () {
       _this.modeText.y = 10;
       _this.velocityLine = new createjs.Shape();
       _this.velText = new createjs.Text("", "bold 15px Arial");
+      _this.velText.cache();
       _this.errorText = new createjs.Text("", "bold 15px Arial", "red");
       _this.mouseX = _this.crossX = _this.width / 2;
       _this.mouseY = _this.crossY = _this.height / 2;
@@ -1450,7 +1451,7 @@ exports.default = Overlay = function () {
       _this.stage.addEventListener("stagemousemove", _this.handleMouseMove);
       _this.canvas.mousedown(_this.handleClick);
       _this.canvas.mousewheel(_this.handleMouseWheel);
-      _this.renderer = new _easeljsRenderer2.default(canvasName, _this.interpol, _this.Settings);
+      _this.renderer = new _easeljsRenderer2.default(_this.stage, _this.interpol, _this.settings);
       return _this;
     }
 
@@ -1463,7 +1464,7 @@ exports.default = Overlay = function () {
       key: "init",
       value: function init() {
         this.stage.removeAllChildren();
-        this.simulation.renderer.removeParticle(this.tempObject);
+        this.renderer.removeParticle(this.tempObject);
         this.mouseX = this.crossX = this.width / 2;
         this.mouseY = this.crossY = this.height / 2;
         return this.stage.addChild(this.modeText);
@@ -1487,7 +1488,7 @@ exports.default = Overlay = function () {
     }, {
       key: "handleMouseMove",
       value: function handleMouseMove(ev) {
-        var dx, dy, g, gridX, gridY;
+        var dx, dy, g, gridX, gridY, h, minX, minY, w;
         boundMethodCheck(this, Overlay);
         this.mouseX = this.crossX = ev.stageX;
         this.mouseY = this.crossY = ev.stageY;
@@ -1515,9 +1516,15 @@ exports.default = Overlay = function () {
             this.velText.x = this.velocityLine.x + dx / 2;
             this.velText.y = this.velocityLine.y + dy / 2;
             this.velText.text = Math.round(Math.sqrt(dx * dx + dy * dy)) + " px/s";
+            this.velText.cache(0, 0, 100, 100);
             this.tempObject.xVel = dx / this.settings.global.updateRate;
             this.tempObject.yVel = dy / this.settings.global.updateRate;
             g.clear().beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(dx, dy);
+            minX = Math.min(dx, 0);
+            minY = Math.min(dy, 0);
+            w = Math.abs(dx);
+            h = Math.abs(dy);
+            this.velocityLine.cache(minX, minY, w, h);
             break;
         }
       }
@@ -1553,7 +1560,7 @@ exports.default = Overlay = function () {
               this.tempObject.xVel = this.tempObject.yVel = 0;
               if (this.mode === Overlay.MODE_EDIT && !this.copyPlace) {
                 this.index = Overlay.INDEX_MODIFY;
-                this.simulation.renderer.removeParticle(this.tempObject);
+                this.renderer.removeParticle(this.tempObject);
               } else {
                 this.index = Overlay.INDEX_PLACE;
               }
@@ -1565,7 +1572,7 @@ exports.default = Overlay = function () {
                 this.simulation.removeParticle(selected);
                 if (ev.button !== 2) {
                   this.tempObject = selected.copy();
-                  this.particleRenderer = this.simulation.renderer.addParticle(this.tempObject);
+                  this.particleRenderer = this.renderer.addParticle(this.tempObject);
                   if (!this.copyPlace) {
                     this.simulation.removeSelected();
                   }
@@ -1600,7 +1607,7 @@ exports.default = Overlay = function () {
               this.stage.removeChild(this.errorText);
             }
           }
-          return this.stage.update();
+          return this.renderer.draw(interpolation);
         }
       }
     }, {
@@ -1618,11 +1625,13 @@ exports.default = Overlay = function () {
         this.tempObject = new _particle2.default(this.crossX, this.crossY, 25, style, this.settings);
         this.tempObject.mass = mass;
         this.tempObject.cOR = cOR;
-        this.particleRenderer = this.simulation.renderer.addParticle(this.tempObject);
+        console.log(this.renderer.settings);
+        this.particleRenderer = this.renderer.addParticle(this.tempObject);
         //@stage.addChild(@particleRenderer.displayObj);
         this.velText.x = this.mouseX;
         this.velText.y = this.mouseY;
         this.modeText.text = "Mode: Add";
+        this.modeText.cache(0, 0, 100, 20);
         this.index = Overlay.INDEX_PLACE;
         return this.mode = Overlay.MODE_ADD;
       }
@@ -1639,7 +1648,7 @@ exports.default = Overlay = function () {
       key: "end",
       value: function end() {
         this.hide();
-        this.simulation.renderer.removeParticle(this.tempObject);
+        this.renderer.removeParticle(this.tempObject);
         this.tempObject = null;
         this.mode = -1;
         this.freePlace = false;
@@ -1681,7 +1690,7 @@ exports.default = Overlay = function () {
   return Overlay;
 }.call(undefined);
 
-},{"../objects/particle":7,"./renderer/easeljs/easeljs-renderer":13,"./widget":18}],13:[function(require,module,exports){
+},{"../objects/particle.js":7,"./renderer/easeljs/easeljs-renderer.js":13,"./widget.js":18}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1690,11 +1699,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _particleRenderer = require("./particle-renderer");
+var _particleRenderer = require("./particle-renderer.js");
 
 var _particleRenderer2 = _interopRequireDefault(_particleRenderer);
 
-var _simulationRenderer = require("../simulation-renderer");
+var _simulationRenderer = require("../simulation-renderer.js");
 
 var _simulationRenderer2 = _interopRequireDefault(_simulationRenderer);
 
@@ -1828,7 +1837,7 @@ exports.default = EaselJSRenderer = function (_SimulationRenderer) {
   return EaselJSRenderer;
 }(_simulationRenderer2.default);
 
-},{"../simulation-renderer":16,"./particle-renderer":14}],14:[function(require,module,exports){
+},{"../simulation-renderer.js":16,"./particle-renderer.js":14}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1837,19 +1846,19 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _renderer = require("../renderer");
+var _renderer = require("../renderer.js");
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _point2d = require("../../../math/point-2d");
+var _point2d = require("../../../math/point-2d.js");
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
-var _eventManager = require("../../../events/event-manager");
+var _eventManager = require("../../../events/event-manager.js");
 
 var _eventManager2 = _interopRequireDefault(_eventManager);
 
-var _interpolator = require("../../../interpolator");
+var _interpolator = require("../../../interpolator.js");
 
 var _interpolator2 = _interopRequireDefault(_interpolator);
 
@@ -1871,6 +1880,8 @@ exports.default = ParticleRenderer = function () {
     function ParticleRenderer(particle, enableSelection) {
       _classCallCheck(this, ParticleRenderer);
 
+      var r;
+
       var _this = _possibleConstructorReturn(this, (ParticleRenderer.__proto__ || Object.getPrototypeOf(ParticleRenderer)).call(this));
 
       _this.particle = particle;
@@ -1890,8 +1901,10 @@ exports.default = ParticleRenderer = function () {
           return _this.select();
         }
       });
+      r = _this.particle.radius;
       _this.graphics = _this.displayObj.graphics;
       _this.graphics.clear().beginFill(_this.particle.style).drawCircle(0, 0, _this.particle.radius).endFill();
+      _this.displayObj.cache(-r, -r, r * 2, r * 2);
       _eventManager2.default.eventify(_this);
       return _this;
     }
@@ -1944,7 +1957,7 @@ exports.default = ParticleRenderer = function () {
   return ParticleRenderer;
 }.call(undefined);
 
-},{"../../../events/event-manager":3,"../../../interpolator":4,"../../../math/point-2d":5,"../renderer":15}],15:[function(require,module,exports){
+},{"../../../events/event-manager.js":3,"../../../interpolator.js":4,"../../../math/point-2d.js":5,"../renderer.js":15}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1980,7 +1993,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _renderer = require("./renderer");
+var _renderer = require("./renderer.js");
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
@@ -2018,7 +2031,7 @@ exports.default = SimulationRenderer = function (_Renderer) {
   return SimulationRenderer;
 }(_renderer2.default);
 
-},{"./renderer":15}],17:[function(require,module,exports){
+},{"./renderer.js":15}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2031,19 +2044,19 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _widget = require("./widget");
+var _widget = require("./widget.js");
 
 var _widget2 = _interopRequireDefault(_widget);
 
-var _particle = require("../objects/particle");
+var _particle = require("../objects/particle.js");
 
 var _particle2 = _interopRequireDefault(_particle);
 
-var _eventManager = require("../events/event-manager");
+var _eventManager = require("../events/event-manager.js");
 
 var _eventManager2 = _interopRequireDefault(_eventManager);
 
-var _easeljsRenderer = require("./renderer/easeljs/easeljs-renderer");
+var _easeljsRenderer = require("./renderer/easeljs/easeljs-renderer.js");
 
 var _easeljsRenderer2 = _interopRequireDefault(_easeljsRenderer);
 
@@ -2196,7 +2209,7 @@ exports.default = Simulation = function () {
   return Simulation;
 }.call(undefined);
 
-},{"../events/event-manager":3,"../objects/particle":7,"./renderer/easeljs/easeljs-renderer":13,"./widget":18}],18:[function(require,module,exports){
+},{"../events/event-manager.js":3,"../objects/particle.js":7,"./renderer/easeljs/easeljs-renderer.js":13,"./widget.js":18}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2208,7 +2221,20 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // Generated by CoffeeScript 2.2.2
-var Widget;
+var Widget, rgb2hex;
+
+rgb2hex = function rgb2hex(rgb) {
+  var hex;
+  if (rgb.search("rgb") === -1) {
+    return rgb;
+  } else {
+    rgb = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+))?\)$/);
+    hex = function hex(x) {
+      return ("0" + parseInt(x).toString(16)).slice(-2);
+    };
+    return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+  }
+};
 
 exports.default = Widget = function () {
   function Widget(canvasName) {
@@ -2217,11 +2243,12 @@ exports.default = Widget = function () {
     this.canvasName = canvasName;
     this.canvas = $("#" + this.canvasName);
     this.hidden = false;
-    this.stage = new createjs.Stage(this.canvasName);
     this.width = this.canvas.width();
     this.height = this.canvas.height();
     this.canvas.attr("width", this.width);
     this.canvas.attr("height", this.height);
+    this.stage = new createjs.StageGL(this.canvasName);
+    this.stage.setClearColor(rgb2hex(this.canvas.css("background-color")));
   }
 
   _createClass(Widget, [{

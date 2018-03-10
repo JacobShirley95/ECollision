@@ -1,5 +1,5 @@
-import PhysicsObject from "./physics-object";
-import Point2D from "../math/point-2d";
+import PhysicsObject from "./physics-object.js";
+import Point2D from "../math/point-2d.js";
 
 export default class Particle extends PhysicsObject
     cOR: 1.0

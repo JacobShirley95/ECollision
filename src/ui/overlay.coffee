@@ -1,6 +1,6 @@
-import Widget from "./widget";
-import Particle from "../objects/particle";
-import EaselJSRenderer from "./renderer/easeljs/easeljs-renderer";
+import Widget from "./widget.js";
+import Particle from "../objects/particle.js";
+import EaselJSRenderer from "./renderer/easeljs/easeljs-renderer.js";
 
 gcd = (a, b) ->
     if (!b)
@@ -30,6 +30,7 @@ export default class Overlay extends Widget
 
         @velocityLine = new createjs.Shape()
         @velText = new createjs.Text("", "bold 15px Arial")
+        @velText.cache();
         @errorText = new createjs.Text("", "bold 15px Arial", "red")
 
         @mouseX = @crossX = @width/2
@@ -38,7 +39,7 @@ export default class Overlay extends Widget
         @mode = -1
         @index = 0
 
-        @modeText.x = (@width/2)-40
+        @modeText.x = (@width / 2) - 40
 
         @interval = gcd(@width, @height)
 
@@ -66,7 +67,7 @@ export default class Overlay extends Widget
         @canvas.mousedown(@handleClick)
         @canvas.mousewheel(@handleMouseWheel)
 
-        @renderer = new EaselJSRenderer(canvasName, @interpol, @Settings)
+        @renderer = new EaselJSRenderer(@stage, @interpol, @settings)
 
     resize: (width, height) ->
         @interval = gcd(@width, @height)
@@ -74,7 +75,7 @@ export default class Overlay extends Widget
     init: ->
         @stage.removeAllChildren()
 
-        @simulation.renderer.removeParticle(@tempObject)
+        @renderer.removeParticle(@tempObject)
 
         @mouseX = @crossX = @width/2
         @mouseY = @crossY = @height/2
@@ -124,11 +125,19 @@ export default class Overlay extends Widget
                 @velText.x = @velocityLine.x + (dx/2)
                 @velText.y = @velocityLine.y + (dy/2)
                 @velText.text = Math.round(Math.sqrt(dx*dx + dy*dy)) + " px/s"
+                @velText.cache(0, 0, 100, 100)
 
                 @tempObject.xVel = dx/@settings.global.updateRate
                 @tempObject.yVel = dy/@settings.global.updateRate
 
                 g.clear().beginStroke("red").setStrokeStyle(3).moveTo(0, 0).lineTo(dx, dy)
+
+                minX = Math.min(dx, 0)
+                minY = Math.min(dy, 0)
+                w = Math.abs(dx)
+                h = Math.abs(dy)
+
+                @velocityLine.cache(minX, minY, w, h)
 
                 break
 
@@ -168,7 +177,7 @@ export default class Overlay extends Widget
 
                     if (@mode == Overlay.MODE_EDIT && !@copyPlace)
                         @index = Overlay.INDEX_MODIFY
-                        @simulation.renderer.removeParticle(@tempObject)
+                        @renderer.removeParticle(@tempObject)
                     else
                         @index = Overlay.INDEX_PLACE
 
@@ -182,7 +191,7 @@ export default class Overlay extends Widget
                         if (ev.button != 2)
                             @tempObject = selected.copy()
 
-                            @particleRenderer = @simulation.renderer.addParticle(@tempObject)
+                            @particleRenderer = @renderer.addParticle(@tempObject)
 
                             if (!@copyPlace)
                                 @simulation.removeSelected()
@@ -209,7 +218,7 @@ export default class Overlay extends Widget
 
                     @stage.removeChild(@errorText)
 
-            @stage.update()
+            @renderer.draw(interpolation)
 
      reset: ->
         @stage.removeChild(@velocityLine)
@@ -224,13 +233,16 @@ export default class Overlay extends Widget
         @tempObject.mass = mass
         @tempObject.cOR = cOR
 
-        @particleRenderer = @simulation.renderer.addParticle(@tempObject)
+        console.log(@renderer.settings)
+
+        @particleRenderer = @renderer.addParticle(@tempObject)
         #@stage.addChild(@particleRenderer.displayObj);
 
         @velText.x = @mouseX
         @velText.y = @mouseY
 
         @modeText.text = "Mode: Add"
+        @modeText.cache(0, 0, 100, 20);
 
         @index = Overlay.INDEX_PLACE
         @mode = Overlay.MODE_ADD
@@ -247,7 +259,7 @@ export default class Overlay extends Widget
     end: ->
         @hide()
 
-        @simulation.renderer.removeParticle(@tempObject)
+        @renderer.removeParticle(@tempObject)
 
         @tempObject = null
 

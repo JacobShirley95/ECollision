@@ -1,5 +1,5 @@
 .panel {
-  
+
 }
 
 .sub-panel {
@@ -14,7 +14,7 @@
 }
 
 #ecol-canvas {
-  background-color:white;
+  background-color: #ffffff;
   margin-right:3px;
   width:464px;
   height:598px;
@@ -40,7 +40,7 @@
 }
 
 .particle-btn {
-  
+
 }
 
 #particle-sliders {
@@ -75,7 +75,7 @@
 }
 
 #sim-controls {
-  
+
 }
 
 #sim-slider-controls {

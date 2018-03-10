@@ -1,6 +1,6 @@
-import Widget from "./widget";
-import Particle from "../objects/particle";
-import Point2D from "../math/point-2d";
+import Widget from "./widget.js";
+import Particle from "../objects/particle.js";
+import Point2D from "../math/point-2d.js";
 
 export default class Graph extends Widget
     x: 0

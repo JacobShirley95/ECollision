@@ -1,7 +1,7 @@
-import Widget from "./widget";
-import Particle from "../objects/particle";
-import EventManager from "../events/event-manager";
-import EaselJSRenderer from "./renderer/easeljs/easeljs-renderer";
+import Widget from "./widget.js";
+import Particle from "../objects/particle.js";
+import EventManager from "../events/event-manager.js";
+import EaselJSRenderer from "./renderer/easeljs/easeljs-renderer.js";
 
 export default class Simulation extends Widget
     selected: null

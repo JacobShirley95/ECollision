@@ -1,5 +1,5 @@
-import ParticleRenderer from "./particle-renderer";
-import SimulationRenderer from "../simulation-renderer";
+import ParticleRenderer from "./particle-renderer.js";
+import SimulationRenderer from "../simulation-renderer.js";
 
 export default class EaselJSRenderer extends SimulationRenderer
 	constructor: (@stage, interpolator, @settings) ->
@@ -17,6 +17,7 @@ export default class EaselJSRenderer extends SimulationRenderer
 		particle.renderer = pr
 
 		@stage.addChild(pr.displayObj)
+
 		@renderObjs.push(pr)
 
 		return pr

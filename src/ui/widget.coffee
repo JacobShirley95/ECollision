@@ -1,16 +1,27 @@
+rgb2hex = (rgb) ->
+    if (  rgb.search("rgb") == -1 )
+        return rgb
+    else
+        rgb = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+))?\)$/)
+        hex = (x) ->
+            return ("0" + parseInt(x).toString(16)).slice(-2)
+
+        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3])
+
 export default class Widget
     constructor: (@canvasName) ->
         @canvas = $("#"+@canvasName)
 
         @hidden = false
 
-        @stage = new createjs.Stage(@canvasName)
-
         @width = @canvas.width()
         @height = @canvas.height()
-        
+
         @canvas.attr("width", @width)
         @canvas.attr("height", @height)
+
+        @stage = new createjs.StageGL(@canvasName)
+        @stage.setClearColor(rgb2hex(@canvas.css("background-color")));
 
     init: ->
 

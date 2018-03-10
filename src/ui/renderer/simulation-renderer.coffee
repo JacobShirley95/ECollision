@@ -1,4 +1,4 @@
-import Renderer from "./renderer";
+import Renderer from "./renderer.js";
 
 export default class SimulationRenderer extends Renderer
 	constructor: (@interpolator) ->

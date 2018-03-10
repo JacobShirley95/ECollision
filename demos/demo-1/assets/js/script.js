@@ -2,6 +2,8 @@ import ECollisionSettings from "../../../../src-es6/settings.js";
 import ECollision from "../../../../src-es6/ecollision.js";
 
 var eCollisionSettings = new ECollisionSettings();
+eCollisionSettings.graph = null;
+
 var ecollision = new ECollision(eCollisionSettings);
 
 $.widget("custom.sliderEx", $.ui.slider, {
@@ -110,7 +112,7 @@ ecollision.simulationUI.onSelect = function(particle) {
     $("#slider-cor").sliderEx("value", particle.cOR);
 }
 
-ecollision.addListener("tick", function() {
+/*ecollision.addListener("tick", function() {
     if (eCollisionSettings.global.showVelocities) {
         var fps = "";
         if (ecollision.fps < 24) {
@@ -141,7 +143,18 @@ ecollision.addListener("tick", function() {
     } else {
         particleInfo.html("");
     }
-});
+});*/
+
+var minSpeed = -1;
+var maxSpeed = 1;
+var diff = maxSpeed - minSpeed;
+
+    var r = Math.random();
+    var p = ecollision.simulationUI.addParticle(200, 200, 5 + (r * 20), 1 + (r * 3), getRandomColor());
+
+    p.cOR = 1.0;
+    p.xVel = minSpeed + (Math.random() * diff);
+    p.yVel = minSpeed + (Math.random() * diff);
 
 ecollision.start();
 
