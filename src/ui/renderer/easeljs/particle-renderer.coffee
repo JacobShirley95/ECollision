@@ -27,12 +27,9 @@ export default class ParticleRenderer extends Renderer
 				@select()
 		)
 
-		r = @particle.radius
-
 		@graphics = @displayObj.graphics
-		@graphics.clear().beginFill(@particle.style).drawCircle(0, 0, @particle.radius).endFill()
 
-		@displayObj.cache(-r,-r, r*2,r*2)
+		@update()
 
 		EventManager.eventify(@)
 
@@ -46,6 +43,11 @@ export default class ParticleRenderer extends Renderer
 	deselect: ->
 		@selected = false
 		@pastPositions = []
+
+	update: ->
+		@graphics.clear().beginFill(@particle.style).drawCircle(0, 0, @particle.radius).endFill()
+		r = @particle.radius
+		@displayObj.cache(-r,-r, r*2,r*2)
 
 	draw: (interpolation) ->
 		newX = @particle.x

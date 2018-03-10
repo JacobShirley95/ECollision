@@ -1,6 +1,3 @@
-import ECollisionSettings from "../../../../src-es6/settings.js";
-import ECollision from "../../../../src-es6/ecollision.js";
-
 $.widget("custom.sliderEx", $.ui.slider, {
   _create: function() {
     this.options.title = this.options.title || this.element.attr("title");
@@ -43,13 +40,13 @@ var canvas = $("#ecol-canvas");
 var w = canvas.width();
 var h = canvas.height();
 
-var settings = new ECollisionSettings();
+var settings = new ecollision.ECollisionSettings();
 settings.simulation.simulationCanvas = "ecol-canvas";
 settings.overlay = null;
 settings.graph = null;
 settings.global.maxParticles = 1000;
 
-var ecollision = new ECollision(settings);
+var ecollision = new ecollision.ECollision(settings);
 
 function setCol(text, col) {
     return ("" + text).fontcolor(col);

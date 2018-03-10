@@ -1,10 +1,7 @@
-import ECollisionSettings from "../../../../src-es6/settings.js";
-import ECollision from "../../../../src-es6/ecollision.js";
+var eCollisionSettings = new ecollision.ECollisionSettings();
+//eCollisionSettings.graph = null;
 
-var eCollisionSettings = new ECollisionSettings();
-eCollisionSettings.graph = null;
-
-var ecollision = new ECollision(eCollisionSettings);
+var ecollision = new ecollision.ECollision(eCollisionSettings);
 
 $.widget("custom.sliderEx", $.ui.slider, {
     _unit:"",
@@ -145,17 +142,6 @@ ecollision.simulationUI.onSelect = function(particle) {
     }
 });*/
 
-var minSpeed = -1;
-var maxSpeed = 1;
-var diff = maxSpeed - minSpeed;
-
-    var r = Math.random();
-    var p = ecollision.simulationUI.addParticle(200, 200, 5 + (r * 20), 1 + (r * 3), getRandomColor());
-
-    p.cOR = 1.0;
-    p.xVel = minSpeed + (Math.random() * diff);
-    p.yVel = minSpeed + (Math.random() * diff);
-
 ecollision.start();
 
 $("#slider-mass").sliderEx({
@@ -218,6 +204,7 @@ $("#generate-colour").click(function() {
     if (cp != null) {
         currentColor = getRandomColor();
         cp.style = currentColor;
+        cp.renderer.update();
     }
 })
 

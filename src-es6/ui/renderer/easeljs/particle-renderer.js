@@ -12,7 +12,6 @@ import Interpolator from "../../../interpolator.js";
 export default ParticleRenderer = (function() {
   class ParticleRenderer extends Renderer {
     constructor(particle, enableSelection) {
-      var r;
       super();
       this.particle = particle;
       this.enableSelection = enableSelection;
@@ -31,10 +30,8 @@ export default ParticleRenderer = (function() {
           return this.select();
         }
       });
-      r = this.particle.radius;
       this.graphics = this.displayObj.graphics;
-      this.graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
-      this.displayObj.cache(-r, -r, r * 2, r * 2);
+      this.update();
       EventManager.eventify(this);
     }
 
@@ -50,6 +47,13 @@ export default ParticleRenderer = (function() {
     deselect() {
       this.selected = false;
       return this.pastPositions = [];
+    }
+
+    update() {
+      var r;
+      this.graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
+      r = this.particle.radius;
+      return this.displayObj.cache(-r, -r, r * 2, r * 2);
     }
 
     draw(interpolation) {

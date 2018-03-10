@@ -25,6 +25,8 @@
 
         <!-- Load my stylesheet -->
         <link rel="stylesheet" type="text/css" href="assets/stylesheets/style.css">
+
+        <script src="../../dist/ecollision.min.js"></script>
     </head>
 
     <body>
@@ -73,10 +75,7 @@
                         numLoadedPanels++;
                         if (numLoadedPanels == panels.length) {
                             var element = document.createElement("script");
-                            element.setAttribute("type", "module");
-
                             element.src = SCRIPT;
-
                             document.body.appendChild(element);
                         }
                     });

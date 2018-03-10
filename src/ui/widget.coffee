@@ -51,6 +51,8 @@ export default class Widget
         @canvas.attr("width", @width)
         @canvas.attr("height", @height)
 
+        @stage.updateViewport(@width, @height)
+
     show: ->
         @hidden = false
         @canvas.fadeIn(200)

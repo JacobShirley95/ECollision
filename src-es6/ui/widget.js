@@ -56,7 +56,8 @@ export default Widget = class Widget {
       this.height = newHeight;
     }
     this.canvas.attr("width", this.width);
-    return this.canvas.attr("height", this.height);
+    this.canvas.attr("height", this.height);
+    return this.stage.updateViewport(this.width, this.height);
   }
 
   show() {

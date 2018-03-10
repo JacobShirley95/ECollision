@@ -1625,7 +1625,6 @@ exports.default = Overlay = function () {
         this.tempObject = new _particle2.default(this.crossX, this.crossY, 25, style, this.settings);
         this.tempObject.mass = mass;
         this.tempObject.cOR = cOR;
-        console.log(this.renderer.settings);
         this.particleRenderer = this.renderer.addParticle(this.tempObject);
         //@stage.addChild(@particleRenderer.displayObj);
         this.velText.x = this.mouseX;
@@ -1880,8 +1879,6 @@ exports.default = ParticleRenderer = function () {
     function ParticleRenderer(particle, enableSelection) {
       _classCallCheck(this, ParticleRenderer);
 
-      var r;
-
       var _this = _possibleConstructorReturn(this, (ParticleRenderer.__proto__ || Object.getPrototypeOf(ParticleRenderer)).call(this));
 
       _this.particle = particle;
@@ -1901,10 +1898,8 @@ exports.default = ParticleRenderer = function () {
           return _this.select();
         }
       });
-      r = _this.particle.radius;
       _this.graphics = _this.displayObj.graphics;
-      _this.graphics.clear().beginFill(_this.particle.style).drawCircle(0, 0, _this.particle.radius).endFill();
-      _this.displayObj.cache(-r, -r, r * 2, r * 2);
+      _this.update();
       _eventManager2.default.eventify(_this);
       return _this;
     }
@@ -1925,6 +1920,14 @@ exports.default = ParticleRenderer = function () {
       value: function deselect() {
         this.selected = false;
         return this.pastPositions = [];
+      }
+    }, {
+      key: "update",
+      value: function update() {
+        var r;
+        this.graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
+        r = this.particle.radius;
+        return this.displayObj.cache(-r, -r, r * 2, r * 2);
       }
     }, {
       key: "draw",
@@ -2289,7 +2292,8 @@ exports.default = Widget = function () {
         this.height = newHeight;
       }
       this.canvas.attr("width", this.width);
-      return this.canvas.attr("height", this.height);
+      this.canvas.attr("height", this.height);
+      return this.stage.updateViewport(this.width, this.height);
     }
   }, {
     key: "show",

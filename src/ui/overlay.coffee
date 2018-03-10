@@ -233,8 +233,6 @@ export default class Overlay extends Widget
         @tempObject.mass = mass
         @tempObject.cOR = cOR
 
-        console.log(@renderer.settings)
-
         @particleRenderer = @renderer.addParticle(@tempObject)
         #@stage.addChild(@particleRenderer.displayObj);
 

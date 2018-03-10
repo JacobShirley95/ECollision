@@ -219,7 +219,6 @@ export default Overlay = (function() {
       this.tempObject = new Particle(this.crossX, this.crossY, 25, style, this.settings);
       this.tempObject.mass = mass;
       this.tempObject.cOR = cOR;
-      console.log(this.renderer.settings);
       this.particleRenderer = this.renderer.addParticle(this.tempObject);
       //@stage.addChild(@particleRenderer.displayObj);
       this.velText.x = this.mouseX;
