@@ -19,6 +19,9 @@ export default class ParticleRenderer extends Renderer
 		@displayObj.x = @particle.x
 		@displayObj.y = @particle.y
 		@displayObj.on("click", (ev) =>
+			if (!@enableSelection)
+				return
+				
 			if (@selected)
 				@fire("deselect", [ev, @])
 				@deselect()

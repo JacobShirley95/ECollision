@@ -29,7 +29,6 @@ export default Graph = (function() {
       yAxis.y = 0;
       xAxis.cache(-1, -5, this.width, 10);
       yAxis.cache(-5, -1, 10, this.height);
-      console.log("GRAPH ENABLE");
       this.stage.addChild(xAxis);
       this.stage.addChild(yAxis);
       this.stage.addChild(this.graph);

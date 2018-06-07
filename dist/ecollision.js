@@ -1178,7 +1178,6 @@ exports.default = Graph = function () {
         yAxis.y = 0;
         xAxis.cache(-1, -5, this.width, 10);
         yAxis.cache(-5, -1, 10, this.height);
-        console.log("GRAPH ENABLE");
         this.stage.addChild(xAxis);
         this.stage.addChild(yAxis);
         this.stage.addChild(this.graph);
@@ -1542,7 +1541,6 @@ exports.default = Overlay = function () {
       value: function handleClick(ev) {
         var p, possibles, selected;
         boundMethodCheck(this, Overlay);
-        this.tempObject.renderer.deselect();
         if (ev.button === 2 && this.index !== Overlay.INDEX_MODIFY) {
           switch (this.index) {
             case Overlay.INDEX_PLACE:
@@ -1636,6 +1634,7 @@ exports.default = Overlay = function () {
         this.tempObject.mass = mass;
         this.tempObject.cOR = cOR;
         this.particleRenderer = this.renderer.addParticle(this.tempObject);
+        this.particleRenderer.enableSelection = false;
         //@stage.addChild(@particleRenderer.displayObj);
         this.velText.x = this.mouseX;
         this.velText.y = this.mouseY;
@@ -1900,6 +1899,9 @@ exports.default = ParticleRenderer = function () {
       _this.displayObj.x = _this.particle.x;
       _this.displayObj.y = _this.particle.y;
       _this.displayObj.on("click", function (ev) {
+        if (!_this.enableSelection) {
+          return;
+        }
         if (_this.selected) {
           _this.fire("deselect", [ev, _this]);
           return _this.deselect();

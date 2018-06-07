@@ -44,8 +44,6 @@ export default class Graph extends Widget
         xAxis.cache(-1, -5, @width, 10)
         yAxis.cache(-5, -1, 10, @height)
 
-        console.log("GRAPH ENABLE")
-
         @stage.addChild(xAxis)
         @stage.addChild(yAxis)
 

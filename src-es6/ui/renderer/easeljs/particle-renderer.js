@@ -22,6 +22,9 @@ export default ParticleRenderer = (function() {
       this.displayObj.x = this.particle.x;
       this.displayObj.y = this.particle.y;
       this.displayObj.on("click", (ev) => {
+        if (!this.enableSelection) {
+          return;
+        }
         if (this.selected) {
           this.fire("deselect", [ev, this]);
           return this.deselect();

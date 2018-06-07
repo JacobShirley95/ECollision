@@ -104,10 +104,10 @@ function log(s) {
 var fpsDiv = $("#fps-div");
 var particleInfo = $("#particle-info-box");
 
-ecollision.simulationUI.onSelect = function(particle) {
+ecollision.simulationUI.addListener("particle-selected", function(particle) {
     $("#slider-mass").sliderEx("value", particle.mass);
     $("#slider-cor").sliderEx("value", particle.cOR);
-}
+});
 
 ecollision.addListener("tick", function() {
     if (eCollisionSettings.global.showVelocities) {

@@ -144,7 +144,6 @@ export default class Overlay extends Widget
                 break
 
      handleClick: (ev) =>
-        @tempObject.renderer.deselect()
         if (ev.button == 2 && @index != Overlay.INDEX_MODIFY)
             switch (@index)
                 when Overlay.INDEX_PLACE
@@ -237,6 +236,7 @@ export default class Overlay extends Widget
         @tempObject.cOR = cOR
 
         @particleRenderer = @renderer.addParticle(@tempObject)
+        @particleRenderer.enableSelection = false
         #@stage.addChild(@particleRenderer.displayObj);
 
         @velText.x = @mouseX

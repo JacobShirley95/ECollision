@@ -131,7 +131,6 @@ export default Overlay = (function() {
     handleClick(ev) {
       var p, possibles, selected;
       boundMethodCheck(this, Overlay);
-      this.tempObject.renderer.deselect();
       if (ev.button === 2 && this.index !== Overlay.INDEX_MODIFY) {
         switch (this.index) {
           case Overlay.INDEX_PLACE:
@@ -222,6 +221,7 @@ export default Overlay = (function() {
       this.tempObject.mass = mass;
       this.tempObject.cOR = cOR;
       this.particleRenderer = this.renderer.addParticle(this.tempObject);
+      this.particleRenderer.enableSelection = false;
       //@stage.addChild(@particleRenderer.displayObj);
       this.velText.x = this.mouseX;
       this.velText.y = this.mouseY;
