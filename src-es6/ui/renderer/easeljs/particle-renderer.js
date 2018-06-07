@@ -21,7 +21,7 @@ export default ParticleRenderer = (function() {
       this.selected = false;
       this.displayObj.x = this.particle.x;
       this.displayObj.y = this.particle.y;
-      this.displayObj.addEventListener("click", (ev) => {
+      this.displayObj.on("click", (ev) => {
         if (this.selected) {
           this.fire("deselect", [ev, this]);
           return this.deselect();
@@ -41,19 +41,24 @@ export default ParticleRenderer = (function() {
     }
 
     select() {
-      return this.selected = true;
+      this.selected = true;
+      return this.update();
     }
 
     deselect() {
       this.selected = false;
+      this.update();
       return this.pastPositions = [];
     }
 
     update() {
       var r;
-      this.graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
       r = this.particle.radius;
-      return this.displayObj.cache(-r, -r, r * 2, r * 2);
+      this.graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, r).endFill();
+      if (this.selected) {
+        this.graphics.setStrokeStyle(4).beginStroke("red").drawCircle(0, 0, r).endStroke();
+      }
+      return this.displayObj.cache(-r - 4, -r - 4, (r * 2) + 8, (r * 2) + 8);
     }
 
     draw(interpolation) {
@@ -68,7 +73,7 @@ export default ParticleRenderer = (function() {
       this.displayObj.y = newY;
       if (this.particle.needsUpdate) {
         this.particle.needsUpdate = false;
-        return this.graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
+        return this.update();
       }
     }
 

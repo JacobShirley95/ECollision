@@ -28,14 +28,19 @@ export default Simulation = (function() {
     }
 
     addParticle(x, y, mass, radius, style) {
-      var particle;
+      var particle, result;
       particle = new Particle(x, y, radius, style, this.settings);
       particle.mass = mass;
-      this.renderer.addParticle(particle);
-      particle.addListener("select", (ev, particle) => {
-        return this.selected = particle;
+      result = this.renderer.addParticle(particle);
+      result.addListener("select", (ev, particle) => {
+        this.fire("particle-selected", [particle.particle]);
+        if (this.selected !== null) {
+          this.selected.renderer.deselect();
+        }
+        return this.selected = particle.particle;
       }).addListener("deselect", (ev, particle) => {
-        return this.selected = null;
+        this.selected = null;
+        return this.fire("particle-deselected", [particle.particle]);
       });
       this.engine.particles.push(particle);
       return particle;

@@ -1170,8 +1170,15 @@ exports.default = Graph = function () {
         var xAxis, yAxis;
         xAxis = new createjs.Shape();
         yAxis = new createjs.Shape();
-        xAxis.graphics.beginStroke("red").moveTo(this.x, this.height).lineTo(this.width, this.height);
-        yAxis.graphics.beginStroke("red").moveTo(this.x, this.y).lineTo(this.x, this.height);
+        xAxis.graphics.beginStroke("red").moveTo(this.x, 0).lineTo(this.width, 0);
+        xAxis.x = this.x;
+        xAxis.y = this.height;
+        yAxis.graphics.beginStroke("red").moveTo(0, this.y).lineTo(0, this.height);
+        yAxis.x = this.x;
+        yAxis.y = 0;
+        xAxis.cache(-1, -5, this.width, 10);
+        yAxis.cache(-5, -1, 10, this.height);
+        console.log("GRAPH ENABLE");
         this.stage.addChild(xAxis);
         this.stage.addChild(yAxis);
         this.stage.addChild(this.graph);
@@ -1215,6 +1222,7 @@ exports.default = Graph = function () {
             this.currY = this.getEnergy();
             this.addData(this.currX, this.currY);
           }
+          this.graph.cache(0, 0, this.width, this.height);
           this.dataY = total / this.data.length;
           targetY = this.height / 2;
           this.offsetY = targetY - this.dataY * this.scaleY;
@@ -1477,13 +1485,14 @@ exports.default = Overlay = function () {
         d = ev.deltaY;
         if (d < 0) {
           if (this.tempObject.radius > this.settings.global.minRadius) {
-            return this.tempObject.radius -= 1;
+            this.tempObject.radius -= 1;
           }
         } else {
           if (this.tempObject.radius < this.settings.global.maxRadius) {
-            return this.tempObject.radius += 1;
+            this.tempObject.radius += 1;
           }
         }
+        return this.tempObject.needsUpdate = true;
       }
     }, {
       key: "handleMouseMove",
@@ -1533,6 +1542,7 @@ exports.default = Overlay = function () {
       value: function handleClick(ev) {
         var p, possibles, selected;
         boundMethodCheck(this, Overlay);
+        this.tempObject.renderer.deselect();
         if (ev.button === 2 && this.index !== Overlay.INDEX_MODIFY) {
           switch (this.index) {
             case Overlay.INDEX_PLACE:
@@ -1889,7 +1899,7 @@ exports.default = ParticleRenderer = function () {
       _this.selected = false;
       _this.displayObj.x = _this.particle.x;
       _this.displayObj.y = _this.particle.y;
-      _this.displayObj.addEventListener("click", function (ev) {
+      _this.displayObj.on("click", function (ev) {
         if (_this.selected) {
           _this.fire("deselect", [ev, _this]);
           return _this.deselect();
@@ -1913,21 +1923,26 @@ exports.default = ParticleRenderer = function () {
     }, {
       key: "select",
       value: function select() {
-        return this.selected = true;
+        this.selected = true;
+        return this.update();
       }
     }, {
       key: "deselect",
       value: function deselect() {
         this.selected = false;
+        this.update();
         return this.pastPositions = [];
       }
     }, {
       key: "update",
       value: function update() {
         var r;
-        this.graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
         r = this.particle.radius;
-        return this.displayObj.cache(-r, -r, r * 2, r * 2);
+        this.graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, r).endFill();
+        if (this.selected) {
+          this.graphics.setStrokeStyle(4).beginStroke("red").drawCircle(0, 0, r).endStroke();
+        }
+        return this.displayObj.cache(-r - 4, -r - 4, r * 2 + 8, r * 2 + 8);
       }
     }, {
       key: "draw",
@@ -1943,7 +1958,7 @@ exports.default = ParticleRenderer = function () {
         this.displayObj.y = newY;
         if (this.particle.needsUpdate) {
           this.particle.needsUpdate = false;
-          return this.graphics.clear().beginFill(this.particle.style).drawCircle(0, 0, this.particle.radius).endFill();
+          return this.update();
         }
       }
     }]);
@@ -2104,14 +2119,19 @@ exports.default = Simulation = function () {
       value: function addParticle(x, y, mass, radius, style) {
         var _this2 = this;
 
-        var particle;
+        var particle, result;
         particle = new _particle2.default(x, y, radius, style, this.settings);
         particle.mass = mass;
-        this.renderer.addParticle(particle);
-        particle.addListener("select", function (ev, particle) {
-          return _this2.selected = particle;
+        result = this.renderer.addParticle(particle);
+        result.addListener("select", function (ev, particle) {
+          _this2.fire("particle-selected", [particle.particle]);
+          if (_this2.selected !== null) {
+            _this2.selected.renderer.deselect();
+          }
+          return _this2.selected = particle.particle;
         }).addListener("deselect", function (ev, particle) {
-          return _this2.selected = null;
+          _this2.selected = null;
+          return _this2.fire("particle-deselected", [particle.particle]);
         });
         this.engine.particles.push(particle);
         return particle;

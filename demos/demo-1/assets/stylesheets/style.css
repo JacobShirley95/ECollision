@@ -249,3 +249,8 @@ button:active {
     left: auto;
     right: 5px;
 }
+
+#particle-info-box {
+    padding: 10px;
+    box-sizing: border-box;
+}

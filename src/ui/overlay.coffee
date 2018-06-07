@@ -92,6 +92,8 @@ export default class Overlay extends Widget
             if (@tempObject.radius < @settings.global.maxRadius)
                 @tempObject.radius += 1
 
+        @tempObject.needsUpdate = true;
+
     handleMouseMove: (ev) =>
         @mouseX = @crossX = ev.stageX
         @mouseY = @crossY = ev.stageY
@@ -142,6 +144,7 @@ export default class Overlay extends Widget
                 break
 
      handleClick: (ev) =>
+        @tempObject.renderer.deselect()
         if (ev.button == 2 && @index != Overlay.INDEX_MODIFY)
             switch (@index)
                 when Overlay.INDEX_PLACE

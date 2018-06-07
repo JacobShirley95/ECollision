@@ -33,8 +33,18 @@ export default class Graph extends Widget
         xAxis = new createjs.Shape()
         yAxis = new createjs.Shape()
 
-        xAxis.graphics.beginStroke("red").moveTo(@x, @height).lineTo(@width, @height)
-        yAxis.graphics.beginStroke("red").moveTo(@x, @y).lineTo(@x, @height)
+        xAxis.graphics.beginStroke("red").moveTo(@x, 0).lineTo(@width, 0)
+        xAxis.x = @x
+        xAxis.y = @height
+
+        yAxis.graphics.beginStroke("red").moveTo(0, @y).lineTo(0, @height)
+        yAxis.x = @x
+        yAxis.y = 0
+
+        xAxis.cache(-1, -5, @width, 10)
+        yAxis.cache(-5, -1, 10, @height)
+
+        console.log("GRAPH ENABLE")
 
         @stage.addChild(xAxis)
         @stage.addChild(yAxis)
@@ -86,6 +96,8 @@ export default class Graph extends Widget
                 @currY = @getEnergy()
 
                 @addData(@currX, @currY)
+
+            @graph.cache(0, 0, @width, @height)
 
             @dataY = total/@data.length
             targetY = @height/2

@@ -76,13 +76,14 @@ export default Overlay = (function() {
       d = ev.deltaY;
       if (d < 0) {
         if (this.tempObject.radius > this.settings.global.minRadius) {
-          return this.tempObject.radius -= 1;
+          this.tempObject.radius -= 1;
         }
       } else {
         if (this.tempObject.radius < this.settings.global.maxRadius) {
-          return this.tempObject.radius += 1;
+          this.tempObject.radius += 1;
         }
       }
+      return this.tempObject.needsUpdate = true;
     }
 
     handleMouseMove(ev) {
@@ -130,6 +131,7 @@ export default Overlay = (function() {
     handleClick(ev) {
       var p, possibles, selected;
       boundMethodCheck(this, Overlay);
+      this.tempObject.renderer.deselect();
       if (ev.button === 2 && this.index !== Overlay.INDEX_MODIFY) {
         switch (this.index) {
           case Overlay.INDEX_PLACE:

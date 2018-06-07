@@ -109,7 +109,7 @@ ecollision.simulationUI.onSelect = function(particle) {
     $("#slider-cor").sliderEx("value", particle.cOR);
 }
 
-/*ecollision.addListener("tick", function() {
+ecollision.addListener("tick", function() {
     if (eCollisionSettings.global.showVelocities) {
         var fps = "";
         if (ecollision.fps < 24) {
@@ -128,6 +128,7 @@ ecollision.simulationUI.onSelect = function(particle) {
 
     var selected = ecollision.simulationUI.getSelected();
     if (selected != null) {
+
         var str = "<b>XVel:</b> " + Math.round(selected.xVel*eCollisionSettings.global.updateRate) + " px/s" +
                   "<br /> <b>YVel:</b> " + Math.round(selected.yVel*eCollisionSettings.global.updateRate) + " px/s" +
                   "<br /> <b>Direction:</b> " + Math.round(toDegrees(Math.atan2(selected.yVel, selected.xVel))) + " degrees" +
@@ -140,7 +141,7 @@ ecollision.simulationUI.onSelect = function(particle) {
     } else {
         particleInfo.html("");
     }
-});*/
+});
 
 ecollision.start();
 

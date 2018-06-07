@@ -24,12 +24,18 @@ export default class Simulation extends Widget
         particle = new Particle(x, y, radius, style, @settings)
         particle.mass = mass
 
-        @renderer.addParticle(particle)
+        result = @renderer.addParticle(particle)
 
-        particle.addListener("select", (ev, particle) =>
-            @selected = particle
+        result.addListener("select", (ev, particle) =>
+            @fire("particle-selected", [particle.particle])
+            if (@selected != null)
+                @selected.renderer.deselect()
+
+            @selected = particle.particle
         ).addListener("deselect", (ev, particle) =>
+
             @selected = null
+            @fire("particle-deselected", [particle.particle])
         )
 
         @engine.particles.push(particle)

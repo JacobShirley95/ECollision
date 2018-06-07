@@ -18,7 +18,7 @@ export default class ParticleRenderer extends Renderer
 
 		@displayObj.x = @particle.x
 		@displayObj.y = @particle.y
-		@displayObj.addEventListener("click", (ev) =>
+		@displayObj.on("click", (ev) =>
 			if (@selected)
 				@fire("deselect", [ev, @])
 				@deselect()
@@ -39,15 +39,21 @@ export default class ParticleRenderer extends Renderer
 
 	select: ->
 		@selected = true
+		@update()
 
 	deselect: ->
 		@selected = false
+		@update()
 		@pastPositions = []
 
 	update: ->
-		@graphics.clear().beginFill(@particle.style).drawCircle(0, 0, @particle.radius).endFill()
 		r = @particle.radius
-		@displayObj.cache(-r,-r, r*2,r*2)
+		@graphics.clear().beginFill(@particle.style).drawCircle(0, 0, r).endFill()
+
+		if (@selected)
+			@graphics.setStrokeStyle(4).beginStroke("red").drawCircle(0, 0, r).endStroke();
+
+		@displayObj.cache(-r - 4,-r - 4, (r*2) + 8, (r*2) + 8)
 
 	draw: (interpolation) ->
 		newX = @particle.x
@@ -62,4 +68,4 @@ export default class ParticleRenderer extends Renderer
 
 		if (@particle.needsUpdate)
 			@particle.needsUpdate = false
-			@graphics.clear().beginFill(@particle.style).drawCircle(0, 0, @particle.radius).endFill()
+			@update()

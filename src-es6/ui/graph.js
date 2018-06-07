@@ -21,8 +21,15 @@ export default Graph = (function() {
       var xAxis, yAxis;
       xAxis = new createjs.Shape();
       yAxis = new createjs.Shape();
-      xAxis.graphics.beginStroke("red").moveTo(this.x, this.height).lineTo(this.width, this.height);
-      yAxis.graphics.beginStroke("red").moveTo(this.x, this.y).lineTo(this.x, this.height);
+      xAxis.graphics.beginStroke("red").moveTo(this.x, 0).lineTo(this.width, 0);
+      xAxis.x = this.x;
+      xAxis.y = this.height;
+      yAxis.graphics.beginStroke("red").moveTo(0, this.y).lineTo(0, this.height);
+      yAxis.x = this.x;
+      yAxis.y = 0;
+      xAxis.cache(-1, -5, this.width, 10);
+      yAxis.cache(-5, -1, 10, this.height);
+      console.log("GRAPH ENABLE");
       this.stage.addChild(xAxis);
       this.stage.addChild(yAxis);
       this.stage.addChild(this.graph);
@@ -65,6 +72,7 @@ export default Graph = (function() {
           this.currY = this.getEnergy();
           this.addData(this.currX, this.currY);
         }
+        this.graph.cache(0, 0, this.width, this.height);
         this.dataY = total / this.data.length;
         targetY = this.height / 2;
         this.offsetY = targetY - (this.dataY * this.scaleY);
